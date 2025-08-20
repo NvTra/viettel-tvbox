@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.Vietteltv" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
