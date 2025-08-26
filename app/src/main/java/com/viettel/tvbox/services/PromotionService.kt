@@ -1,7 +1,7 @@
 package com.viettel.tvbox.services
 
-import com.viettel.tvbox.models.auth.Promotions
-import com.viettel.tvbox.models.auth.PromotionsDetail
+import com.viettel.tvbox.models.Promotions
+import com.viettel.tvbox.models.PromotionsDetail
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

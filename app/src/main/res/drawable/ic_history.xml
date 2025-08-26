@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?android:attr/textColorPrimary">
+    
+    <!-- Main circle path -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M3,12c0,-5 4,-9 9,-9c1.7,0 3.3,0.6 4.6,1.5c1.1,0.8 2.1,1.9 2.8,3.2L21,12c0,5 -4,9 -9,9S3,17 3,12z" />
+    
+    <!-- Refresh arrow curve -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M3,12c0,-2.5 1,-4.8 2.6,-6.5C7.2,4 9.5,3 12,3c2.3,0 4.4,0.8 6,2.2L21,8" />
+    
+    <!-- Arrow head -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M3,3v5h5" />
+    
+    <!-- Clock hands -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M12,7v5l4,2" />
+</vector>

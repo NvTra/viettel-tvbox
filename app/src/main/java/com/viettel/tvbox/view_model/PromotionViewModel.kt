@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.viettel.tvbox.models.auth.Promotions
-import com.viettel.tvbox.models.auth.PromotionsDetail
+import com.viettel.tvbox.models.Promotions
+import com.viettel.tvbox.models.PromotionsDetail
 import com.viettel.tvbox.services.RetrofitInstance
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse

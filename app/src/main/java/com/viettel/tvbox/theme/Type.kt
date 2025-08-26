@@ -36,6 +36,14 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
 
+    titleMedium = TextStyle(
+        fontFamily = Quicksand,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+
     titleSmall = TextStyle(
         fontFamily = Quicksand,
         fontWeight = FontWeight.Medium,
@@ -70,11 +78,13 @@ val Typography = Typography(
 
     displaySmall = TextStyle(
         fontFamily = Quicksand,
-        fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
+        fontWeight = FontWeight.Normal,
+        fontSize = 8.sp,
+        lineHeight = 10.sp,
         letterSpacing = 0.sp
     ),
+
+
 //    val displayLarge: TextStyle = TypographyTokens.DisplayLarge,
 //val displayMedium: TextStyle = TypographyTokens.DisplayMedium,
 //val displaySmall: TextStyle = TypographyTokens.DisplaySmall,

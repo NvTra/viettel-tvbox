@@ -4,6 +4,15 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "com.squareup.okhttp3") {
+            useVersion("5.1.0")
+            because("Force OkHttp 5.1.0 to avoid runtime conflicts and NoSuchMethodError")
+        }
+    }
+}
+
 // Parse .env file at the top-level (outside android block)
 val envFile = rootProject.file(".env")
 val envMap = mutableMapOf<String, String>()
@@ -86,6 +95,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.cardview)
+    implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.refconverter)
     implementation(libs.androidx.leanback)
@@ -102,6 +112,10 @@ dependencies {
     implementation(libs.accompanist.webview)
     implementation(libs.jsoup)
     implementation(libs.ui)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

@@ -1,16 +1,19 @@
 package com.viettel.tvbox.screens.layouts
 
-import android.util.Log
+import UserPreferences
 import androidx.compose.foundation.background
-import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationRailItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,17 +29,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.viettel.tvbox.BuildConfig
 import com.viettel.tvbox.R
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.Grey
-import com.viettel.tvbox.theme.PinkPrimary
 import com.viettel.tvbox.theme.SidebarSelect
+import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.utils.getImageUrl
 
 enum class SidebarDestination(
     val icon: Int,
@@ -61,8 +62,6 @@ fun Sidebar(
     }
     val context = LocalContext.current
     val userInformation = remember { UserPreferences.getInstance(context).getUserInformation() }
-    val IMG_URL = BuildConfig.IMAGE_URL
-    Log.d("Sidebar", "userInformation is null: ${userInformation == null}")
     NavigationRail(
         modifier = modifier
             .fillMaxHeight()
@@ -79,11 +78,17 @@ fun Sidebar(
             ),
             selected = false,
             onClick = {
-                UserPreferences.getInstance(context).clearAuth()
-                navController.navigate("login_screen") {
-                    popUpTo(0) { inclusive = true }
-                    launchSingleTop = true
-                }
+                navController.navigate("my_account")
+//                {
+//                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+//                    launchSingleTop = true
+//                    restoreState = true
+//                }
+//                UserPreferences.getInstance(context).clearAuth()
+//                navController.navigate("login_screen") {
+//                    popUpTo(0) { inclusive = true }
+//                    launchSingleTop = true
+//                }
             },
             icon = {
                 if (userInformation != null && userInformation.avatar?.isNotEmpty() == true) {
@@ -95,7 +100,7 @@ fun Sidebar(
                         contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = userInformation.avatar.let { "$IMG_URL$it" },
+                            model = getImageUrl(userInformation.avatar),
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxSize()
@@ -132,17 +137,17 @@ fun Sidebar(
                 )
                 .onFocusChanged { focusState ->
                     isBnItemFocused = focusState.isFocused
-                }
-                .focusable(),
-            alwaysShowLabel = false)
+                },
+            alwaysShowLabel = false
+        )
         GapH12()
         SidebarDestination.entries.forEachIndexed { index, destination ->
             var isItemFocused by rememberSaveable { mutableStateOf(false) }
             NavigationRailItem(
                 colors = NavigationRailItemDefaults.colors(
-                    selectedIconColor = PinkPrimary,
+                    selectedIconColor = VietelPrimaryColor,
                     unselectedIconColor = Color.White,
-                    selectedTextColor = PinkPrimary,
+                    selectedTextColor = VietelPrimaryColor,
                     unselectedTextColor = Color.White,
                     indicatorColor = Color.Transparent
                 ),
@@ -160,7 +165,7 @@ fun Sidebar(
                         painter = painterResource(id = destination.icon),
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),
-                        tint = if (selectedIndex == index) PinkPrimary else Color.White
+                        tint = if (selectedIndex == index) VietelPrimaryColor else Color.White
                     )
                 },
                 modifier = Modifier
@@ -176,9 +181,9 @@ fun Sidebar(
                     )
                     .onFocusChanged { focusState ->
                         isItemFocused = focusState.isFocused
-                    }
-                    .focusable(),
-                alwaysShowLabel = false)
+                    },
+                alwaysShowLabel = false
+            )
         }
     }
 }

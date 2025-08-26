@@ -1,5 +1,6 @@
 package com.viettel.tvbox.screens.promotion
 
+import LoadingIndicator
 import android.annotation.SuppressLint
 import android.webkit.WebView
 import androidx.compose.foundation.focusable
@@ -152,9 +153,7 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
         ) {
             when {
                 viewModel.isLoading -> {
-                    androidx.compose.material3.CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
+                    LoadingIndicator()
                 }
 
                 viewModel.error != null -> {

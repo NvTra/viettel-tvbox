@@ -15,15 +15,15 @@ fun VietteltvTheme(
 ) {
     val colorScheme = if (isInDarkTheme) {
         darkColorScheme(
-            primary = Purple80,
-            secondary = PurpleGrey80,
-            tertiary = Pink80
+            primary = VietelPrimaryColor,
+            secondary = Grey300,
+            tertiary = VietelSecondary
         )
     } else {
         lightColorScheme(
-            primary = Purple40,
-            secondary = PurpleGrey40,
-            tertiary = Pink40
+            primary = VietelPrimaryColor,
+            secondary = Grey300,
+            tertiary = VietelSecondary
         )
     }
     MaterialTheme(

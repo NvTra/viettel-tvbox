@@ -43,13 +43,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.viettel.tvbox.R.drawable
-import com.viettel.tvbox.models.auth.LoginRequest
+import com.viettel.tvbox.models.LoginRequest
 import com.viettel.tvbox.services.RetrofitInstance
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH24
 import com.viettel.tvbox.theme.Grey50
-import com.viettel.tvbox.theme.PinkSecondary
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.VietelSecondary
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.widgets.CustomTextField
 import kotlinx.coroutines.Dispatchers
@@ -244,11 +244,11 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
                 .height(25.dp)
                 .onFocusChanged { buttonFocus = it.isFocused },
             colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = if (buttonFocus) PinkSecondary else Color.Black.copy(alpha = 0.7f),
+                containerColor = if (buttonFocus) VietelSecondary else Color.Black.copy(alpha = 0.7f),
                 contentColor = WhiteColor
             ),
             border = BorderStroke(
-                width = 1.dp, color = if (buttonFocus) Color.Transparent else PinkSecondary
+                width = 1.dp, color = if (buttonFocus) Color.Transparent else VietelSecondary
             ),
         ) {
             Text(

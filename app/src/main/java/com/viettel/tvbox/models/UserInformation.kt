@@ -1,4 +1,4 @@
-package com.viettel.tvbox.models.auth
+package com.viettel.tvbox.models
 
 data class UserInformation(
     val responseMessage: String? = null,

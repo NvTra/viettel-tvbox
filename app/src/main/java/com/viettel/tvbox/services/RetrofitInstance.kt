@@ -3,7 +3,6 @@ package com.viettel.tvbox.services
 import UserPreferences
 import android.content.Context
 import com.viettel.tvbox.BuildConfig
-import com.viettel.tvbox.services.auth.AuthService
 import com.viettel.tvbox.services.token.AuthInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -43,4 +42,17 @@ object RetrofitInstance {
     val promotionService: PromotionService by lazy {
         retrofit.create(PromotionService::class.java)
     }
+
+    val categoryService: CategoriesService by lazy {
+        retrofit.create(CategoriesService::class.java)
+    }
+
+    val homeService: HomeService by lazy {
+        retrofit.create(HomeService::class.java)
+    }
+    val gameService: GameService by lazy {
+        retrofit.create(GameService::class.java)
+    }
+
+  
 }

@@ -1,4 +1,4 @@
-package com.viettel.tvbox.models.auth
+package com.viettel.tvbox.models
 
 // Represents a list of promotions with pagination and status info
 data class Promotions(

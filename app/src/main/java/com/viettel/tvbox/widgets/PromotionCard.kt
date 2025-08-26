@@ -2,7 +2,6 @@ package com.viettel.tvbox.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -26,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.GapH8
-import com.viettel.tvbox.theme.PinkSecondary
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.VietelSecondary
 import com.viettel.tvbox.utils.getImageUrl
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -54,10 +53,9 @@ fun PromotionCard(
             .onFocusChanged { focusState -> isFocus = focusState.isFocused }
             .border(
                 width = if (isFocus) 2.dp else 0.dp,
-                color = if (isFocus) PinkSecondary else Color.Transparent,
+                color = if (isFocus) VietelSecondary else Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
             )
-            .focusable()
     ) {
         Box(
             modifier = Modifier

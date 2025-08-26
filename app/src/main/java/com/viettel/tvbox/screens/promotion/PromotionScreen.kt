@@ -1,5 +1,6 @@
 package com.viettel.tvbox.screens.promotion
 
+import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,7 @@ fun PromotionScreen(
         Column {
             when {
                 isLoading -> {
-                    androidx.compose.material3.CircularProgressIndicator()
+                    LoadingIndicator()
                 }
 
                 error != null -> {

@@ -1,4 +1,4 @@
-package com.viettel.tvbox.models.auth
+package com.viettel.tvbox.models
 
 data class LoginRequest(
     val username: String,

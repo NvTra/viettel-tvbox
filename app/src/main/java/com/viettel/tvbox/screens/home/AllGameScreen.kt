@@ -1,30 +1,74 @@
 package com.viettel.tvbox.screens.home
 
+import LoadingIndicator
+import UserPreferences
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.tv.material3.Text
-import com.viettel.tvbox.BuildConfig
-import com.viettel.tvbox.widgets.CustomScaffold
+import com.viettel.tvbox.view_model.HomeViewModel
+import com.viettel.tvbox.widgets.BannerImage
+import com.viettel.tvbox.widgets.GameCard
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllGameScreen(label: String) {
-    CustomScaffold(label) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(24.dp)
-        ) {
-            Text(text = "API_URL: ${BuildConfig.API_BASE_URL}")
-            Text(text = "IMAGE_URL: ${BuildConfig.IMAGE_URL}")
-            Text(text = "VIDEO_URL: ${BuildConfig.VIDEO_URL}")
-            Text(text = "BLACKNUT_URL: ${BuildConfig.BLACKNUT_URL}")
-            Text(text = "BLACKNUT_IMAGE_URL: ${BuildConfig.BLACKNUT_IMAGE_URL}")
+fun AllGameScreen(id: String, title: String, navController: NavController) {
+    val viewModel: HomeViewModel = viewModel()
+    val allGameByTitle = viewModel.allGameByTitle
+    val isLoading = viewModel.isLoading
+    val error = viewModel.error
 
+    val context = LocalContext.current
+    val userPres = remember { UserPreferences.getInstance(context) }
+
+    LaunchedEffect(Unit) {
+        viewModel.getAllGameByTitle(
+            forAge = userPres.getUserInformation()?.forAge ?: "All", title = id,
+        )
+    }
+    when {
+        isLoading -> {
+            LoadingIndicator()
+        }
+
+        error != null -> {
+            Text("Error: $error")
+        }
+
+        allGameByTitle != null -> {
+            Column {
+                BannerImage(title = title, subTitle = "")
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(6),
+                    modifier = Modifier
+                        .padding(8.dp),
+                    contentPadding = PaddingValues(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    itemsIndexed(allGameByTitle) { index, game ->
+                        GameCard(
+                            game.id ?: "",
+                            game.title ?: "",
+                            game.imageScreen ?: "",
+                            navController
+                        )
+                    }
+                }
+            }
         }
     }
+
+
 }

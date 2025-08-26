@@ -8,9 +8,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.viettel.tvbox.screens.auths.LoginScreen
+import com.viettel.tvbox.screens.category.CategoryDetailScreen
 import com.viettel.tvbox.screens.category.CategoryScreen
 import com.viettel.tvbox.screens.home.AllGameScreen
+import com.viettel.tvbox.screens.home.GameDetail
+import com.viettel.tvbox.screens.home.GameHomeScreen
 import com.viettel.tvbox.screens.layouts.SidebarDestination
+import com.viettel.tvbox.screens.my_account.MyAccountScreen
 import com.viettel.tvbox.screens.my_list.MyListScreen
 import com.viettel.tvbox.screens.promotion.PromotionDetailScreen
 import com.viettel.tvbox.screens.promotion.PromotionScreen
@@ -32,10 +36,25 @@ fun AppNavGraph(
             startDestination = SidebarDestination.HOME.route,
             route = "main"
         ) {
-            composable(SidebarDestination.HOME.route) { AllGameScreen("CloudGame Tv") }
-            composable(SidebarDestination.SEARCH.route) { SearchScreen("Tìm Kiếm") }
-            composable(SidebarDestination.CATEGORY.route) { CategoryScreen("Thể loại") }
-            composable(SidebarDestination.MY_LIST.route) { MyListScreen("Danh sách của tôi") }
+            composable(SidebarDestination.HOME.route) {
+                GameHomeScreen(
+                    "CloudGame Tv",
+                    navController
+                )
+            }
+            composable(SidebarDestination.SEARCH.route) { SearchScreen("Tìm Kiếm", navController) }
+            composable(SidebarDestination.CATEGORY.route) {
+                CategoryScreen(
+                    "Thể loại",
+                    navController
+                )
+            }
+            composable(SidebarDestination.MY_LIST.route) {
+                MyListScreen(
+                    "Danh sách của tôi",
+                    navController
+                )
+            }
             composable(SidebarDestination.PROMOTION.route) {
                 PromotionScreen(
                     "Tin tức",
@@ -48,12 +67,40 @@ fun AppNavGraph(
             startDestination = "login_screen",
             route = "auth"
         ) {
-            composable("login_screen") { LoginScreen(navController as () -> Unit) }
+            composable("login_screen") {
+                LoginScreen(onLoginSuccess = {
+                    navController.navigate("home_screen") {
+                        popUpTo("login_screen") { inclusive = true }
+                        launchSingleTop = true
+                    }
+                })
+            }
         }
+
+        composable(route = "my_account") { backStackEntry ->
+//            val id = backStackEntry.arguments?.getString("id") ?: ""
+            MyAccountScreen(navController = navController)
+        }
+
 
         composable(route = "promotion_detail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id") ?: ""
             PromotionDetailScreen(id, navController = navController)
+        }
+        composable(route = "category_detail/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id") ?: ""
+            CategoryDetailScreen(id, navController = navController)
+        }
+
+        composable(route = "game_detail/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id") ?: ""
+            GameDetail(id, navController = navController)
+        }
+
+        composable(route = "all_game_by_title/{id}/{title}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id") ?: ""
+            val title = backStackEntry.arguments?.getString("title") ?: ""
+            AllGameScreen(id, title, navController = navController)
         }
     }
 }
