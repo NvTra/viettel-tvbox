@@ -6,17 +6,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -32,8 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -43,8 +45,8 @@ import com.viettel.tvbox.R
 import com.viettel.tvbox.screens.keyboard.KeyboardView
 import com.viettel.tvbox.screens.keyboard.KeyboardViewModel
 import com.viettel.tvbox.theme.GapH12
-import com.viettel.tvbox.theme.GapH16
 import com.viettel.tvbox.theme.GapH6
+import com.viettel.tvbox.theme.GapH8
 import com.viettel.tvbox.theme.Grey400
 import com.viettel.tvbox.theme.Grey800
 import com.viettel.tvbox.theme.Typography
@@ -78,19 +80,19 @@ fun SearchScreen(label: String, navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+                .fillMaxWidth()
         ) {
-            GapH16()
+            GapH8()
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(horizontal = 12.dp)
             ) {
 
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight()
+                        .fillMaxWidth()
                 ) {
                     Row(
                         modifier = Modifier
@@ -99,7 +101,7 @@ fun SearchScreen(label: String, navController: NavController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = inputText,
+                            text = inputText.ifEmpty { "Tìm kiếm" },
                             style = Typography.displaySmall,
                             modifier = Modifier
                                 .weight(1f)
@@ -126,37 +128,25 @@ fun SearchScreen(label: String, navController: NavController) {
                             Text(text = "  Lịch sử tìm kiếm", style = Typography.titleSmall)
                         }
                         GapH6()
-                        Column {
-                            LazyRow(
-                                modifier = Modifier.weight(1f),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                items(gameSearchHistory) { game ->
-                                    Button(
-                                        {},
-                                        colors = ButtonDefaults.buttonColors(containerColor = Grey800),
-                                        modifier = Modifier
-                                            .height(25.dp),
-                                        contentPadding = PaddingValues(
-                                            horizontal = 8.dp,
-                                            vertical = 0.dp
-                                        ),
-                                    ) {
-                                        Text(game.title ?: "", style = Typography.bodySmall)
-                                    }
-                                }
-                            }
-                        }
+                        HistoryPushList(gameSearchHistory, onClearHistory = {
+                            viewModel.clearGameSearchHistory()
+                        })
                     }
                 }
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight()
+                        .fillMaxWidth()
                 ) {
                     KeyboardView(
                         inputText = inputText,
-                        onInputChanged = { inputText = it },
+                        onInputChanged = {
+                            inputText = it
+                            viewModel.getGameSmartSearchResults(
+                                textSearch = it,
+                                type = userPres.getUserInformation()?.forAge ?: "ALL"
+                            )
+                        },
                         viewModel = keyboardViewModel,
                         onEnter = { query ->
                             viewModel.getGameSmartSearchResults(
@@ -165,7 +155,6 @@ fun SearchScreen(label: String, navController: NavController) {
                             )
                         },
                         modifier = Modifier
-                            .fillMaxHeight()
                             .fillMaxWidth()
                     )
                 }
@@ -187,15 +176,15 @@ fun SearchScreen(label: String, navController: NavController) {
                 error != null -> {}
 
                 else -> {
-                    Column {
+                    if (inputText.isNotEmpty()) Column {
                         Row(modifier = Modifier.padding(horizontal = 12.dp)) {
                             Text(
                                 text = "Gợi ý tìm kiểm",
-                                style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                                style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
                             )
                         }
                         GapH12()
-                        Box(
+                        if (gameSmartSearch.isNotEmpty()) Box(
                             modifier = Modifier
                                 .height(155.dp)
                                 .background(Color.Transparent)
@@ -218,9 +207,109 @@ fun SearchScreen(label: String, navController: NavController) {
                                     )
                                 }
                             }
+                        } else Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Không tìm thấy kết quả",
+                                style = Typography.headlineMedium
+                            )
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun HistoryPushList(
+    gameSearchHistory: List<com.viettel.tvbox.models.GameRelation>,
+    onClearHistory: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val maxWidthPx = constraints.maxWidth.toFloat()
+        val textMeasurer = rememberTextMeasurer()
+        val density = LocalDensity.current
+        val buttonHorizontalPadding = with(density) { 16.dp.toPx() }
+        val buttonSpacing = with(density) { 4.dp.toPx() }
+        val allItems = gameSearchHistory.map { it to false } + (null to true)
+        val rowList = mutableListOf<List<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>>()
+        var currentRow = mutableListOf<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>()
+        var currentRowWidth = 0f
+        var rowCount = 0
+        for ((game, isClear) in allItems) {
+            val text = if (isClear) "Xóa tìm kiếm" else game?.title ?: ""
+            val textLayoutResult = textMeasurer.measure(
+                AnnotatedString(text),
+                style = Typography.bodySmall
+            )
+            val textWidth = textLayoutResult.size.width.toFloat()
+            val buttonWidth = textWidth + buttonHorizontalPadding
+            val nextWidth =
+                if (currentRow.isEmpty()) buttonWidth else currentRowWidth + buttonSpacing + buttonWidth
+            if (nextWidth > maxWidthPx) {
+                rowList.add(currentRow)
+                rowCount++
+                if (rowCount == 2) break
+                currentRow = mutableListOf()
+                currentRowWidth = buttonWidth
+                currentRow.add(game to isClear)
+            } else {
+                currentRow.add(game to isClear)
+                currentRowWidth = nextWidth
+            }
+        }
+        if (rowCount < 2 && currentRow.isNotEmpty()) {
+            rowList.add(currentRow)
+        }
+        val limitedRowList = rowList.flatten().take(10)
+        val displayRows =
+            mutableListOf<List<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>>()
+        var tempRow = mutableListOf<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>()
+        for ((index, item) in limitedRowList.withIndex()) {
+            tempRow.add(item)
+            if (displayRows.size < rowList.size && (rowList[displayRows.size].size == tempRow.size || index == limitedRowList.lastIndex)) {
+                displayRows.add(tempRow)
+                tempRow = mutableListOf()
+            }
+        }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            displayRows.forEach { row ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    row.forEach { (game, isClear) ->
+                        if (isClear) {
+                            Button(
+                                onClick = onClearHistory,
+                                colors = ButtonDefaults.buttonColors(containerColor = Grey800),
+                                modifier = Modifier.height(25.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                            ) {
+                                Text(
+                                    "Xóa tìm kiếm",
+                                    style = Typography.bodySmall.copy(color = Color.White)
+                                )
+                            }
+                        } else {
+                            Button(
+                                onClick = {},
+                                colors = ButtonDefaults.buttonColors(containerColor = Grey800),
+                                modifier = Modifier.height(25.dp),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                            ) {
+                                Text(game?.title ?: "", style = Typography.bodySmall)
+                            }
+                        }
+                    }
+                }
+                GapH6()
             }
         }
     }

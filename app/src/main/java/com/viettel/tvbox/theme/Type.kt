@@ -21,13 +21,7 @@ val Quicksand = FontFamily(
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = Quicksand,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
+
     titleLarge = TextStyle(
         fontFamily = Quicksand,
         fontWeight = FontWeight.Bold,
@@ -52,6 +46,14 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
 
+    headlineMedium = TextStyle(
+        fontFamily = Quicksand,
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        lineHeight = 14.sp,
+        letterSpacing = 0.sp
+    ),
+
     labelSmall = TextStyle(
         fontFamily = Quicksand,
         fontWeight = FontWeight.Medium,
@@ -67,7 +69,13 @@ val Typography = Typography(
         lineHeight = 32.sp,
         letterSpacing = 0.5.sp
     ),
-
+    bodyLarge = TextStyle(
+        fontFamily = Quicksand,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    ),
     bodySmall = TextStyle(
         fontFamily = Quicksand,
         fontWeight = FontWeight.Normal,
@@ -87,15 +95,10 @@ val Typography = Typography(
 
 //    val displayLarge: TextStyle = TypographyTokens.DisplayLarge,
 //val displayMedium: TextStyle = TypographyTokens.DisplayMedium,
-//val displaySmall: TextStyle = TypographyTokens.DisplaySmall,
 //val headlineLarge: TextStyle = TypographyTokens.HeadlineLarge,
 //val headlineMedium: TextStyle = TypographyTokens.HeadlineMedium,
 //val headlineSmall: TextStyle = TypographyTokens.HeadlineSmall,
-//val titleMedium: TextStyle = TypographyTokens.TitleMedium,
-//val titleSmall: TextStyle = TypographyTokens.TitleSmall,
 //val bodyMedium: TextStyle = TypographyTokens.BodyMedium,
-//val bodySmall: TextStyle = TypographyTokens.BodySmall,
 //val labelLarge: TextStyle = TypographyTokens.LabelLarge,
-//val labelMedium: TextStyle = TypographyTokens.LabelMedium,
 
 )

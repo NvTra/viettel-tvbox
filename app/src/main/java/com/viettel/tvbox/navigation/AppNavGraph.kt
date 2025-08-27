@@ -1,8 +1,12 @@
 package com.viettel.tvbox.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,44 +36,45 @@ fun AppNavGraph(
         modifier = modifier.background(color = BlackColor)
     ) {
 
+        // Main navigation with sidebar
         navigation(
             startDestination = SidebarDestination.HOME.route,
             route = "main"
         ) {
-            composable(SidebarDestination.HOME.route) {
-                GameHomeScreen(
-                    "CloudGame Tv",
-                    navController
-                )
-            }
-            composable(SidebarDestination.SEARCH.route) { SearchScreen("Tìm Kiếm", navController) }
-            composable(SidebarDestination.CATEGORY.route) {
-                CategoryScreen(
-                    "Thể loại",
-                    navController
-                )
-            }
-            composable(SidebarDestination.MY_LIST.route) {
-                MyListScreen(
-                    "Danh sách của tôi",
-                    navController
-                )
-            }
-            composable(SidebarDestination.PROMOTION.route) {
-                PromotionScreen(
-                    "Tin tức",
-                    navController
-                )
+            SidebarDestination.entries.forEach { destination ->
+                composable(destination.route) {
+                    Row(modifier = Modifier.fillMaxHeight()) {
+                        com.viettel.tvbox.screens.layouts.Sidebar(
+                            navController = navController,
+                            modifier = Modifier.width(40.dp)
+                        )
+                        when (destination) {
+                            SidebarDestination.HOME -> GameHomeScreen("CloudGame Tv", navController)
+                            SidebarDestination.SEARCH -> SearchScreen("Tìm Kiếm", navController)
+                            SidebarDestination.CATEGORY -> CategoryScreen("Thể loại", navController)
+                            SidebarDestination.MY_LIST -> MyListScreen(
+                                "Danh sách của tôi",
+                                navController
+                            )
+
+                            SidebarDestination.PROMOTION -> PromotionScreen(
+                                "Tin tức",
+                                navController
+                            )
+                        }
+                    }
+                }
             }
         }
 
+        // Fullscreen screens (no sidebar)
         navigation(
             startDestination = "login_screen",
             route = "auth"
         ) {
             composable("login_screen") {
                 LoginScreen(onLoginSuccess = {
-                    navController.navigate("home_screen") {
+                    navController.navigate("main") {
                         popUpTo("login_screen") { inclusive = true }
                         launchSingleTop = true
                     }
@@ -77,9 +82,14 @@ fun AppNavGraph(
             }
         }
 
-        // Replace the nested navigation for my_account with a single composable
         composable("my_account") {
-            com.viettel.tvbox.screens.my_account.MyAccountScreen(navController, onLogout)
+            Row(modifier = Modifier.fillMaxHeight()) {
+                com.viettel.tvbox.screens.layouts.Sidebar(
+                    navController = navController,
+                    modifier = Modifier.width(40.dp)
+                )
+                com.viettel.tvbox.screens.my_account.MyAccountScreen(navController, onLogout)
+            }
         }
 
         composable(route = "promotion_detail/{id}") { backStackEntry ->
@@ -88,18 +98,29 @@ fun AppNavGraph(
         }
         composable(route = "category_detail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id") ?: ""
-            CategoryDetailScreen(id, navController = navController)
+            // category_detail vẫn có sidebar
+            Row(modifier = Modifier.fillMaxHeight()) {
+                com.viettel.tvbox.screens.layouts.Sidebar(
+                    navController = navController,
+                    modifier = Modifier.width(40.dp)
+                )
+                CategoryDetailScreen(id, navController = navController)
+            }
         }
-
         composable(route = "game_detail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id") ?: ""
             GameDetail(id, navController = navController)
         }
-
         composable(route = "all_game_by_title/{id}/{title}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id") ?: ""
             val title = backStackEntry.arguments?.getString("title") ?: ""
-            AllGameScreen(id, title, navController = navController)
+            Row(modifier = Modifier.fillMaxHeight()) {
+                com.viettel.tvbox.screens.layouts.Sidebar(
+                    navController = navController,
+                    modifier = Modifier.width(40.dp)
+                )
+                AllGameScreen(id, title, navController = navController)
+            }
         }
     }
 }

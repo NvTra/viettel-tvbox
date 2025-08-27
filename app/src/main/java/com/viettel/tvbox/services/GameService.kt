@@ -1,10 +1,13 @@
 package com.viettel.tvbox.services
 
+import com.viettel.tvbox.models.CheckPlayResponse
 import com.viettel.tvbox.models.GameDetail
 import com.viettel.tvbox.models.GameRelation
 import com.viettel.tvbox.models.GameSearchResponse
 import com.viettel.tvbox.models.GeneralGame
 import com.viettel.tvbox.models.LikeGame
+import com.viettel.tvbox.models.PlayToken
+import com.viettel.tvbox.models.SubOfUserAndGameRes
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,7 +24,6 @@ interface GameService {
         @Query("type") type: String
     ): Call<List<GameRelation>>
 
-
     @GET("game/enduser/smart-search")
     fun smartSearchGames(
         @Query("page") page: Int?,
@@ -36,13 +38,20 @@ interface GameService {
         @Body LikeGame: LikeGame
     ): Call<LikeGame>
 
-
     @GET("interact-game/no-auth/general-game")
     fun generalGame(
         @Query("gameId") gameId: String?,
     ): Call<GeneralGame>
 
-
     @POST("interact-game/like-game")
     fun likeGame(@Body likeGame: LikeGame): Call<LikeGame>
+
+    @GET("game/enduser/check-play/{gameId}")
+    fun checkPlay(@Path("gameId") gameId: String): Call<CheckPlayResponse>
+
+    @GET("subscription-active/valid-subs/{gameId}")
+    fun getValidSubs(@Path("gameId") gameId: String): Call<List<SubOfUserAndGameRes>>
+
+    @GET("api/game/enduser/blacknut/access-token-v2")
+    suspend fun getGamePlayToken(): Call<PlayToken>
 }

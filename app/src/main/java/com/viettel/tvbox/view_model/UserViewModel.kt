@@ -9,7 +9,9 @@ import com.viettel.tvbox.models.AccessHistoryDetail
 import com.viettel.tvbox.models.GameRelation
 import com.viettel.tvbox.models.HistoryGameDetail
 import com.viettel.tvbox.models.PayHistoryDetail
+import com.viettel.tvbox.models.RestException
 import com.viettel.tvbox.services.RetrofitInstance
+import com.viettel.tvbox.widgets.ToastMessage
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
@@ -25,6 +27,42 @@ class UserViewModel : ViewModel() {
     var payHistory by mutableStateOf<List<PayHistoryDetail>?>(null)
     var favoriteGame by mutableStateOf<List<GameRelation>?>(null)
     private val userService = RetrofitInstance.userService
+
+    var changePasswordMessage by mutableStateOf<String?>(null)
+
+    fun changePassword(
+        body: Map<String, String>
+    ) {
+        isLoading = true
+        error = null
+
+        viewModelScope.launch {
+            try {
+                val response = userService.changePassword(body).awaitResponse()
+                if (response.isSuccessful && response.body()?.responseCode == 6995) {
+                    ToastMessage.success("Đổi mật khẩu thành công")
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    if (errorBody != null) {
+                        val gson = com.google.gson.Gson()
+                        val errorResponse = gson.fromJson(errorBody, RestException::class.java)
+                        when (errorResponse.code) {
+                            9990 -> ToastMessage.error("Mật khẩu hiện tại không đúng")
+                            9989 -> ToastMessage.error("Mật khẩu mới phải khác mật khẩu hiện tại")
+                            else -> ToastMessage.error("Đổi mật khẩu thất bại")
+
+                        }
+                    } else {
+                        ToastMessage.error("Đổi mật khẩu thất bại")
+                    }
+                }
+            } catch (e: Exception) {
+                error = e.message
+            } finally {
+                isLoading = false
+            }
+        }
+    }
 
     fun getGamePlayHistory(
         page: Int = 0,

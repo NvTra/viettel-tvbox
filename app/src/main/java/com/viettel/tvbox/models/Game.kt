@@ -1,5 +1,8 @@
 package com.viettel.tvbox.models
 
+import java.util.Date
+import java.util.UUID
+
 data class GameDetail(
     val responseMessage: String? = "",
     val responseCode: Int? = null,
@@ -74,4 +77,46 @@ data class UserLike(
     val userId: String? = null,
     val name: String? = null,
     val createdDate: Long? = null,
+)
+
+data class CheckPlayResponse(
+    val responseMessage: String? = "",
+    val responseCode: Int? = null,
+    val responseDate: String? = "",
+    val status: Boolean? = null,
+    val listSubOfGameList: List<SubOfGame>? = emptyList(),
+    val linkGame: String? = "",
+    val sourceGame: String? = "",
+    val upload: String? = "",
+    val checkRemainTime: Int? = null,
+    val subName: String? = null,
+)
+
+data class SubOfGame(
+    val id: String? = "",
+    val subName: String? = "",
+    val description: String? = "",
+    val price: Int? = null,
+    val expiredTime: String? = "",
+    val numberDay: Int? = null,
+    val numberGame: Int? = null,
+    val unitExpiredTime: String? = "",
+    val thumbnail: String? = ""
+)
+
+data class SubOfUserAndGameRes(
+    val id: UUID? = null,
+    val subName: String? = null,
+    val price: Int? = null,
+    val expiredTime: Date? = null,
+    val unitExpiredTime: String? = null,
+    val subSms: String? = null,
+    val phone: String? = null
+)
+
+data class PlayToken(
+    val expiresAt: Long,
+    val expiresIn: Long,
+    val accessToken: String,
+    val refreshToken: String,
 )

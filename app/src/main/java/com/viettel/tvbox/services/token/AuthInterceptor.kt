@@ -28,32 +28,32 @@ class AuthInterceptor(
         private const val REFRESH_TOKEN_API = "auth/refresh-token"
 
         private val NON_TOKEN_APIS = listOf(
-            "/api/auth/login",
-            "/api/auth/login/no-captcha",
-            "/api/auth/login/black-nut",
-            "/api/auth/otp/confirm",
-            "/api/auth/otp/refresh",
-            "/api/auth/refresh-token",
-            "/api/game/enduser/home-page/noauth",
-            "/api/game/enduser/list-video",
-            "/api/type",
-            "/api/game/enduser/cloud-html",
-            "/api/game/enduser/no-auth/",
-            "/api/game/enduser/smart-search/noauth",
-            "/api/game/enduser/check-play/no-auth",
-            "/api/game/enduser/no-auth/top-game",
-            "/api/game/enduser/no-auth/all-free-game",
-            "/api/interact-game/no-auth/general-game",
-            "/api/interact-game/no-auth/comments",
-            "/api/end-user/promotions/no-auth",
-            "/api/no-auth/banners",
-            "/api/manage-home-config/no-auth/end-user",
-            "/api/auth/back-url",
-            "/api/game/enduser/no-auth/title",
-            "/api/game/enduser/no-auth/blacknut/access-token",
-            "/api/landing-page/no-auth",
-            "/api/rank/user/no-auth",
-            "/api/manage-home-config/popup",
+            "auth/login",
+            "auth/login/no-captcha",
+            "auth/login/black-nut",
+            "auth/otp/confirm",
+            "auth/otp/refresh",
+            "auth/refresh-token",
+            "game/enduser/home-page/noauth",
+            "game/enduser/list-video",
+            "type",
+            "game/enduser/cloud-html",
+            "game/enduser/no-auth/",
+            "game/enduser/smart-search/noauth",
+            "game/enduser/check-play/no-auth",
+            "game/enduser/no-auth/top-game",
+            "game/enduser/no-auth/all-free-game",
+            "interact-game/no-auth/general-game",
+            "interact-game/no-auth/comments",
+            "end-user/promotions/no-auth",
+            "no-auth/banners",
+            "manage-home-config/no-auth/end-user",
+            "auth/back-url",
+            "game/enduser/no-auth/title",
+            "game/enduser/no-auth/blacknut/access-token",
+            "landing-page/no-auth",
+            "rank/user/no-auth",
+            "manage-home-config/popup",
         )
     }
 
@@ -69,9 +69,15 @@ class AuthInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        println("Request URL: ${originalRequest.url}")
+        println(
+            "Request URL: ${originalRequest.url} ||| ${
+                isTokenBasedAuthEntryPoint(
+                    originalRequest.url.toString()
+                )
+            }"
+        )
 
-        if (!isTokenBasedAuthEntryPoint(originalRequest.url.toString())) {
+        if (isTokenBasedAuthEntryPoint(originalRequest.url.toString())) {
             return chain.proceed(originalRequest)
         }
 
@@ -93,6 +99,7 @@ class AuthInterceptor(
 
     private fun isTokenBasedAuthEntryPoint(url: String): Boolean {
         val apiPath = url.replace(BuildConfig.API_BASE_URL, "")
+        println("API Path: $apiPath")
         return NON_TOKEN_APIS.find { e -> apiPath.startsWith(e) } != null
     }
 
@@ -163,8 +170,8 @@ class AuthInterceptor(
             val response = refreshClient.newCall(request).execute()
 
             if (response.isSuccessful) {
-                val responseBody = response.body?.string()
-                responseBody?.let {
+                val responseBody = response.body.string()
+                responseBody.let {
                     gson.fromJson(it, LoginResponse::class.java)
                 }
             } else {

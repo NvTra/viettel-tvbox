@@ -61,3 +61,12 @@ data class PayHistoryDetail(
     val expiredTime: Long? = null,
     val status: Int? = null,
 )
+
+data class LogUserHistory(
+    val action: String? = "",
+    val status: Int? = null,
+    val targetId: String? = "",
+    val targetName: String? = "",
+    val targetType: String? = "",
+    val useId: String? = "",
+)

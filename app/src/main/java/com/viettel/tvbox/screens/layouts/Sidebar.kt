@@ -16,7 +16,6 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.viettel.tvbox.R
 import com.viettel.tvbox.theme.GapH12
@@ -57,9 +57,10 @@ fun Sidebar(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    var selectedIndex by rememberSaveable {
-        mutableIntStateOf(0)
-    }
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+    val selectedIndex =
+        SidebarDestination.entries.indexOfFirst { currentRoute?.startsWith(it.route) == true }
     val context = LocalContext.current
     val userInformation = remember { UserPreferences.getInstance(context).getUserInformation() }
     NavigationRail(
@@ -79,16 +80,6 @@ fun Sidebar(
             selected = false,
             onClick = {
                 navController.navigate("my_account")
-//                {
-//                    popUpTo(navController.graph.startDestinationId) { saveState = true }
-//                    launchSingleTop = true
-//                    restoreState = true
-//                }
-//                UserPreferences.getInstance(context).clearAuth()
-//                navController.navigate("login_screen") {
-//                    popUpTo(0) { inclusive = true }
-//                    launchSingleTop = true
-//                }
             },
             icon = {
                 if (userInformation != null && userInformation.avatar?.isNotEmpty() == true) {
@@ -153,7 +144,6 @@ fun Sidebar(
                 ),
                 selected = selectedIndex == index,
                 onClick = {
-                    selectedIndex = index
                     navController.navigate(destination.route) {
                         popUpTo(navController.graph.startDestinationId) { saveState = true }
                         launchSingleTop = true

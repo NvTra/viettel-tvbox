@@ -20,6 +20,7 @@ import com.viettel.tvbox.theme.GapH24
 import com.viettel.tvbox.view_model.HomeViewModel
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.ListGameHorizontal
+import com.viettel.tvbox.widgets.VideoBanner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +60,7 @@ fun GameHomeScreen(label: String, navController: NavController) {
                             )
                         )
                 ) {
-//                    VideoBanner()
+                    VideoBanner()
                     GapH24()
                     gamePlayed?.items?.size?.let {
                         if (it > 0) {

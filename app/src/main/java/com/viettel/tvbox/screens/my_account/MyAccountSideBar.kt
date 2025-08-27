@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
@@ -40,6 +41,7 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 import com.viettel.tvbox.R
 import com.viettel.tvbox.theme.BG_1A1A1A
+import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH6
@@ -120,6 +122,13 @@ fun MyAccountSideBar(
                     .background(Color(0xFF3A3A3A))
             )
             GapH6()
+            Text(
+                "Lịch sử",
+                style = Typography.bodySmall.copy(fontSize = 6.sp),
+                fontWeight = FontWeight.Bold,
+                color = BG_E0E0E0E.copy(0.8f),
+                modifier = Modifier.padding(8.dp)
+            )
             HistoryItem.entries.forEach { item ->
                 SideBarAccountIcon(
                     title = item.title,
@@ -156,6 +165,7 @@ fun SideBarAccountIcon(
         contentPadding = PaddingValues(0.dp),
         shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
         modifier = Modifier
+            .padding(bottom = 4.dp)
             .height(30.dp)
             .fillMaxWidth()
             .onKeyEvent { keyEvent ->
@@ -178,7 +188,6 @@ fun SideBarAccountIcon(
                 .border(
                     width = if (isFocus || selected) 1.dp else 0.3.dp,
                     color = when {
-                        isFocus -> VietelPrimaryColor
                         selected -> VietelPrimaryColor
                         else -> ColorTransparent
                     },
@@ -209,7 +218,7 @@ fun SideBarAccountIcon(
                     selected -> VietelPrimaryColor
                     else -> WhiteColor
                 },
-                style = Typography.bodySmall.copy(fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal),
+                style = Typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.weight(1f)
             )
             Icon(

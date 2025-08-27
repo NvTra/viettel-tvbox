@@ -76,6 +76,7 @@ fun GameDetail(id: String, navController: NavController) {
     val gameDetail = viewModel.gameDetail
     val isLoading = viewModel.isLoading
     val error = viewModel.error
+    val statusUserForPlaying = viewModel.statusUserForPlaying
 
     val context = LocalContext.current
     val userPres = remember { UserPreferences.getInstance(context) }
@@ -86,21 +87,21 @@ fun GameDetail(id: String, navController: NavController) {
 
     var backFocus by remember { mutableStateOf(false) }
 
-    val isLikeGame = remember {
-        mutableStateOf(false)
-    }
+    val isLiked = viewModel.isLiked
+
+    var showSubscriptionDialog by remember { mutableStateOf(false) }
+    var showLoginDialog by remember { mutableStateOf(false) }
+    var showAnnounceDialog by remember { mutableStateOf(false) }
+
+    val listSubOfGameRes =
+        remember { mutableStateOf(listOf<Any>()) }
+    val listSubOfUserAndGameRes =
+        remember { mutableStateOf(listOf<Any>()) }
 
     LaunchedEffect(Unit) {
         viewModel.getGameDetail(id = id)
+        viewModel.checkPlay(gameId = id)
         viewModel.getGeneralGame(gameId = id)
-    }
-
-    LaunchedEffect(viewModel.generalGame) {
-        val generalGame = viewModel.generalGame
-        val userId = userPres.getUserInformation()?.id
-        isLikeGame.value = generalGame?.userInfoInteracts?.any { element ->
-            element.userId == userId
-        } == true
     }
 
     fun getPegi(age: Double): String {
@@ -114,9 +115,72 @@ fun GameDetail(id: String, navController: NavController) {
     fun likeGame() {
         val likeGame = LikeGame(
             gameId = id,
-            likeGame = true
+            likeGame = !(isLiked ?: false)
         )
         viewModel.likeGame(likeGame)
+    }
+
+
+    fun saveUserHistory(action: String, gameId: String?, title: String?, userId: String?) {
+        // TODO: Implement user history saving logic
+        // Example: userPres.saveUserHistory(action, gameId, title, userId)
+    }
+
+    fun playGame() {
+        when (statusUserForPlaying) {
+            0 -> {
+                if (gameDetail?.partnerGameId != null) {
+                    viewModel.playBlacknut(gameDetail.id!!, gameDetail.partnerGameId)
+                } else {
+                    saveUserHistory(
+                        "PLAY_GAME",
+                        gameDetail?.id,
+                        gameDetail?.title,
+                        userPres.getUserInformation()?.id
+                    )
+                    val link = viewModel.linkGame
+                    if (!link.isNullOrEmpty()) {
+                        // Open link in browser or WebView
+                        // Example: open in browser
+                        val intent =
+                            android.content.Intent(android.content.Intent.ACTION_VIEW, link.toUri())
+                        context.startActivity(intent)
+                    }
+                }
+            }
+
+            1 -> {
+                showSubscriptionDialog = true
+                // Pass data to dialog if needed
+                // Example: SubscriptionDialog(data = listSubOfGameRes.value)
+            }
+
+            2 -> {
+                showLoginDialog = true
+            }
+
+            3 -> {
+                showAnnounceDialog = true
+                // Pass data to dialog if needed
+                // Example: AnnounceDialog(data = listSubOfUserAndGameRes.value)
+            }
+        }
+    }
+
+    val playToken = viewModel.blacknutPlayToken
+    val blacknutGameID = viewModel.blacknutGameID
+    val partnerGameId = viewModel.blacknutPartnerGameId
+    if (playToken != null && blacknutGameID != null) {
+        val url =
+            "https://cloudgame.vn/play/blacknut/$blacknutGameID?accessToken=${playToken.accessToken}&refreshToken=${playToken.refreshToken}&partnerGameId=$partnerGameId"
+        val encodedUrl =
+            java.net.URLEncoder.encode(url, java.nio.charset.StandardCharsets.UTF_8.toString())
+        LaunchedEffect(url) {
+            navController.navigate("play_blacknut_webview/$encodedUrl")
+            viewModel.blacknutPlayToken = null
+            viewModel.blacknutGameID = null
+            viewModel.blacknutPartnerGameId = null
+        }
     }
 
     when {
@@ -220,13 +284,13 @@ fun GameDetail(id: String, navController: NavController) {
                             GameButton(
                                 iconResId = R.drawable.ic_play,
                                 title = "Chơi game",
-                                onClick = {})
+                                onClick = { playGame() })
 
                             GameButton(
-                                iconResId = if (isLikeGame.value) R.drawable.ic_heart_fill else R.drawable.ic_heart,
+                                iconResId = if (isLiked == true) R.drawable.ic_heart_fill else R.drawable.ic_heart,
                                 title = "Yêu thích",
                                 onClick = { likeGame() },
-                                disabled = !isLikeGame.value
+                                disabled = isLiked == false
                             )
                         }
                         GapH16()
@@ -399,5 +463,3 @@ fun GameButton(
         }
     }
 }
-
-

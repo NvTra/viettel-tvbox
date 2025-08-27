@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +74,7 @@ fun VideoBanner() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
+                    .clipToBounds()
             ) {
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
@@ -85,7 +87,7 @@ fun VideoBanner() {
                                 android.view.ViewGroup.LayoutParams.MATCH_PARENT
                             )
                             resizeMode =
-                                AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                                AspectRatioFrameLayout.RESIZE_MODE_FILL
                         }
                     }
                 )

@@ -1,5 +1,6 @@
 package com.viettel.tvbox.screens.category
 
+import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -51,7 +51,7 @@ fun CategoryScreen(label: String, navController: NavController) {
         Column(modifier = Modifier.padding(innerPadding)) {
             when {
                 isLoading -> {
-                    CircularProgressIndicator()
+                    LoadingIndicator()
                 }
 
                 error != null -> {

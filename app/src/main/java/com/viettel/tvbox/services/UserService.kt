@@ -1,18 +1,26 @@
 package com.viettel.tvbox.services
 
 import com.viettel.tvbox.models.AccessHistory
+import com.viettel.tvbox.models.CustomAPiResponse
 import com.viettel.tvbox.models.FavoriteGame
 import com.viettel.tvbox.models.HistoryGame
 import com.viettel.tvbox.models.PayHistory
 import com.viettel.tvbox.models.UserInformation
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface UserService {
     @GET("auth/user/information")
     fun getUserInformation(): Call<UserInformation>
 
+
+    @POST("auth/change-password")
+    fun changePassword(
+        @Body body: Map<String, String>
+    ): Call<CustomAPiResponse>
 
     @GET("user/game-history")
     fun getGamePlayHistory(
@@ -45,4 +53,9 @@ interface UserService {
         @Query("startTs") startDate: Long,
         @Query("endTs") endDate: Long,
     ): Call<PayHistory>
+
+    @GET("user-history/save")
+    fun savHisistorySearch(
+        @Query("textSearch") textSearch: String,
+    ): Call<Void>
 }
