@@ -18,27 +18,37 @@ class CategoryViewModel : ViewModel() {
 
     var categories by mutableStateOf<Categories?>(null)
 
+    var featuredCategories by mutableStateOf<List<CategoryItem>?>(null)
+
+    var otherCategory by mutableStateOf<List<CategoryItem>?>(null)
     var category by mutableStateOf<CategoryItem?>(null)
 
+    val typeCodeFeature = listOf("Family", "Kids", "Multiplayer")
     private val categoryService = RetrofitInstance.categoryService
 
-    fun fetchCategories(type: String? = "", titleId: String? = "") {
+
+    suspend fun fetchCategories(type: String? = "", titleId: String? = "") {
         isLoading = true
         error = null
-        viewModelScope.launch {
-            try {
-                val response = categoryService.getCategories(type, titleId).awaitResponse()
+        try {
+            val response = categoryService.getCategories(type, titleId).awaitResponse()
 
-                if (response.isSuccessful) {
-                    categories = response.body()
-                } else {
-                    error = "Error: ${response.code()}"
-                }
-            } catch (e: Exception) {
-                error = e.message
-            } finally {
-                isLoading = false
+            if (response.isSuccessful) {
+                categories = response.body()
+
+                featuredCategories =
+                    categories?.cloud?.filter { it.typeCode in typeCodeFeature } ?: emptyList()
+
+                otherCategory =
+                    categories?.cloud?.filter { it.typeCode !in typeCodeFeature } ?: emptyList()
+
+            } else {
+                error = "Error: ${response.code()}"
             }
+        } catch (e: Exception) {
+            error = e.message
+        } finally {
+            isLoading = false
         }
     }
 

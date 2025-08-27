@@ -9,6 +9,7 @@ data class CategoryItem(
     val id: String? = "",
     val icon: String? = "",
     val type: String? = "",
+    val typeCode: String? = "",
     val image: String? = "",
     val chanel: String? = "",
     val games: List<GameRelation>? = emptyList()

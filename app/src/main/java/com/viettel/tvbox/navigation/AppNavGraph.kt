@@ -14,7 +14,6 @@ import com.viettel.tvbox.screens.home.AllGameScreen
 import com.viettel.tvbox.screens.home.GameDetail
 import com.viettel.tvbox.screens.home.GameHomeScreen
 import com.viettel.tvbox.screens.layouts.SidebarDestination
-import com.viettel.tvbox.screens.my_account.MyAccountScreen
 import com.viettel.tvbox.screens.my_list.MyListScreen
 import com.viettel.tvbox.screens.promotion.PromotionDetailScreen
 import com.viettel.tvbox.screens.promotion.PromotionScreen
@@ -24,7 +23,8 @@ import com.viettel.tvbox.theme.BlackColor
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLogout: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -77,11 +77,10 @@ fun AppNavGraph(
             }
         }
 
-        composable(route = "my_account") { backStackEntry ->
-//            val id = backStackEntry.arguments?.getString("id") ?: ""
-            MyAccountScreen(navController = navController)
+        // Replace the nested navigation for my_account with a single composable
+        composable("my_account") {
+            com.viettel.tvbox.screens.my_account.MyAccountScreen(navController, onLogout)
         }
-
 
         composable(route = "promotion_detail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id") ?: ""

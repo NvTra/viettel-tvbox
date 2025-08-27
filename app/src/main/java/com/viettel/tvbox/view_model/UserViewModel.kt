@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.viettel.tvbox.models.AccessHistoryDetail
 import com.viettel.tvbox.models.GameRelation
 import com.viettel.tvbox.models.HistoryGameDetail
+import com.viettel.tvbox.models.PayHistoryDetail
 import com.viettel.tvbox.services.RetrofitInstance
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
@@ -18,6 +20,9 @@ class UserViewModel : ViewModel() {
 
     var gamePlayHistory by mutableStateOf<List<HistoryGameDetail>?>(null)
 
+    var accessHistory by mutableStateOf<List<AccessHistoryDetail>?>(null)
+
+    var payHistory by mutableStateOf<List<PayHistoryDetail>?>(null)
     var favoriteGame by mutableStateOf<List<GameRelation>?>(null)
     private val userService = RetrofitInstance.userService
 
@@ -34,9 +39,7 @@ class UserViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = userService.getGamePlayHistory(
-                    page, pageSize,
-                    "desc",
-                    "created_date", startDate, endDate, forAge
+                    page, pageSize, "desc", "created_date", startDate, endDate, forAge
                 ).awaitResponse()
 
                 if (response.isSuccessful) {
@@ -62,6 +65,64 @@ class UserViewModel : ViewModel() {
 
                 if (response.isSuccessful) {
                     favoriteGame = response.body()?.listGame
+                } else {
+                    error = "Error: ${response.code()}"
+                }
+            } catch (e: Exception) {
+
+                error = e.message
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun getAccessHistory(
+        page: Int = 0,
+        pageSize: Int = Int.MAX_VALUE,
+        startDate: Long = 0,
+        endDate: Long = 0,
+    ) {
+        isLoading = true
+        error = null
+
+        viewModelScope.launch {
+            try {
+                val response = userService.getAccessHistory(
+                    page, pageSize, startDate, endDate
+                ).awaitResponse()
+
+                if (response.isSuccessful) {
+                    accessHistory = response.body()?.data
+                } else {
+                    error = "Error: ${response.code()}"
+                }
+            } catch (e: Exception) {
+
+                error = e.message
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun getPayHistory(
+        page: Int = 0,
+        pageSize: Int = Int.MAX_VALUE,
+        startDate: Long = 0,
+        endDate: Long = 0,
+    ) {
+        isLoading = true
+        error = null
+
+        viewModelScope.launch {
+            try {
+                val response = userService.getPayHistory(
+                    page, pageSize, "desc", "created_date", startDate, endDate
+                ).awaitResponse()
+
+                if (response.isSuccessful) {
+                    payHistory = response.body()?.data
                 } else {
                     error = "Error: ${response.code()}"
                 }

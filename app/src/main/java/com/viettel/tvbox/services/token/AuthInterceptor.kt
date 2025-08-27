@@ -40,7 +40,6 @@ class AuthInterceptor(
             "/api/game/enduser/cloud-html",
             "/api/game/enduser/no-auth/",
             "/api/game/enduser/smart-search/noauth",
-            "/api/game/enduser/sub-outstanding",
             "/api/game/enduser/check-play/no-auth",
             "/api/game/enduser/no-auth/top-game",
             "/api/game/enduser/no-auth/all-free-game",
@@ -94,7 +93,7 @@ class AuthInterceptor(
 
     private fun isTokenBasedAuthEntryPoint(url: String): Boolean {
         val apiPath = url.replace(BuildConfig.API_BASE_URL, "")
-        return NON_TOKEN_APIS.find { e -> apiPath.startsWith(e) } == null
+        return NON_TOKEN_APIS.find { e -> apiPath.startsWith(e) } != null
     }
 
     private fun addTokenToRequest(request: Request): Request {

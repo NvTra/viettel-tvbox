@@ -25,6 +25,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.viettel.tvbox.theme.GapW8
@@ -38,11 +39,12 @@ fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    leadingIcon: Painter,
+    leadingIcon: Painter? = null,
     trailingIcon: Painter? = null,
     onTrailingIconClick: (() -> Unit)? = null,
     backgroundColor: Color = Color.Transparent,
     keyboardType: KeyboardType = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     modifier: Modifier = Modifier
 ) {
     var isFocus by remember { mutableStateOf(false) }
@@ -62,12 +64,14 @@ fun CustomTextField(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
         ) {
-            Icon(
-                painter = leadingIcon,
-                contentDescription = null,
-                tint = WhiteColor,
-                modifier = Modifier.size(8.dp)
-            )
+            if (leadingIcon != null) {
+                Icon(
+                    painter = leadingIcon,
+                    contentDescription = null,
+                    tint = WhiteColor,
+                    modifier = Modifier.size(8.dp)
+                )
+            }
             GapW8()
             BasicTextField(
                 value = value,
@@ -75,6 +79,7 @@ fun CustomTextField(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                 textStyle = Typography.bodySmall.copy(color = WhiteColor, fontSize = 8.sp),
+                visualTransformation = visualTransformation,
                 decorationBox = { innerTextField ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (value.isEmpty()) {

@@ -13,3 +13,9 @@ data class LoginResponse(
     val accessToken: String,
     val refreshToken: String
 )
+
+data class ResetPasswordRequest(
+    val currentPwd: String,
+    val newPwd: String,
+    val confirmNewPwd: String
+)

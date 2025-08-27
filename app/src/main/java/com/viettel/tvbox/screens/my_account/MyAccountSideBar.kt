@@ -1,14 +1,16 @@
 package com.viettel.tvbox.screens.my_account
 
 import UserPreferences
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,11 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.tv.material3.Border
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -37,6 +40,7 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 import com.viettel.tvbox.R
 import com.viettel.tvbox.theme.BG_1A1A1A
+import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH6
 import com.viettel.tvbox.theme.GapW4
@@ -64,12 +68,15 @@ enum class HistoryItem(
 }
 
 @Composable
-fun MyAccountSideBar(navController: NavController) {
-
+fun MyAccountSideBar(
+    onLogout: () -> Unit,
+    navController: NavController,
+    selectedRoute: String,
+    onItemSelected: (String) -> Unit
+) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .padding(horizontal = 10.dp)
             .width(140.dp)
             .fillMaxHeight()
             .drawBehind {
@@ -82,6 +89,7 @@ fun MyAccountSideBar(navController: NavController) {
                     strokeWidth = strokeWidth
                 )
             }
+            .padding(horizontal = 10.dp)
     ) {
         Column {
             GapH12()
@@ -97,8 +105,13 @@ fun MyAccountSideBar(navController: NavController) {
                     .background(Color(0xFF3A3A3A))
             )
             GapH6()
-            AccountManagementItem.entries.forEachIndexed { index, item ->
-                SideBarAccountIcon(title = item.title, icon = item.icon)
+            AccountManagementItem.entries.forEach { item ->
+                SideBarAccountIcon(
+                    title = item.title,
+                    icon = item.icon,
+                    selected = item.route == selectedRoute,
+                    onClick = { onItemSelected(item.route) }
+                )
             }
             Box(
                 modifier = Modifier
@@ -107,49 +120,83 @@ fun MyAccountSideBar(navController: NavController) {
                     .background(Color(0xFF3A3A3A))
             )
             GapH6()
-            HistoryItem.entries.forEachIndexed { index, item ->
-                SideBarAccountIcon(title = item.title, icon = item.icon)
+            HistoryItem.entries.forEach { item ->
+                SideBarAccountIcon(
+                    title = item.title,
+                    icon = item.icon,
+                    selected = item.route == selectedRoute,
+                    onClick = { onItemSelected(item.route) }
+                )
             }
-            
         }
-        LogoutButton(navController)
-
+        LogoutButton(onLogout)
     }
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun SideBarAccountIcon(title: String, icon: Int) {
-    var isFocus by remember { mutableStateOf(false) }
+fun SideBarAccountIcon(
+    title: String,
+    icon: Int,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    val interactionSource =
+        remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+    val isFocus by interactionSource.collectIsFocusedAsState()
     Button(
-        onClick = {},
+        onClick = {
+            onClick()
+        },
         colors = ButtonDefaults.colors(
             containerColor = Color.Transparent,
             focusedContainerColor = BG_1A1A1A,
+            focusedContentColor = VietelPrimaryColor
         ),
         contentPadding = PaddingValues(0.dp),
-        border = ButtonDefaults.border(
-            focusedBorder = Border(BorderStroke(1.dp, VietelPrimaryColor)),
-        ),
         shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
         modifier = Modifier
-            .height(40.dp)
+            .height(30.dp)
             .fillMaxWidth()
-            .padding(start = 8.dp, top = 4.dp),
+            .onKeyEvent { keyEvent ->
+                if (keyEvent.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_ENTER ||
+                    keyEvent.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER ||
+                    keyEvent.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_SPACE
+                ) {
+                    onClick()
+                    true
+                } else {
+                    false
+                }
+            },
         scale = ButtonDefaults.scale(focusedScale = 1f),
+        interactionSource = interactionSource,
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 6.dp)
                 .background(Color.Transparent)
-                .fillMaxWidth(),
+                .border(
+                    width = if (isFocus || selected) 1.dp else 0.3.dp,
+                    color = when {
+                        isFocus -> VietelPrimaryColor
+                        selected -> VietelPrimaryColor
+                        else -> ColorTransparent
+                    },
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .padding(horizontal = 6.dp)
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = if (isFocus) Color.White else Color.Gray,
+                tint = when {
+                    isFocus -> VietelPrimaryColor
+                    selected -> VietelPrimaryColor
+                    else -> WhiteColor
+                },
                 modifier = Modifier
                     .size(9.dp)
                     .align(Alignment.CenterVertically)
@@ -157,14 +204,22 @@ fun SideBarAccountIcon(title: String, icon: Int) {
             GapW4()
             Text(
                 text = title,
-                color = if (isFocus) VietelPrimaryColor else WhiteColor,
-                style = Typography.bodySmall,
+                color = when {
+                    isFocus -> VietelPrimaryColor
+                    selected -> VietelPrimaryColor
+                    else -> WhiteColor
+                },
+                style = Typography.bodySmall.copy(fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal),
                 modifier = Modifier.weight(1f)
             )
             Icon(
                 painterResource(id = R.drawable.ic_chevron_right),
                 contentDescription = null,
-                tint = if (isFocus) VietelPrimaryColor else Color.Gray,
+                tint = when {
+                    isFocus -> VietelPrimaryColor
+                    selected -> VietelPrimaryColor
+                    else -> Color.Gray
+                },
                 modifier = Modifier
                     .size(9.dp)
                     .align(Alignment.CenterVertically)
@@ -175,44 +230,43 @@ fun SideBarAccountIcon(title: String, icon: Int) {
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun LogoutButton(navController: NavController) {
+fun LogoutButton(onLogout: () -> Unit) {
     var isFocus by remember { mutableStateOf(false) }
     val context = LocalContext.current
     Button(
         onClick = {
             UserPreferences.getInstance(context).clearAuth()
-            navController.navigate("login_screen") {
-                popUpTo(0) { inclusive = true }
-                launchSingleTop = true
-            }
+            onLogout()
         },
+        shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
         colors = ButtonDefaults.colors(
-            containerColor = Color.Transparent,
+            containerColor = VietelPrimaryColor.copy(alpha = 0.1f),
             focusedContainerColor = BG_1A1A1A,
         ),
         contentPadding = PaddingValues(0.dp),
-        border = ButtonDefaults.border(
-            focusedBorder = Border(BorderStroke(1.dp, VietelPrimaryColor)),
-        ),
-        shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
         modifier = Modifier
-            .height(40.dp)
+            .height(30.dp)
             .fillMaxWidth()
             .padding(start = 8.dp, top = 4.dp),
         scale = ButtonDefaults.scale(focusedScale = 1f),
     ) {
         Row(
             modifier = Modifier
+                .background(Color.Transparent, shape = RoundedCornerShape(4.dp))
+                .border(
+                    width = if (isFocus) 1.dp else 0.3.dp,
+                    color = if (isFocus) VietelPrimaryColor else VietelPrimaryColor,
+                    shape = RoundedCornerShape(4.dp)
+                )
                 .padding(horizontal = 6.dp)
-                .background(Color.Transparent)
-                .fillMaxWidth(),
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_logout),
                 contentDescription = null,
-                tint = if (isFocus) Color.White else Color.Gray,
+                tint = if (isFocus) WhiteColor else VietelPrimaryColor,
                 modifier = Modifier
                     .size(9.dp)
                     .align(Alignment.CenterVertically)
@@ -220,11 +274,10 @@ fun LogoutButton(navController: NavController) {
             GapW4()
             Text(
                 text = "Đăng xuất",
-                color = if (isFocus) VietelPrimaryColor else WhiteColor,
+                color = if (isFocus) WhiteColor else VietelPrimaryColor,
                 style = Typography.bodySmall,
                 modifier = Modifier.weight(1f)
             )
-
         }
     }
 }

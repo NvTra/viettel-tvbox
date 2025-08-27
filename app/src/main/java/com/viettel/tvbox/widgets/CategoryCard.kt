@@ -2,6 +2,7 @@ package com.viettel.tvbox.widgets
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.SidebarSelect
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.theme.VietelSecondary
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
@@ -68,6 +70,43 @@ fun CategoryCard(
                 modifier = Modifier
                     .width(40.dp),
             )
+            Text(
+                text = title,
+                style = Typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp
+                ),
+                color = WhiteColor
+            )
+        }
+    }
+}
+
+@Composable
+fun FeaturedCategoryCard(
+    id: String,
+    icon: String,
+    title: String,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    var isFocus by remember { mutableStateOf(false) }
+    Card(
+        onClick = {
+            navController.navigate("category_detail/${id}")
+        },
+        modifier = modifier
+            .graphicsLayer(
+                scaleX = if (isFocus) 1.05f else 1f,
+                scaleY = if (isFocus) 1.05f else 1f
+            )
+            .onFocusChanged { focusState -> isFocus = focusState.isFocused },
+        colors = CardDefaults.cardColors(VietelPrimaryColor),
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
             Text(
                 text = title,
                 style = Typography.bodyMedium.copy(

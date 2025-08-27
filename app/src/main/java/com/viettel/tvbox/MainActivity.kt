@@ -50,7 +50,8 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 modifier = Modifier
                                     .weight(1f)
-                                    .fillMaxHeight()
+                                    .fillMaxHeight(),
+                                onLogout = { isLoggedIn = false }
                             )
                         }
                     }
