@@ -54,8 +54,5 @@ interface UserService {
         @Query("endTs") endDate: Long,
     ): Call<PayHistory>
 
-    @GET("user-history/save")
-    fun savHisistorySearch(
-        @Query("textSearch") textSearch: String,
-    ): Call<Void>
+
 }

@@ -38,6 +38,7 @@ import com.viettel.tvbox.theme.Green400
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -98,7 +99,7 @@ fun PayHistory() {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "Bạn đã xem hết lịch sử thanh toáns",
+                                    text = "Bạn đã xem hết lịch sử thanh toán",
                                     color = Color.White,
                                     style = Typography.bodySmall
                                 )
@@ -166,52 +167,68 @@ fun PayHistory(
         GapW8()
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Thời gian giao dịch", style = Typography.bodySmall.copy(lineHeight = 14.sp)
+                text = "Thời gian giao dịch",
+                style = Typography.bodySmall.copy(lineHeight = 14.sp),
+                color = BG_E0E0E0E
             )
             GapH2()
             Text(
-                text = convertDateTime(item.createdDate ?: 0), style = Typography.labelSmall
+                text = convertDateTime(item.createdDate ?: 0),
+                style = Typography.labelSmall,
+                color = WhiteColor
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Số tiền", style = Typography.bodySmall.copy(lineHeight = 14.sp)
+                text = "Số tiền",
+                style = Typography.bodySmall.copy(lineHeight = 14.sp),
+                color = BG_E0E0E0E
             )
             GapH2()
             Text(
-                text = "${item.price} VNĐ", style = Typography.labelSmall
+                text = "${item.price} VNĐ", style = Typography.labelSmall, color = WhiteColor
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Hình thức", style = Typography.bodySmall.copy(lineHeight = 14.sp)
+                text = "Hình thức",
+                style = Typography.bodySmall.copy(lineHeight = 14.sp),
+                color = BG_E0E0E0E
             )
             GapH2()
             Text(
-                text = item.channel ?: "", style = Typography.labelSmall
+                text = item.channel ?: "", style = Typography.labelSmall, color = WhiteColor
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Gói cước", style = Typography.bodySmall.copy(lineHeight = 14.sp)
+                text = "Gói cước",
+                style = Typography.bodySmall.copy(lineHeight = 14.sp),
+                color = BG_E0E0E0E
             )
             GapH2()
             Text(
-                text = item.subName ?: "", style = Typography.labelSmall
+                text = item.subName ?: "", style = Typography.labelSmall, color = WhiteColor
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Thời hạn", style = Typography.bodySmall.copy(lineHeight = 14.sp)
+                text = "Thời hạn",
+                style = Typography.bodySmall.copy(lineHeight = 14.sp),
+                color = BG_E0E0E0E
             )
             GapH2()
             Text(
-                text = convertTime(item.expiredTime ?: 0), style = Typography.labelSmall
+                text = convertTime(item.expiredTime ?: 0),
+                style = Typography.labelSmall,
+                color = WhiteColor
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Trạng thái", style = Typography.bodySmall.copy(lineHeight = 14.sp)
+                text = "Trạng thái",
+                style = Typography.bodySmall.copy(lineHeight = 14.sp),
+                color = BG_E0E0E0E
             )
             GapH2()
             if (item.status == 2) Box(

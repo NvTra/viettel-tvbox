@@ -8,9 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.viettel.tvbox.screens.auths.LoginScreen
 import com.viettel.tvbox.screens.category.CategoryDetailScreen
 import com.viettel.tvbox.screens.category.CategoryScreen
@@ -23,6 +25,7 @@ import com.viettel.tvbox.screens.promotion.PromotionDetailScreen
 import com.viettel.tvbox.screens.promotion.PromotionScreen
 import com.viettel.tvbox.screens.search.SearchScreen
 import com.viettel.tvbox.theme.BlackColor
+import com.viettel.tvbox.widgets.PlayBlacknutWebViewScreen
 
 @Composable
 fun AppNavGraph(
@@ -121,6 +124,18 @@ fun AppNavGraph(
                 )
                 AllGameScreen(id, title, navController = navController)
             }
+        }
+        composable(
+            route = "play_blacknut_webview/{encodedUrl}",
+            arguments = listOf(navArgument("encodedUrl") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val encodedUrl = backStackEntry.arguments?.getString("encodedUrl") ?: ""
+            // Decode the URL if needed
+            val url = java.net.URLDecoder.decode(
+                encodedUrl,
+                java.nio.charset.StandardCharsets.UTF_8.toString()
+            )
+            PlayBlacknutWebViewScreen(url = url)
         }
     }
 }

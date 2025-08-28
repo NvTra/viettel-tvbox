@@ -41,7 +41,8 @@ fun ListGameHorizontal(gameConfigItem: ManagerHomeConfig? = null, navController:
         Row(modifier = Modifier.padding(horizontal = 12.dp)) {
             Text(
                 text = gameConfigItem?.title ?: "",
-                style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteColor
             )
             GapW8()
             GameButton(onClick = { navController.navigate("all_game_by_title/${gameConfigItem?.id}/${gameConfigItem?.title}") })

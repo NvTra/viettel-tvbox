@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.tv.material3.Text
 import com.viettel.tvbox.theme.GapH24
 import com.viettel.tvbox.view_model.HomeViewModel
+import com.viettel.tvbox.view_model.HomeViewModelFactory
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.ListGameHorizontal
 import com.viettel.tvbox.widgets.VideoBanner
@@ -25,16 +26,15 @@ import com.viettel.tvbox.widgets.VideoBanner
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameHomeScreen(label: String, navController: NavController) {
-    val viewModel: HomeViewModel = viewModel()
+    val context = LocalContext.current
+    val userPres = remember { UserPreferences.getInstance(context) }
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(userPres))
     val managerHomeConfig = viewModel.managerHomeConfig
     val gameHot = viewModel.gameHot
     val allGame = viewModel.allGame
     val gamePlayed = viewModel.gamePlayed
     val isLoading = viewModel.isLoading
     val error = viewModel.error
-
-    val context = LocalContext.current
-    val userPres = remember { UserPreferences.getInstance(context) }
 
     LaunchedEffect(Unit) {
         viewModel.getManagerHomeConfigData()
@@ -62,10 +62,8 @@ fun GameHomeScreen(label: String, navController: NavController) {
                 ) {
                     VideoBanner()
                     GapH24()
-                    gamePlayed?.items?.size?.let {
-                        if (it > 0) {
-                            ListGameHorizontal(gamePlayed, navController)
-                        }
+                    if (gamePlayed?.items?.isNotEmpty() == true) {
+                        ListGameHorizontal(gamePlayed, navController)
                     }
                     GapH24()
                     ListGameHorizontal(allGame, navController)

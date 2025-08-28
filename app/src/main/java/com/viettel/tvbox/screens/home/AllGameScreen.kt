@@ -19,18 +19,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.tv.material3.Text
 import com.viettel.tvbox.view_model.HomeViewModel
+import com.viettel.tvbox.view_model.HomeViewModelFactory
 import com.viettel.tvbox.widgets.BannerImage
 import com.viettel.tvbox.widgets.GameCard
 
 @Composable
 fun AllGameScreen(id: String, title: String, navController: NavController) {
-    val viewModel: HomeViewModel = viewModel()
+    val context = LocalContext.current
+    val userPres = remember { UserPreferences.getInstance(context) }
+
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(userPres))
     val allGameByTitle = viewModel.allGameByTitle
     val isLoading = viewModel.isLoading
     val error = viewModel.error
-
-    val context = LocalContext.current
-    val userPres = remember { UserPreferences.getInstance(context) }
 
     LaunchedEffect(Unit) {
         viewModel.getAllGameByTitle(

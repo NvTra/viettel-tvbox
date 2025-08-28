@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -34,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +47,7 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 import com.viettel.tvbox.R
 import com.viettel.tvbox.models.LikeGame
+import com.viettel.tvbox.models.LogUserHistory
 import com.viettel.tvbox.theme.BG_DB27777
 import com.viettel.tvbox.theme.Black50
 import com.viettel.tvbox.theme.GapH12
@@ -65,41 +64,42 @@ import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelSecondary
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.GameViewModel
+import com.viettel.tvbox.view_model.GameViewModelFactory
+import com.viettel.tvbox.view_model.HistoryViewModel
+import com.viettel.tvbox.widgets.DeviceIcon
 import com.viettel.tvbox.widgets.GameCard
+import com.viettel.tvbox.widgets.ServiceInterruptionPopup
+import com.viettel.tvbox.widgets.SigningPackagePopup
 import com.viettel.tvbox.widgets.VideoBackground
 import com.viettel.tvbox.widgets.VideoPopup
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun GameDetail(id: String, navController: NavController) {
-    val viewModel: GameViewModel = viewModel()
+    val context = LocalContext.current
+    val userPres = remember { UserPreferences.getInstance(context) }
+    val viewModel: GameViewModel = viewModel(factory = GameViewModelFactory(userPres))
+
+    val historyModel: HistoryViewModel = viewModel()
     val gameDetail = viewModel.gameDetail
     val isLoading = viewModel.isLoading
     val error = viewModel.error
     val statusUserForPlaying = viewModel.statusUserForPlaying
-
-    val context = LocalContext.current
-    val userPres = remember { UserPreferences.getInstance(context) }
     val isMuted = remember { mutableStateOf(false) }
-    val showVideoPopup = remember { mutableStateOf(false) }
 
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    //popup show
+    val showVideoPopup = remember { mutableStateOf(false) }
+    var signinPackgerDialog by remember { mutableStateOf(false) }
+    var showLoginDialog by remember { mutableStateOf(false) }
+    var serviceInterrupDialog by remember { mutableStateOf(false) }
+
 
     var backFocus by remember { mutableStateOf(false) }
 
     val isLiked = viewModel.isLiked
 
-    var showSubscriptionDialog by remember { mutableStateOf(false) }
-    var showLoginDialog by remember { mutableStateOf(false) }
-    var showAnnounceDialog by remember { mutableStateOf(false) }
-
-    val listSubOfGameRes =
-        remember { mutableStateOf(listOf<Any>()) }
-    val listSubOfUserAndGameRes =
-        remember { mutableStateOf(listOf<Any>()) }
-
     LaunchedEffect(Unit) {
-        viewModel.getGameDetail(id = id)
+        viewModel.getGameDetail(id = id, type = userPres.getUserInformation()?.forAge ?: "ADULT")
         viewModel.checkPlay(gameId = id)
         viewModel.getGeneralGame(gameId = id)
     }
@@ -121,38 +121,41 @@ fun GameDetail(id: String, navController: NavController) {
     }
 
 
-    fun saveUserHistory(action: String, gameId: String?, title: String?, userId: String?) {
-        // TODO: Implement user history saving logic
-        // Example: userPres.saveUserHistory(action, gameId, title, userId)
-    }
-
     fun playGame() {
         when (statusUserForPlaying) {
             0 -> {
                 if (gameDetail?.partnerGameId != null) {
                     viewModel.playBlacknut(gameDetail.id!!, gameDetail.partnerGameId)
-                } else {
-                    saveUserHistory(
-                        "PLAY_GAME",
-                        gameDetail?.id,
-                        gameDetail?.title,
-                        userPres.getUserInformation()?.id
+                    historyModel.savePlayGame(
+                        LogUserHistory(
+                            "PLAY_GAME",
+                            1,
+                            id,
+                            gameDetail.title,
+                            userPres.getUserInformation()?.id
+                        )
                     )
+                } else {
                     val link = viewModel.linkGame
                     if (!link.isNullOrEmpty()) {
-                        // Open link in browser or WebView
-                        // Example: open in browser
                         val intent =
                             android.content.Intent(android.content.Intent.ACTION_VIEW, link.toUri())
                         context.startActivity(intent)
+                        historyModel.saveHistory(
+                            LogUserHistory(
+                                "PLAY_GAME",
+                                1,
+                                id,
+                                gameDetail?.title,
+                                userPres.getUserInformation()?.id
+                            )
+                        )
                     }
                 }
             }
 
             1 -> {
-                showSubscriptionDialog = true
-                // Pass data to dialog if needed
-                // Example: SubscriptionDialog(data = listSubOfGameRes.value)
+                signinPackgerDialog = true
             }
 
             2 -> {
@@ -160,9 +163,7 @@ fun GameDetail(id: String, navController: NavController) {
             }
 
             3 -> {
-                showAnnounceDialog = true
-                // Pass data to dialog if needed
-                // Example: AnnounceDialog(data = listSubOfUserAndGameRes.value)
+                serviceInterrupDialog = true
             }
         }
     }
@@ -252,7 +253,7 @@ fun GameDetail(id: String, navController: NavController) {
                                 title = "Âm thanh",
                             )
                             ItemButton(
-                                onClick = { showVideoPopup.value = true }, // Show popup
+                                onClick = { showVideoPopup.value = true },
                                 iconResId = R.drawable.ic_maximize,
                                 title = "Chi tiết",
                             )
@@ -298,7 +299,7 @@ fun GameDetail(id: String, navController: NavController) {
                             text = gameDetail.description ?: "",
                             style = Typography.titleSmall,
                             textAlign = TextAlign.Justify,
-                            modifier = Modifier.width(screenWidth * 0.5f)
+                            modifier = Modifier.fillMaxWidth(0.5f)
                         )
                         GapH8()
                         Text(
@@ -306,11 +307,14 @@ fun GameDetail(id: String, navController: NavController) {
                             style = Typography.labelSmall.copy(fontSize = 8.sp), color = Grey400
                         )
                         GapH16()
-                        Text(
-                            text = "Thiết bị chơi: ",
-                            style = Typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                            color = WhiteColor
-                        )
+                        Row {
+                            Text(
+                                text = "Thiết bị chơi: ",
+                                style = Typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                                color = WhiteColor
+                            )
+                            DeviceIcon(gameDetail.controller ?: emptyList())
+                        }
                         GapH4()
                         Row {
                             Text(
@@ -370,6 +374,14 @@ fun GameDetail(id: String, navController: NavController) {
                 }
             }
         }
+    }
+
+    if (signinPackgerDialog) {
+        SigningPackagePopup(onDismiss = { signinPackgerDialog = false })
+    }
+
+    if (serviceInterrupDialog) {
+        ServiceInterruptionPopup(onDismiss = { serviceInterrupDialog = false })
     }
 }
 

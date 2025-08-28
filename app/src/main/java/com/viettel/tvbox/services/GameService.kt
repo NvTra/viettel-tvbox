@@ -19,6 +19,9 @@ interface GameService {
     @GET("game/enduser/no-auth/{id}")
     fun getGameDetail(@Path("id") id: String): Call<GameDetail>
 
+    @GET("game/enduser/{id}")
+    fun getGameDetailAuth(@Path("id") id: String, @Query("type") type: String): Call<GameDetail>
+
     @GET("game/enduser/searched")
     fun searchGames(
         @Query("type") type: String
@@ -33,11 +36,6 @@ interface GameService {
         @Query("type") type: String
     ): Call<GameSearchResponse>
 
-    @POST("interact-game/like-game")
-    fun saveFavoriteGame(
-        @Body LikeGame: LikeGame
-    ): Call<LikeGame>
-
     @GET("interact-game/no-auth/general-game")
     fun generalGame(
         @Query("gameId") gameId: String?,
@@ -49,9 +47,9 @@ interface GameService {
     @GET("game/enduser/check-play/{gameId}")
     fun checkPlay(@Path("gameId") gameId: String): Call<CheckPlayResponse>
 
-    @GET("subscription-active/valid-subs/{gameId}")
-    fun getValidSubs(@Path("gameId") gameId: String): Call<List<SubOfUserAndGameRes>>
+    @GET("subscription-active/valid-subs")
+    fun getValidSubs(@Query("gameId") gameId: String): Call<List<SubOfUserAndGameRes>>
 
-    @GET("api/game/enduser/blacknut/access-token-v2")
-    suspend fun getGamePlayToken(): Call<PlayToken>
+    @GET("game/enduser/blacknut/access-token-v2")
+    fun getGamePlayToken(): Call<PlayToken>
 }

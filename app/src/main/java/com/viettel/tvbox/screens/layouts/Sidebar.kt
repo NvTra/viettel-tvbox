@@ -85,7 +85,7 @@ fun Sidebar(
                 if (userInformation != null && userInformation.avatar?.isNotEmpty() == true) {
                     Box(
                         modifier = Modifier
-                            .size(20.dp)
+                            .size(25.dp)
                             .clip(CircleShape)
                             .background(SidebarSelect),
                         contentAlignment = Alignment.Center
@@ -97,24 +97,22 @@ fun Sidebar(
                                 .fillMaxSize()
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop,
-                            error = painterResource(R.drawable.ic_user)
+                            error = painterResource(R.drawable.ic_user2)
                         )
                     }
                 } else {
                     Box(
                         modifier = Modifier
-                            .size(20.dp)
+                            .size(25.dp)
                             .clip(CircleShape)
                             .background(SidebarSelect),
                         contentAlignment = Alignment.Center
                     ) {
-                        AsyncImage(
-                            model = "",
+                        Icon(
+                            painterResource(R.drawable.ic_user2),
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape),
-                            error = painterResource(R.drawable.ic_user)
+                            tint = Color.White,
+                            modifier = Modifier.size(12.dp)
                         )
                     }
                 }

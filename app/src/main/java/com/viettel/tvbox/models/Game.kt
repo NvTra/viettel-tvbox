@@ -1,6 +1,5 @@
 package com.viettel.tvbox.models
 
-import java.util.Date
 import java.util.UUID
 
 data class GameDetail(
@@ -108,7 +107,7 @@ data class SubOfUserAndGameRes(
     val id: UUID? = null,
     val subName: String? = null,
     val price: Int? = null,
-    val expiredTime: Date? = null,
+    val expiredTime: String? = null,
     val unitExpiredTime: String? = null,
     val subSms: String? = null,
     val phone: String? = null

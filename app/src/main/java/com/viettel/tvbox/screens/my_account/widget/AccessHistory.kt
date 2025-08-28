@@ -38,6 +38,7 @@ import com.viettel.tvbox.theme.GapH2
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -178,12 +179,14 @@ fun AccessHistoryItem(
         Column {
             Text(
                 text = "${item.os} - ${if (item.action == "LOGIN") "Đăng nhập" else "Đăng xuất"}",
-                style = Typography.labelSmall.copy(lineHeight = 14.sp)
+                style = Typography.labelSmall.copy(lineHeight = 14.sp),
+                color = WhiteColor
             )
             GapH2()
             Text(
                 text = "${item.browser} - ${convertTime(item.createdDate)}",
-                style = Typography.bodySmall
+                style = Typography.bodySmall,
+                color = BG_E0E0E0E
             )
         }
     }

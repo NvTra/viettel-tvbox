@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?android:attr/textColorPrimary">
+
+    <!-- Controller body -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M17.8,12C17.8,16.7 16.2,17.5 10.3,17.5C4.5,17.5 2.8,16.7 2.8,11.7C2.8,6.7 4.5,5.8 10.3,5.8C16.2,5.8 17.8,6.7 17.8,12z" />
+
+    <!-- Antenna -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M9.9,5.8C9.9,4.2 9.9,3.5 11.6,3.5C13.3,3.5 13.3,2.9 13.3,1.7" />
+
+    <!-- Action buttons -->
+    <path
+        android:fillColor="@android:color/black"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M12,9.6c0.2,0 0.4,0.2 0.4,0.4s-0.2,0.4 -0.4,0.4s-0.4,-0.2 -0.4,-0.4S11.8,9.6 12,9.6z" />
+    <path
+        android:fillColor="@android:color/black"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M14.5,12.9c0.2,0 0.4,0.2 0.4,0.4s-0.2,0.4 -0.4,0.4s-0.4,-0.2 -0.4,-0.4S14.3,12.9 14.5,12.9z" />
+
+    <!-- D-pad -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M6.2,11.7h3.3" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M7.8,13.3v-3.3" />
+</vector>

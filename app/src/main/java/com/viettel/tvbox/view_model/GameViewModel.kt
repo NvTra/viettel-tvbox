@@ -1,9 +1,11 @@
 package com.viettel.tvbox.view_model
 
+import UserPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.viettel.tvbox.BuildConfig
 import com.viettel.tvbox.models.CheckPlayResponse
@@ -16,7 +18,19 @@ import com.viettel.tvbox.services.RetrofitInstance
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 
-class GameViewModel : ViewModel() {
+class GameViewModelFactory(
+    private val userPreferences: UserPreferences
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return GameViewModel(userPreferences) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class GameViewModel(private val userPreferences: UserPreferences) : ViewModel() {
     var isLoading by mutableStateOf(false)
     var error by mutableStateOf<String?>(null)
     var isSmartLoading by mutableStateOf(false)
@@ -39,12 +53,16 @@ class GameViewModel : ViewModel() {
 
     private val gameService = RetrofitInstance.gameService
 
-    fun getGameDetail(id: String) {
+    fun getGameDetail(id: String, type: String) {
         isLoading = true
         error = null
         viewModelScope.launch {
             try {
-                val response = gameService.getGameDetail(id).awaitResponse()
+                val response = if (userPreferences.isLogin()) {
+                    gameService.getGameDetailAuth(id, type).awaitResponse()
+                } else {
+                    gameService.getGameDetail(id).awaitResponse()
+                }
                 if (response.isSuccessful) {
                     gameDetail = response.body()
                 } else {
@@ -168,7 +186,6 @@ class GameViewModel : ViewModel() {
                         }
                         statusUser = 0
                     } else {
-                        // Not allowed, check subscription
                         val res =
                             gameService.getValidSubs(gameId).awaitResponse()
                         val validSubs = res.body() ?: emptyList<Any>()
@@ -182,6 +199,7 @@ class GameViewModel : ViewModel() {
             } finally {
                 linkGame = link
                 statusUserForPlaying = statusUser
+                println("linkGame: $linkGame, statusUserForPlaying: $statusUserForPlaying")
                 isLoading = false
             }
         }

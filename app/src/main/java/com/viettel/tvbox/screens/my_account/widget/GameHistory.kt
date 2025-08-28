@@ -35,6 +35,7 @@ import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH2
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 import com.viettel.tvbox.view_model.UserViewModel
 import java.text.SimpleDateFormat
@@ -75,7 +76,7 @@ fun GameHistory() {
                 }
 
                 error != null -> {
-                    Text(text = "Error: $error", color = Color.White)
+                    Text(text = "Có lỗi xảy ra", color = Color.White)
                 }
 
                 gamePlayHistory == null -> {
@@ -158,9 +159,17 @@ fun GamePlayHistory(
         )
         GapW8()
         Column {
-            Text(text = title, style = Typography.labelSmall.copy(lineHeight = 14.sp))
+            Text(
+                text = title,
+                style = Typography.labelSmall.copy(lineHeight = 14.sp),
+                color = WhiteColor
+            )
             GapH2()
-            Text(text = "Chơi lần cuối ${convertTime(time)}", style = Typography.bodySmall)
+            Text(
+                text = "Chơi lần cuối ${convertTime(time)}",
+                style = Typography.bodySmall,
+                color = BG_E0E0E0E
+            )
         }
     }
 }

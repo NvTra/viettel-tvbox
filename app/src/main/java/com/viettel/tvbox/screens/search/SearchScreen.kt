@@ -53,24 +53,26 @@ import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 import com.viettel.tvbox.view_model.GameViewModel
+import com.viettel.tvbox.view_model.GameViewModelFactory
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.GameCard
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun SearchScreen(label: String, navController: NavController) {
+    val context = LocalContext.current
+    val userPres = remember { UserPreferences.getInstance(context) }
     val keyboardViewModel: KeyboardViewModel = viewModel()
     var inputText by remember { mutableStateOf("") }
 
-    val viewModel: GameViewModel = viewModel()
+    val viewModel: GameViewModel = viewModel(factory = GameViewModelFactory(userPres))
     val gameSearchHistory = viewModel.gameSearchHistory
     val gameSmartSearch = viewModel.gameSmartSearchResults
     val isSmartLoading = viewModel.isSmartLoading
     val error = viewModel.error
 
 
-    val context = LocalContext.current
-    val userPres = remember { UserPreferences.getInstance(context) }
+
 
     LaunchedEffect(Unit) {
         viewModel.getGameSearchHistory(userPres.getUserInformation()?.forAge ?: "ALL")
@@ -125,7 +127,12 @@ fun SearchScreen(label: String, navController: NavController) {
                                 tint = WhiteColor,
                                 modifier = Modifier.size(9.dp)
                             )
-                            Text(text = "  Lịch sử tìm kiếm", style = Typography.titleSmall)
+                            Text(
+                                text = "  Lịch sử tìm kiếm",
+                                style = Typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = WhiteColor
+                            )
                         }
                         GapH6()
                         HistoryPushList(gameSearchHistory, onClearHistory = {
@@ -304,7 +311,11 @@ fun HistoryPushList(
                                 modifier = Modifier.height(25.dp),
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                             ) {
-                                Text(game?.title ?: "", style = Typography.bodySmall)
+                                Text(
+                                    game?.title ?: "",
+                                    style = Typography.bodySmall,
+                                    color = WhiteColor
+                                )
                             }
                         }
                     }

@@ -153,23 +153,43 @@ fun GamePlayHistory(navController: NavController) {
                 Text(text = "Error: $error", color = Color.White)
             }
 
-            gamePlayHistory != null -> {
-                LazyRow(
+            gamePlayHistory == null -> {
+                Text(
+                    text = "Chưa có lịch sử chơi",
+                    style = Typography.bodyLarge,
+                    color = Color.White,
                     modifier = Modifier
-                        .background(Color.Transparent),
-                    contentPadding = PaddingValues(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    itemsIndexed(
-                        gamePlayHistory
-                    ) { index, game ->
-                        GameCard(
-                            game.gid ?: "",
-                            game.name ?: "",
-                            game.imageHTML ?: "",
-                            navController
-                        )
+                        .padding(12.dp)
+                )
+            }
+
+            true -> {
+                if (gamePlayHistory.isNotEmpty()) {
+                    LazyRow(
+                        modifier = Modifier
+                            .background(Color.Transparent),
+                        contentPadding = PaddingValues(horizontal = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        itemsIndexed(
+                            gamePlayHistory
+                        ) { index, game ->
+                            GameCard(
+                                game.gid ?: "",
+                                game.name ?: "",
+                                game.imageHTML ?: "",
+                                navController
+                            )
+                        }
                     }
+                } else {
+                    Text(
+                        text = "Chưa có game đã chơi",
+                        style = Typography.headlineMedium,
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(12.dp)
+                    )
                 }
             }
         }
@@ -203,22 +223,42 @@ fun FavoriteGame(navController: NavController) {
                 Text(text = "Error: $error", color = Color.White)
             }
 
-            favoriteGame != null -> {
-                LazyRow(
+            favoriteGame == null -> {
+                Text(
+                    text = "Chưa có game yêu thích",
+                    style = Typography.bodyLarge,
+                    color = Color.White,
                     modifier = Modifier
                         .padding(12.dp)
-                        .background(Color.Transparent),
-                    contentPadding = PaddingValues(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    itemsIndexed(favoriteGame) { index, game ->
-                        GameCard(
-                            game.id ?: "",
-                            game.title ?: "",
-                            game.imageScreen ?: "",
-                            navController
-                        )
+                )
+            }
+
+            true -> {
+                if (favoriteGame.isNotEmpty()) {
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .background(Color.Transparent),
+                        contentPadding = PaddingValues(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        itemsIndexed(favoriteGame) { index, game ->
+                            GameCard(
+                                game.id ?: "",
+                                game.title ?: "",
+                                game.imageScreen ?: "",
+                                navController
+                            )
+                        }
                     }
+                } else {
+                    Text(
+                        text = "Chưa có game yêu thích",
+                        style = Typography.headlineMedium,
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(12.dp)
+                    )
                 }
             }
         }

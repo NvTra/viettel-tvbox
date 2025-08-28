@@ -98,6 +98,7 @@ fun MyAccountSideBar(
             Text(
                 "Tài khoản của tôi",
                 style = Typography.titleSmall,
+                color = WhiteColor,
                 modifier = Modifier.padding(8.dp)
             )
             Box(
@@ -139,6 +140,7 @@ fun MyAccountSideBar(
             }
         }
         LogoutButton(onLogout)
+        GapH12()
     }
 }
 

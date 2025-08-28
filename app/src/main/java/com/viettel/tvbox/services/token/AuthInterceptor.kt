@@ -134,14 +134,11 @@ class AuthInterceptor(
             val refreshResponse = performRefreshToken(refreshToken)
 
             if (refreshResponse != null) {
-                // Lưu token mới
                 userPreferences.saveToken(refreshResponse.accessToken)
                 userPreferences.saveRefreshToken(refreshResponse.refreshToken)
                 userPreferences.saveTokenExpiration(refreshResponse.expiresIn)
 
                 println("Refresh token thành công")
-
-                // Retry request gốc với token mới
                 val newRequest = addTokenToRequest(originalRequest)
                 return chain.proceed(newRequest)
             } else {

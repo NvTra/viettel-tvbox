@@ -7,6 +7,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -98,7 +99,7 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
+//                .padding(16.dp)
                 .verticalScroll(scrollState)
                 .focusRequester(focusRequester)
                 .focusable()
@@ -165,41 +166,43 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                 }
 
                 viewModel.promotion != null -> {
-                    Text(
-                        text = viewModel.promotion?.promotionDetailUser?.title.takeUnless { it.isNullOrBlank() }
-                            ?: "No Title",
-                        textAlign = TextAlign.Center,
-                        style = Typography.titleMedium,
-                        color = WhiteColor,
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    // Date row
-                    val announceDate = viewModel.promotion?.promotionDetailUser?.announceDate ?: ""
-                    if (announceDate.isNotBlank()) {
-                        val formattedDate =
-                            com.viettel.tvbox.utils.DateUtils.formatDate(announceDate)
-                        Row(modifier = Modifier.align(Alignment.Start)) {
-                            Icon(
-                                painterResource(id = R.drawable.ic_calendar),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .padding(start = 8.dp, top = 4.dp, end = 4.dp)
-                                    .size(10.dp),
-                                tint = WhiteColor,
-                            )
-                            Text(
-                                text = formattedDate,
-                                color = WhiteColor,
-                                style = Typography.titleSmall,
-                                modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
-                            )
+                    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        Text(
+                            text = viewModel.promotion?.promotionDetailUser?.title.takeUnless { it.isNullOrBlank() }
+                                ?: "No Title",
+                            textAlign = TextAlign.Center,
+                            style = Typography.titleMedium,
+                            color = WhiteColor,
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                        // Date row
+                        val announceDate =
+                            viewModel.promotion?.promotionDetailUser?.announceDate ?: ""
+                        if (announceDate.isNotBlank()) {
+                            val formattedDate =
+                                com.viettel.tvbox.utils.DateUtils.formatDate(announceDate)
+                            Row(modifier = Modifier.align(Alignment.Start)) {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_calendar),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .padding(start = 8.dp, top = 4.dp, end = 4.dp)
+                                        .size(10.dp),
+                                    tint = WhiteColor,
+                                )
+                                Text(
+                                    text = formattedDate,
+                                    color = WhiteColor,
+                                    style = Typography.titleSmall,
+                                    modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
+                                )
+                            }
                         }
-                    }
-                    // HTML content
-                    val rawHtmlContent = viewModel.promotion?.promotionDetailUser?.content ?: ""
-                    val darkCss = """
+                        // HTML content
+                        val rawHtmlContent = viewModel.promotion?.promotionDetailUser?.content ?: ""
+                        val darkCss = """
                         <style>
                             body { background: #000000 !important; color: #ffffff !important; }
                             p, h1, h2, h3, h4, h5, h6, span, div, strong, em {
@@ -209,33 +212,34 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                             a { color: #8ab4f8 !important; }
                         </style>
                     """.trimIndent()
-                    val htmlContent =
-                        "<html><head>$darkCss</head><body>$rawHtmlContent</body></html>"
-                    if (rawHtmlContent.isBlank()) {
-                        Text(
-                            text = "",
-                        )
-                    } else {
-                        AndroidView(
-                            factory = { context ->
-                                WebView(context).apply {
-                                    true.also { settings.javaScriptEnabled = true }
-                                    settings.loadWithOverviewMode = true
-                                    settings.useWideViewPort = true
-                                    settings.domStorageEnabled = true
-                                    isVerticalScrollBarEnabled = false
-                                    isHorizontalScrollBarEnabled = false
-                                    scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
-                                    loadDataWithBaseURL(
-                                        null, htmlContent, "text/html", "utf-8", null
-                                    )
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp)
-                                .align(Alignment.CenterHorizontally)
-                        )
+                        val htmlContent =
+                            "<html><head>$darkCss</head><body>$rawHtmlContent</body></html>"
+                        if (rawHtmlContent.isBlank()) {
+                            Text(
+                                text = "",
+                            )
+                        } else {
+                            AndroidView(
+                                factory = { context ->
+                                    WebView(context).apply {
+                                        true.also { settings.javaScriptEnabled = true }
+                                        settings.loadWithOverviewMode = true
+                                        settings.useWideViewPort = true
+                                        settings.domStorageEnabled = true
+                                        isVerticalScrollBarEnabled = false
+                                        isHorizontalScrollBarEnabled = false
+                                        scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
+                                        loadDataWithBaseURL(
+                                            null, htmlContent, "text/html", "utf-8", null
+                                        )
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                                    .align(Alignment.CenterHorizontally)
+                            )
+                        }
                     }
                     // list promotion relation
                     val relatedPromotions =
@@ -248,7 +252,7 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                             textAlign = TextAlign.Start,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 16.dp, bottom = 8.dp)
+                                .padding(top = 16.dp, bottom = 8.dp, start = 10.dp)
                         )
                         Box(
                             modifier = Modifier
@@ -268,7 +272,7 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                         lazyRowY = coordinates.positionInWindow().y
                                     },
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                contentPadding = PaddingValues(
                                     horizontal = 10.dp
                                 )
                             ) {
