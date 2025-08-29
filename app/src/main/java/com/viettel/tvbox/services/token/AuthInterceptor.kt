@@ -1,8 +1,11 @@
 package com.viettel.tvbox.services.token
 
 import UserPreferences
+import android.content.Context
 import com.google.gson.Gson
 import com.viettel.tvbox.BuildConfig
+import com.viettel.tvbox.R
+import com.viettel.tvbox.utils.NetworkUtils
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -19,7 +22,8 @@ data class LoginResponse(
 
 class AuthInterceptor(
     private val userPreferences: UserPreferences,
-    private val onLogout: () -> Unit
+    private val onLogout: () -> Unit,
+    private val context: Context
 ) : Interceptor {
 
     companion object {
@@ -69,6 +73,10 @@ class AuthInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
+        if (!NetworkUtils.isConnected(context)) {
+            throw IOException(context.getString(R.string.error_no_network))
+        }
+
         println(
             "Request URL: ${originalRequest.url} ||| ${
                 isTokenBasedAuthEntryPoint(
@@ -82,7 +90,7 @@ class AuthInterceptor(
         }
 
         if (!isJwtTokenValid()) {
-            println("JWT Token không hợp lệ, thực hiện refresh token")
+            println(context.getString(R.string.error_jwt_invalid))
             return handle401Error(originalRequest, chain)
         }
 
@@ -127,7 +135,7 @@ class AuthInterceptor(
         try {
             val refreshToken = userPreferences.getRefreshToken()
             if (refreshToken.isEmpty()) {
-                println("Không có refresh token, thực hiện logout")
+                println(context.getString(R.string.error_no_refresh_token))
                 onLogout()
             }
 
@@ -138,17 +146,17 @@ class AuthInterceptor(
                 userPreferences.saveRefreshToken(refreshResponse.refreshToken)
                 userPreferences.saveTokenExpiration(refreshResponse.expiresIn)
 
-                println("Refresh token thành công")
+                println(context.getString(R.string.refresh_token_success))
                 val newRequest = addTokenToRequest(originalRequest)
                 return chain.proceed(newRequest)
             } else {
-                println("Refresh token thất bại, thực hiện logout")
+                println(context.getString(R.string.refresh_token_failed))
                 onLogout()
-                throw IOException("Failed to refresh token")
+                throw IOException(context.getString(R.string.error_failed_refresh_token))
             }
 
         } catch (e: Exception) {
-            println("Lỗi khi refresh token: ${e.message}")
+            println(context.getString(R.string.error_refresh_token, e.message ?: ""))
             onLogout()
             throw e
         } finally {
@@ -172,11 +180,11 @@ class AuthInterceptor(
                     gson.fromJson(it, LoginResponse::class.java)
                 }
             } else {
-                println("Refresh token API trả về lỗi: ${response.code}")
+                println(context.getString(R.string.error_refresh_token_api, response.code))
                 null
             }
         } catch (e: Exception) {
-            println("Exception khi gọi refresh token API: ${e.message}")
+            println(context.getString(R.string.error_exception_refresh_token_api, e.message ?: ""))
             null
         }
     }

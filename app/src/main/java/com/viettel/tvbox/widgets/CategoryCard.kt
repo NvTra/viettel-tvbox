@@ -1,5 +1,6 @@
 package com.viettel.tvbox.widgets
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -111,6 +112,58 @@ fun FeaturedCategoryCard(
                 text = title,
                 style = Typography.bodyMedium.copy(
                     fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp
+                ),
+                color = WhiteColor
+            )
+        }
+    }
+}
+
+
+@Composable
+fun CategoryImageCard(
+    id: String,
+    icon: String,
+    image: String,
+    title: String,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    var isFocus by remember { mutableStateOf(false) }
+    Card(
+        onClick = {
+            navController.navigate("category_detail/${id}")
+        },
+        modifier = modifier
+            .graphicsLayer(
+                scaleX = if (isFocus) 1.05f else 1f,
+                scaleY = if (isFocus) 1.05f else 1f
+            )
+            .onFocusChanged { focusState -> isFocus = focusState.isFocused },
+        colors = CardDefaults.cardColors(VietelPrimaryColor),
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .aspectRatio(1f)
+        ) {
+            AsyncImage(
+                model = getImageUrl(image),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            )
+            Text(
+                text = title,
+                style = Typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold,
                     fontSize = 12.sp
                 ),
                 color = WhiteColor

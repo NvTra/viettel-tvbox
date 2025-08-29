@@ -53,8 +53,8 @@ fun AllGameScreen(id: String, title: String, navController: NavController) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(6),
                     modifier = Modifier
-                        .padding(8.dp),
-                    contentPadding = PaddingValues(8.dp),
+                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                    contentPadding = PaddingValues(12.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Cloud Game</string>
+
+    <string name="error_no_network">No network connection</string>
+    <string name="error_jwt_invalid">JWT Token is invalid, refreshing token</string>
+    <string name="error_no_refresh_token">No refresh token, logging out</string>
+    <string name="refresh_token_success">Refresh token successful</string>
+    <string name="refresh_token_failed">Refresh token failed, logging out</string>
+    <string name="error_failed_refresh_token">Failed to refresh token</string>
+    <string name="error_refresh_token">Error refreshing token: %1$s</string>
+    <string name="error_refresh_token_api">Refresh token API returned error: %1$d</string>
+    <string name="error_exception_refresh_token_api">Exception calling refresh token API: %1$s</string>
+    <string name="error_checking_internet">Error checking internet connection</string>
 </resources>

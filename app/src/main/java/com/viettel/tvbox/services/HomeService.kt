@@ -29,7 +29,7 @@ interface HomeService {
     @GET("no-auth/banners?sortOrder=desc")
     fun getAllBanner(): Call<List<Banner>>
 
-    @GET("user-history/save")
+    @POST("user-history/save")
     fun saveHistorySearch(@Body body: LogUserHistory): Call<Void>
 
     @POST("user-history/auth/save-play-game")

@@ -32,11 +32,11 @@ import kotlin.math.min
 
 @Composable
 fun KeyboardView(
+    modifier: Modifier = Modifier,
     inputText: String,
     onInputChanged: (String) -> Unit,
     viewModel: KeyboardViewModel,
-    onEnter: (String) -> Unit = {},
-    modifier: Modifier = Modifier
+    onEnter: (String) -> Unit = {}
 ) {
     val keys = getKeyboardLayout(viewModel.keyboardType)
     val focusRequester = remember { FocusRequester() }
@@ -95,7 +95,7 @@ fun KeyboardView(
                         }
                     }
 
-                    Key.Enter, Key.NumPadEnter -> {
+                    Key.Enter, Key.NumPadEnter, Key.DirectionCenter, Key.ButtonA -> {
                         val key = keys[viewModel.focusedRow][viewModel.focusedCol]
                         if (key.type == KeyType.ENTER) {
                             onEnter(inputText)

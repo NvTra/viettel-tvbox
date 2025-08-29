@@ -43,7 +43,6 @@ import com.viettel.tvbox.R
 import com.viettel.tvbox.theme.BG_1A1A1A
 import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.ColorTransparent
-import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH6
 import com.viettel.tvbox.theme.GapW4
 import com.viettel.tvbox.theme.Typography
@@ -91,10 +90,9 @@ fun MyAccountSideBar(
                     strokeWidth = strokeWidth
                 )
             }
-            .padding(horizontal = 10.dp)
+            .padding(horizontal = 10.dp, vertical = 12.dp)
     ) {
         Column {
-            GapH12()
             Text(
                 "Tài khoản của tôi",
                 style = Typography.titleSmall,
@@ -140,7 +138,6 @@ fun MyAccountSideBar(
             }
         }
         LogoutButton(onLogout)
-        GapH12()
     }
 }
 
@@ -190,6 +187,7 @@ fun SideBarAccountIcon(
                 .border(
                     width = if (isFocus || selected) 1.dp else 0.3.dp,
                     color = when {
+                        isFocus -> VietelPrimaryColor
                         selected -> VietelPrimaryColor
                         else -> ColorTransparent
                     },

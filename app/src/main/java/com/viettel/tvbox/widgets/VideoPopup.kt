@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -126,7 +127,8 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
             AndroidView(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(16.dp)),
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(0.5.dp, Grey700, shape = RoundedCornerShape(16.dp)),
                 factory = {
                     PlayerView(it).apply {
                         player = exoPlayer
@@ -158,7 +160,8 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
                 exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.slideOutVertically(),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .size(20.dp)
+                    .padding(bottom = 12.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
             ) {
                 Button(
@@ -166,7 +169,7 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Black.copy(alpha = 0.7f)
                     ),
-                    contentPadding = PaddingValues(0.dp),
+                    contentPadding = PaddingValues(12.dp),
                     shape = CircleShape,
                     modifier = Modifier
                         .size(48.dp)

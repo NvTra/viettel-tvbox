@@ -42,8 +42,10 @@ import androidx.navigation.NavController
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.viettel.tvbox.R
+import com.viettel.tvbox.models.LogUserHistory
 import com.viettel.tvbox.screens.keyboard.KeyboardView
 import com.viettel.tvbox.screens.keyboard.KeyboardViewModel
+import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH6
 import com.viettel.tvbox.theme.GapH8
@@ -54,6 +56,7 @@ import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 import com.viettel.tvbox.view_model.GameViewModel
 import com.viettel.tvbox.view_model.GameViewModelFactory
+import com.viettel.tvbox.view_model.HistoryViewModel
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.GameCard
 
@@ -64,7 +67,7 @@ fun SearchScreen(label: String, navController: NavController) {
     val userPres = remember { UserPreferences.getInstance(context) }
     val keyboardViewModel: KeyboardViewModel = viewModel()
     var inputText by remember { mutableStateOf("") }
-
+    val historyViewModel: HistoryViewModel = viewModel()
     val viewModel: GameViewModel = viewModel(factory = GameViewModelFactory(userPres))
     val gameSearchHistory = viewModel.gameSearchHistory
     val gameSmartSearch = viewModel.gameSmartSearchResults
@@ -105,6 +108,7 @@ fun SearchScreen(label: String, navController: NavController) {
                         Text(
                             text = inputText.ifEmpty { "Tìm kiếm" },
                             style = Typography.displaySmall,
+                            color = BG_E0E0E0E,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(vertical = 6.dp, horizontal = 8.dp)
@@ -187,7 +191,8 @@ fun SearchScreen(label: String, navController: NavController) {
                         Row(modifier = Modifier.padding(horizontal = 12.dp)) {
                             Text(
                                 text = "Gợi ý tìm kiểm",
-                                style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
+                                style = Typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                                color = WhiteColor
                             )
                         }
                         GapH12()
@@ -200,7 +205,7 @@ fun SearchScreen(label: String, navController: NavController) {
                                 modifier = Modifier
                                     .padding(8.dp)
                                     .background(Color.Transparent),
-                                contentPadding = PaddingValues(horizontal = 8.dp),
+                                contentPadding = PaddingValues(horizontal = 12.dp),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                             ) {
                                 itemsIndexed(
@@ -210,7 +215,22 @@ fun SearchScreen(label: String, navController: NavController) {
                                         game.id ?: "",
                                         game.title ?: "",
                                         getImageUrl(game.imageScreen ?: ""),
-                                        navController
+                                        navController,
+                                        onClick = {
+                                            historyViewModel.saveHistory(
+                                                LogUserHistory(
+                                                    action = "SEARCH_GAME",
+                                                    status = 1,
+                                                    targetId = game.id ?: "",
+                                                    targetName = game.title ?: "",
+                                                    targetType = "GAME",
+                                                    userId = userPres.getUserInformation()?.id ?: ""
+                                                )
+                                            )
+                                            viewModel.getGameSearchHistory(
+                                                userPres.getUserInformation()?.forAge ?: "ALL"
+                                            )
+                                        }
                                     )
                                 }
                             }

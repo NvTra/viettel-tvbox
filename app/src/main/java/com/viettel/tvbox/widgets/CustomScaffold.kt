@@ -20,6 +20,7 @@ import androidx.tv.material3.Text
 import com.viettel.tvbox.theme.BlackColor
 import com.viettel.tvbox.theme.Grey800
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.WhiteColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +40,8 @@ fun CustomScaffold(
                             Text(
                                 text = title,
                                 textAlign = TextAlign.Center,
-                                style = Typography.titleMedium
+                                color = WhiteColor,
+                                style = Typography.titleMedium,
                             )
                         }
                     },

@@ -167,6 +167,7 @@ fun GamePlayHistory(navController: NavController) {
                 if (gamePlayHistory.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier
+                            .padding(12.dp)
                             .background(Color.Transparent),
                         contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -239,7 +240,7 @@ fun FavoriteGame(navController: NavController) {
                         modifier = Modifier
                             .padding(12.dp)
                             .background(Color.Transparent),
-                        contentPadding = PaddingValues(horizontal = 8.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         itemsIndexed(favoriteGame) { index, game ->

@@ -37,18 +37,20 @@ fun GameCard(
     id: String,
     title: String,
     imageUrl: String,
-    navController: NavController
+    navController: NavController,
+    onClick: (() -> Unit)? = null,
 ) {
     var isFocus by remember { mutableStateOf(false) }
     Card(
         onClick = {
+            onClick?.invoke()
             navController.navigate("game_detail/$id")
         },
         modifier = Modifier
             .aspectRatio(1f)
             .graphicsLayer(
-                scaleX = if (isFocus) 1.06f else 1f,
-                scaleY = if (isFocus) 1.06f else 1f
+                scaleX = if (isFocus) 1.15f else 1f,
+                scaleY = if (isFocus) 1.15f else 1f
             )
             .onFocusChanged { focusState -> isFocus = focusState.isFocused }
             .border(

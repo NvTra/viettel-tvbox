@@ -25,7 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.tv.material3.Text
 import com.viettel.tvbox.view_model.CategoryViewModel
-import com.viettel.tvbox.widgets.CategoryCard
+import com.viettel.tvbox.widgets.CategoryImageCard
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.FeaturedCategoryCard
 
@@ -102,8 +102,9 @@ fun CategoryScreen(label: String, navController: NavController) {
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             itemsIndexed(otherCategory) { index: Int, category ->
-                                CategoryCard(
+                                CategoryImageCard(
                                     id = category.id ?: "",
+                                    image = category.image ?: "",
                                     icon = category.icon ?: "",
                                     title = category.type ?: "",
                                     navController = navController

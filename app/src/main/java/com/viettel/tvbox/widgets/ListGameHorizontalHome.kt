@@ -38,7 +38,7 @@ import com.viettel.tvbox.utils.getImageUrl
 @Composable
 fun ListGameHorizontal(gameConfigItem: ManagerHomeConfig? = null, navController: NavController) {
     Column {
-        Row(modifier = Modifier.padding(horizontal = 12.dp)) {
+        Row(modifier = Modifier.padding(horizontal = 14.dp)) {
             Text(
                 text = gameConfigItem?.title ?: "",
                 style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -55,9 +55,9 @@ fun ListGameHorizontal(gameConfigItem: ManagerHomeConfig? = null, navController:
         ) {
             LazyRow(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(12.dp)
                     .background(Color.Transparent),
-                contentPadding = PaddingValues(horizontal = 8.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 itemsIndexed(

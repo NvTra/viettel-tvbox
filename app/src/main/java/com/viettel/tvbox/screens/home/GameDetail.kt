@@ -277,7 +277,11 @@ fun GameDetail(id: String, navController: NavController) {
                             .background(Color.Transparent)
                             .padding(horizontal = 12.dp)
                     ) {
-                        Text(text = gameDetail.title ?: "", style = Typography.titleLarge)
+                        Text(
+                            text = gameDetail.title ?: "",
+                            style = Typography.titleLarge,
+                            color = WhiteColor
+                        )
                         GapH12()
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -298,6 +302,7 @@ fun GameDetail(id: String, navController: NavController) {
                         Text(
                             text = gameDetail.description ?: "",
                             style = Typography.titleSmall,
+                            color = WhiteColor,
                             textAlign = TextAlign.Justify,
                             modifier = Modifier.fillMaxWidth(0.5f)
                         )

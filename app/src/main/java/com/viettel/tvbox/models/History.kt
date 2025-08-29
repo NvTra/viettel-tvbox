@@ -68,5 +68,5 @@ data class LogUserHistory(
     val targetId: String? = "",
     val targetName: String? = "",
     val targetType: String? = "",
-    val useId: String? = "",
+    val userId: String? = "",
 )

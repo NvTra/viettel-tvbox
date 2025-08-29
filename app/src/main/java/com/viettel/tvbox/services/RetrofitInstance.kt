@@ -10,17 +10,19 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
     private lateinit var userPreferences: UserPreferences
+    private lateinit var appContext: Context
     private const val BASE_URL = BuildConfig.API_BASE_URL
 
     fun init(context: Context) {
         userPreferences = UserPreferences.getInstance(context)
+        appContext = context.applicationContext
     }
 
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(userPreferences) {
+            .addInterceptor(AuthInterceptor(userPreferences, {
                 userPreferences.clearAuth()
-            })
+            }, appContext))
             .build()
     }
     val retrofit: Retrofit by lazy {
@@ -54,5 +56,5 @@ object RetrofitInstance {
         retrofit.create(GameService::class.java)
     }
 
-  
+
 }
