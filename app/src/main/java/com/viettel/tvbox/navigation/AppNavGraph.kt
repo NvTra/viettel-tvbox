@@ -52,7 +52,7 @@ fun AppNavGraph(
                             modifier = Modifier.width(40.dp)
                         )
                         when (destination) {
-                            SidebarDestination.HOME -> GameHomeScreen("CloudGame Tv", navController)
+                            SidebarDestination.HOME -> GameHomeScreen("CloudGameTV", navController)
                             SidebarDestination.SEARCH -> SearchScreen("Tìm Kiếm", navController)
                             SidebarDestination.CATEGORY -> CategoryScreen("Thể loại", navController)
                             SidebarDestination.MY_LIST -> MyListScreen(

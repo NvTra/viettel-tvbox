@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -22,8 +24,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.tv.material3.Button
-import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.viettel.tvbox.theme.BG_1A1A1A
 import com.viettel.tvbox.theme.BlackColor
@@ -49,7 +49,7 @@ fun SigningPackagePopup(onDismiss: () -> Unit) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = BlackColor),
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.width(300.dp)
+                modifier = Modifier.width(250.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
@@ -58,26 +58,24 @@ fun SigningPackagePopup(onDismiss: () -> Unit) {
                 ) {
                     Text(
                         "Vui lòng đăng ký để sử dụng tính năng",
-                        style = Typography.labelMedium,
+                        style = Typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = WhiteColor
                     )
                     GapH12()
                     Button(
                         onClick = { onDismiss() },
-                        shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
-                        colors = ButtonDefaults.colors(
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(
                             containerColor = BG_1A1A1A,
-                            focusedContainerColor = BG_1A1A1A,
                         ),
-                        scale = ButtonDefaults.scale(focusedScale = 1f),
                         modifier = Modifier
                             .height(30.dp)
                             .fillMaxWidth()
                     ) {
                         Text(
                             "Bỏ qua",
-                            style = Typography.displaySmall,
+                            style = Typography.bodySmall,
                             color = WhiteColor,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,

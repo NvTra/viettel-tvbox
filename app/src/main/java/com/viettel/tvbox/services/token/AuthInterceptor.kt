@@ -85,24 +85,33 @@ class AuthInterceptor(
             }"
         )
 
+        val requestWithUserAgent = originalRequest.newBuilder()
+            .header("User-Agent", buildDeviceInfo())
+            .build()
+
         if (isTokenBasedAuthEntryPoint(originalRequest.url.toString())) {
-            return chain.proceed(originalRequest)
+            return chain.proceed(requestWithUserAgent)
         }
 
         if (!isJwtTokenValid()) {
             println(context.getString(R.string.error_jwt_invalid))
-            return handle401Error(originalRequest, chain)
+            return handle401Error(requestWithUserAgent, chain)
         }
 
-        val authenticatedRequest = addTokenToRequest(originalRequest)
+        val authenticatedRequest = addTokenToRequest(requestWithUserAgent)
         val response = chain.proceed(authenticatedRequest)
 
         if (response.code == 401) {
             response.close()
-            return handle401Error(originalRequest, chain)
+            return handle401Error(requestWithUserAgent, chain)
         }
 
         return response
+    }
+
+    private fun buildDeviceInfo(): String {
+        val okHttpVersion = okhttp3.OkHttp.VERSION
+        return "OkHttp/$okHttpVersion(Linux; Android ${android.os.Build.VERSION.RELEASE}; ${android.os.Build.MODEL}) ${android.os.Build.MANUFACTURER}"
     }
 
     private fun isTokenBasedAuthEntryPoint(url: String): Boolean {

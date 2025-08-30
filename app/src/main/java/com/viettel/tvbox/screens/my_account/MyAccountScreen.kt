@@ -43,11 +43,23 @@ fun MyAccountScreen(parentNavController: NavController, onLogout: () -> Unit) {
                 navController = navController,
                 startDestination = MyAccountDestination.AccountDetail.route
             ) {
-                composable(MyAccountDestination.AccountDetail.route) { AccountDetail() }
-                composable(MyAccountDestination.ChangePassword.route) { ChangePassword() }
-                composable(MyAccountDestination.GameHistory.route) { GameHistory() }
-                composable(MyAccountDestination.AccessHistory.route) { AccessHistory() }
-                composable(MyAccountDestination.PayHistory.route) { PayHistory() }
+                composable(MyAccountDestination.AccountDetail.route) {
+                    AccountDetail(
+                        parentNavController
+                    )
+                }
+                composable(MyAccountDestination.ChangePassword.route) {
+                    ChangePassword(
+                        parentNavController
+                    )
+                }
+                composable(MyAccountDestination.GameHistory.route) { GameHistory(parentNavController) }
+                composable(MyAccountDestination.AccessHistory.route) {
+                    AccessHistory(
+                        parentNavController
+                    )
+                }
+                composable(MyAccountDestination.PayHistory.route) { PayHistory(parentNavController) }
             }
         }
     }

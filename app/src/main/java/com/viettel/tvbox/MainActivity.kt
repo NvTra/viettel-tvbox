@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,7 +22,9 @@ import com.viettel.tvbox.screens.auths.LoginScreen
 import com.viettel.tvbox.theme.VietteltvTheme
 import com.viettel.tvbox.widgets.ToastMessage
 
+
 class MainActivity : ComponentActivity() {
+
     @OptIn(ExperimentalTvMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +35,17 @@ class MainActivity : ComponentActivity() {
                     shape = RectangleShape
                 ) {
                     val context = LocalContext.current
+                    val userPrefs = remember { UserPreferences.getInstance(context) }
                     var isLoggedIn by remember { mutableStateOf(false) }
+                    val logoutEvent by userPrefs.logoutEvent.collectAsState()
                     LaunchedEffect(Unit) {
                         isLoggedIn = UserPreferences.getInstance(context).isLogin()
+                    }
+                    LaunchedEffect(logoutEvent) {
+                        if (logoutEvent) {
+                            isLoggedIn = false
+                            userPrefs.resetLogoutEvent()
+                        }
                     }
                     if (!isLoggedIn) {
                         LoginScreen(onLoginSuccess = { isLoggedIn = true })

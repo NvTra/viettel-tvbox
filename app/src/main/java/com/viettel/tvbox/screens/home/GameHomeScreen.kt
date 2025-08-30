@@ -55,9 +55,7 @@ fun GameHomeScreen(label: String, navController: NavController) {
                         .fillMaxSize()
                         .padding(innerPadding)
                         .verticalScroll(
-                            rememberScrollState(
-
-                            )
+                            rememberScrollState()
                         )
                 ) {
                     VideoBanner()

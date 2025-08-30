@@ -1,9 +1,9 @@
 package com.viettel.tvbox.screens.my_account.widget
 
 import LoadingIndicator
-import UserPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,17 +16,21 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
@@ -38,21 +42,17 @@ import com.viettel.tvbox.theme.GapH2
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelPrimaryColor
-import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun AccessHistory() {
+fun AccessHistory(navController: NavController) {
     MyAccountLayout(
         title = "Lịch sử truy cập",
         subTitle = "Theo dõi các lần đăng nhập tài khoản",
-        isBodyScrollable = false,
         body = {
-            val context = LocalContext.current
-            val userPres = remember { UserPreferences.getInstance(context) }
             val viewModel: UserViewModel = viewModel()
             val accessHistory = viewModel.accessHistory
             val isLoading = viewModel.isLoading
@@ -86,8 +86,7 @@ fun AccessHistory() {
                     LazyColumn(
                         modifier = Modifier.background(Color.Transparent),
                         contentPadding = PaddingValues(0.dp),
-
-                        ) {
+                    ) {
                         itemsIndexed(
                             accessHistory
                         ) { index, item ->
@@ -102,7 +101,7 @@ fun AccessHistory() {
                             ) {
                                 Text(
                                     text = "Bạn đã xem hết lịch sử",
-                                    color = Color.White,
+                                    color = BG_E0E0E0E.copy(alpha = 0.6f),
                                     style = Typography.bodySmall
                                 )
                             }
@@ -145,7 +144,9 @@ fun AccessHistoryItem(
             input.toString()
         }
     }
-    Row(
+
+    var isFocused by remember { mutableStateOf(false) }
+    Box(
         modifier = Modifier
             .drawBehind {
                 val strokeWidth = 0.5.dp.toPx()
@@ -157,37 +158,51 @@ fun AccessHistoryItem(
                     strokeWidth = strokeWidth
                 )
             }
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)) {
-        Box(
+            .padding(vertical = 4.dp)
+            .background(Color.Transparent)
+    ) {
+        Row(
             modifier = Modifier
-                .size(24.dp)
-                .background(BG_2E2E2E, shape = RoundedCornerShape(4.dp))
-                .border(0.dp, Color.Transparent, RoundedCornerShape(4.dp)),
-            contentAlignment = Alignment.Center
+                .border(
+                    if (isFocused) 0.5.dp else 0.dp,
+                    if (isFocused) VietelPrimaryColor else Color.Transparent,
+                    RoundedCornerShape(4.dp)
+                )
+                .fillMaxWidth()
+                .padding(vertical = 4.dp, horizontal = 4.dp)
+                .onFocusChanged { isFocused = it.isFocused }
+                .focusable(),
         ) {
-            Icon(
-                painterResource(
-                    getIcon(item.os),
-                ),
-                contentDescription = null,
-                tint = VietelPrimaryColor,
-                modifier = Modifier.size(12.dp)
-            )
-        }
-        GapW8()
-        Column {
-            Text(
-                text = "${item.os} - ${if (item.action == "LOGIN") "Đăng nhập" else "Đăng xuất"}",
-                style = Typography.labelSmall.copy(lineHeight = 14.sp),
-                color = WhiteColor
-            )
-            GapH2()
-            Text(
-                text = "${item.browser} - ${convertTime(item.createdDate)}",
-                style = Typography.bodySmall,
-                color = BG_E0E0E0E
-            )
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .background(BG_2E2E2E, shape = RoundedCornerShape(4.dp))
+                    .border(0.dp, Color.Transparent, RoundedCornerShape(4.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painterResource(
+                        getIcon(item.os),
+                    ),
+                    contentDescription = null,
+                    tint = VietelPrimaryColor,
+                    modifier = Modifier.size(12.dp)
+                )
+            }
+            GapW8()
+            Column {
+                Text(
+                    text = "${item.os} - ${if (item.action == "LOGIN") "Đăng nhập" else "Đăng xuất"}",
+                    style = Typography.titleSmall.copy(lineHeight = 14.sp),
+                    color = BG_E0E0E0E
+                )
+                GapH2()
+                Text(
+                    text = "${item.browser} - ${convertTime(item.createdDate)}",
+                    style = Typography.bodySmall,
+                    color = BG_E0E0E0E.copy(alpha = 0.6f)
+                )
+            }
         }
     }
 }

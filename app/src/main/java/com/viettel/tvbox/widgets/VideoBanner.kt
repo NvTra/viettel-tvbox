@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,23 +40,9 @@ fun VideoBanner() {
     val isLoading = bannerViewModel.isLoading
     val bannerVideo = bannerViewModel.bannerVideo
     val error = bannerViewModel.error
-    val context = LocalContext.current
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            setMediaItem(MediaItem.fromUri(getVideoUrl(bannerVideo?.get(0)?.image ?: "").toUri()))
-            repeatMode = ExoPlayer.REPEAT_MODE_ALL
-            playWhenReady = true
-            volume = 0f
-            prepare()
-        }
-    }
 
     LaunchedEffect(Unit) {
         bannerViewModel.getAllBanner()
-    }
-
-    DisposableEffect(Unit) {
-        onDispose { exoPlayer.release() }
     }
 
     when {
@@ -69,47 +54,61 @@ fun VideoBanner() {
             Text("Lỗi: $error")
         }
 
-        bannerVideo != null -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clipToBounds()
-            ) {
-                AndroidView(
-                    modifier = Modifier.fillMaxSize(),
-                    factory = {
-                        PlayerView(it).apply {
-                            player = exoPlayer
-                            useController = false
-                            layoutParams = android.view.ViewGroup.LayoutParams(
-                                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                                android.view.ViewGroup.LayoutParams.MATCH_PARENT
-                            )
-                            resizeMode =
-                                AspectRatioFrameLayout.RESIZE_MODE_FILL
-                        }
+        bannerVideo != null && bannerVideo.isNotEmpty() -> {
+            val context = LocalContext.current
+            val image = bannerVideo[0].image
+            if (!image.isNullOrBlank()) {
+                val videoUrl = getVideoUrl(image)
+                val exoPlayer = remember(videoUrl) {
+                    ExoPlayer.Builder(context).build().apply {
+                        setMediaItem(MediaItem.fromUri(videoUrl.toUri()))
+                        repeatMode = ExoPlayer.REPEAT_MODE_ALL
+                        playWhenReady = true
+                        volume = 0f
+                        prepare()
                     }
-                )
+                }
+                DisposableEffect(exoPlayer) {
+                    onDispose { exoPlayer.release() }
+                }
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.2f))
-                )
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clipToBounds()
                 ) {
-                    Text(
-                        text = "Thế giới game - trải nghiệm không giới hạn",
-                        color = WhiteColor,
-                        style = Typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 10.sp
-                        )
+                    AndroidView(
+                        modifier = Modifier.fillMaxSize(), factory = {
+                            PlayerView(it).apply {
+                                player = exoPlayer
+                                useController = false
+                                layoutParams = android.view.ViewGroup.LayoutParams(
+                                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                                    android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                                )
+                                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                            }
+                        })
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.2f))
                     )
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Thế giới game - trải nghiệm không giới hạn",
+                            color = WhiteColor,
+                            style = Typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
+            } else {
+                Text("Không tìm thấy video hợp lệ cho banner.")
             }
         }
     }

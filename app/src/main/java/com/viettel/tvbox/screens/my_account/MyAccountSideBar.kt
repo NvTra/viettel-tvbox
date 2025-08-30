@@ -1,9 +1,8 @@
 package com.viettel.tvbox.screens.my_account
 
 import UserPreferences
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,17 +26,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.tv.material3.Button
-import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
@@ -48,23 +48,32 @@ import com.viettel.tvbox.theme.GapW4
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
+import com.viettel.tvbox.view_model.AuthViewModel
 
 enum class AccountManagementItem(
-    val icon: Int,
-    val route: String,
-    val title: String
+    val icon: Int, val route: String, val title: String
 ) {
-    ACCOUNT_DETAIL(R.drawable.ic_user, "account_detail", "Thông tin tài khoản"),
+    ACCOUNT_DETAIL(
+        R.drawable.ic_user,
+        "account_detail",
+        "Thông tin tài khoản"
+    ),
     CHANGE_PASSWORD(R.drawable.ic_lock, "change_password", "Đổi mật khẩu")
 }
 
 enum class HistoryItem(
-    val icon: Int,
-    val route: String,
-    val title: String
+    val icon: Int, val route: String, val title: String
 ) {
-    GAME_HISTORY(R.drawable.ic_history, "game_history", "Lịch sử chơi game"),
-    ACCESS_HISTORY(R.drawable.ic_clock, "access_history", "Lịch sử truy cập"),
+    GAME_HISTORY(
+        R.drawable.ic_history,
+        "game_history",
+        "Lịch sử chơi game"
+    ),
+    ACCESS_HISTORY(
+        R.drawable.ic_clock,
+        "access_history",
+        "Lịch sử truy cập"
+    ),
     PAY_HISTORY(R.drawable.ic_credit_card, "pay_history", "Lịch sử thanh toán")
 }
 
@@ -90,8 +99,7 @@ fun MyAccountSideBar(
                     strokeWidth = strokeWidth
                 )
             }
-            .padding(horizontal = 10.dp, vertical = 12.dp)
-    ) {
+            .padding(horizontal = 10.dp, vertical = 12.dp)) {
         Column {
             Text(
                 "Tài khoản của tôi",
@@ -102,7 +110,7 @@ fun MyAccountSideBar(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1.dp)
+                    .height(0.5.dp)
                     .background(Color(0xFF3A3A3A))
             )
             GapH6()
@@ -111,19 +119,18 @@ fun MyAccountSideBar(
                     title = item.title,
                     icon = item.icon,
                     selected = item.route == selectedRoute,
-                    onClick = { onItemSelected(item.route) }
-                )
+                    onClick = { onItemSelected(item.route) })
             }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1.dp)
+                    .height(0.5.dp)
                     .background(Color(0xFF3A3A3A))
             )
             GapH6()
             Text(
                 "Lịch sử",
-                style = Typography.bodySmall.copy(fontSize = 6.sp),
+                style = Typography.labelSmall.copy(fontSize = 6.sp),
                 fontWeight = FontWeight.Bold,
                 color = BG_E0E0E0E.copy(0.8f),
                 modifier = Modifier.padding(8.dp)
@@ -133,8 +140,7 @@ fun MyAccountSideBar(
                     title = item.title,
                     icon = item.icon,
                     selected = item.route == selectedRoute,
-                    onClick = { onItemSelected(item.route) }
-                )
+                    onClick = { onItemSelected(item.route) })
             }
         }
         LogoutButton(onLogout)
@@ -144,55 +150,34 @@ fun MyAccountSideBar(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun SideBarAccountIcon(
-    title: String,
-    icon: Int,
-    selected: Boolean,
-    onClick: () -> Unit
+    title: String, icon: Int, selected: Boolean, onClick: () -> Unit
 ) {
-    val interactionSource =
-        remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
-    val isFocus by interactionSource.collectIsFocusedAsState()
+    var isFocus by remember { mutableStateOf(false) }
+
     Button(
-        onClick = {
-            onClick()
-        },
-        colors = ButtonDefaults.colors(
-            containerColor = Color.Transparent,
-            focusedContainerColor = BG_1A1A1A,
-            focusedContentColor = VietelPrimaryColor
+        onClick = { onClick() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isFocus) BG_1A1A1A else Color.Transparent
         ),
         contentPadding = PaddingValues(0.dp),
-        shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
-        modifier = Modifier
-            .padding(bottom = 4.dp)
-            .height(30.dp)
-            .fillMaxWidth()
-            .onKeyEvent { keyEvent ->
-                if (keyEvent.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_ENTER ||
-                    keyEvent.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_DPAD_CENTER ||
-                    keyEvent.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_SPACE
-                ) {
-                    onClick()
-                    true
-                } else {
-                    false
-                }
+        shape = RoundedCornerShape(4.dp),
+        border = BorderStroke(
+            if (isFocus || selected) 0.8.dp else 0.3.dp,
+            color = when {
+                isFocus -> VietelPrimaryColor
+                selected -> VietelPrimaryColor
+                else -> ColorTransparent
             },
-        scale = ButtonDefaults.scale(focusedScale = 1f),
-        interactionSource = interactionSource,
+        ),
+        modifier = Modifier
+            .padding(bottom = 2.dp)
+            .height(25.dp)
+            .fillMaxWidth()
+            .onFocusChanged { isFocus = it.isFocused },
     ) {
         Row(
             modifier = Modifier
                 .background(Color.Transparent)
-                .border(
-                    width = if (isFocus || selected) 1.dp else 0.3.dp,
-                    color = when {
-                        isFocus -> VietelPrimaryColor
-                        selected -> VietelPrimaryColor
-                        else -> ColorTransparent
-                    },
-                    shape = RoundedCornerShape(4.dp)
-                )
                 .padding(horizontal = 6.dp)
                 .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -204,10 +189,10 @@ fun SideBarAccountIcon(
                 tint = when {
                     isFocus -> VietelPrimaryColor
                     selected -> VietelPrimaryColor
-                    else -> WhiteColor
+                    else -> BG_E0E0E0E
                 },
                 modifier = Modifier
-                    .size(9.dp)
+                    .size(8.dp)
                     .align(Alignment.CenterVertically)
             )
             GapW4()
@@ -216,9 +201,9 @@ fun SideBarAccountIcon(
                 color = when {
                     isFocus -> VietelPrimaryColor
                     selected -> VietelPrimaryColor
-                    else -> WhiteColor
+                    else -> BG_E0E0E0E
                 },
-                style = Typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                style = Typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                 modifier = Modifier.weight(1f)
             )
             Icon(
@@ -242,31 +227,35 @@ fun SideBarAccountIcon(
 fun LogoutButton(onLogout: () -> Unit) {
     var isFocus by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    val authModel: AuthViewModel = viewModel()
     Button(
         onClick = {
             UserPreferences.getInstance(context).clearAuth()
+            authModel.logout()
             onLogout()
         },
-        shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
-        colors = ButtonDefaults.colors(
-            containerColor = VietelPrimaryColor.copy(alpha = 0.1f),
-            focusedContainerColor = BG_1A1A1A,
+        border =
+            BorderStroke(
+                width = if (isFocus) 0.5.dp else 0.3.dp,
+                color = if (isFocus) VietelPrimaryColor else VietelPrimaryColor,
+            ),
+        shape = RoundedCornerShape(4.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isFocus) BG_1A1A1A else VietelPrimaryColor.copy(
+                alpha = 0.1f
+            ),
         ),
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier
             .height(30.dp)
             .fillMaxWidth()
-            .padding(start = 8.dp, top = 4.dp),
-        scale = ButtonDefaults.scale(focusedScale = 1f),
+            .padding(start = 8.dp, top = 4.dp)
+            .onFocusChanged { isFocus = it.isFocused },
     ) {
         Row(
             modifier = Modifier
                 .background(Color.Transparent, shape = RoundedCornerShape(4.dp))
-                .border(
-                    width = if (isFocus) 1.dp else 0.3.dp,
-                    color = if (isFocus) VietelPrimaryColor else VietelPrimaryColor,
-                    shape = RoundedCornerShape(4.dp)
-                )
                 .padding(horizontal = 6.dp)
                 .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -284,7 +273,7 @@ fun LogoutButton(onLogout: () -> Unit) {
             Text(
                 text = "Đăng xuất",
                 color = if (isFocus) WhiteColor else VietelPrimaryColor,
-                style = Typography.bodySmall,
+                style = Typography.labelSmall,
                 modifier = Modifier.weight(1f)
             )
         }

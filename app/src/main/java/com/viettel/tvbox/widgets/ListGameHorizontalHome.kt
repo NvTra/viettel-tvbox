@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -38,11 +39,12 @@ import com.viettel.tvbox.utils.getImageUrl
 @Composable
 fun ListGameHorizontal(gameConfigItem: ManagerHomeConfig? = null, navController: NavController) {
     Column {
-        Row(modifier = Modifier.padding(horizontal = 14.dp)) {
+        Row {
             Text(
                 text = gameConfigItem?.title ?: "",
-                style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteColor
+                style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                color = WhiteColor,
+                modifier = Modifier.padding(start = 12.dp)
             )
             GapW8()
             GameButton(onClick = { navController.navigate("all_game_by_title/${gameConfigItem?.id}/${gameConfigItem?.title}") })
@@ -50,7 +52,7 @@ fun ListGameHorizontal(gameConfigItem: ManagerHomeConfig? = null, navController:
         GapH12()
         Box(
             modifier = Modifier
-                .height(155.dp)
+                .height(160.dp)
                 .background(Color.Transparent)
         ) {
             LazyRow(
@@ -88,15 +90,22 @@ fun GameButton(
             containerColor = if (isFocus) VietelPrimaryColor else Color.Transparent,
         ),
         shape = RoundedCornerShape(4.dp),
-        border = BorderStroke(width = 1.dp, VietelPrimaryColor),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 3.dp),
+        border = if (isFocus) BorderStroke(width = 0.5.dp, WhiteColor) else BorderStroke(
+            width = 0.5.dp,
+            VietelPrimaryColor
+        ),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
         modifier = Modifier
-            .height(24.dp)
+            .height(20.dp)
+            .graphicsLayer(
+                scaleX = if (isFocus) 1.15f else 1f,
+                scaleY = if (isFocus) 1.15f else 1f
+            )
             .onFocusChanged { focusState -> isFocus = focusState.isFocused },
     ) {
         Text(
             text = "Xem tất cả",
-            style = Typography.displaySmall.copy(
+            style = Typography.labelSmall.copy(
                 fontWeight = FontWeight.Bold,
             ),
             color = if (isFocus) WhiteColor else VietelPrimaryColor

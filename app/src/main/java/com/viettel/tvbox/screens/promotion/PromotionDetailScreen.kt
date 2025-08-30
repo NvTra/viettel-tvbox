@@ -43,16 +43,21 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.viettel.tvbox.R
+import com.viettel.tvbox.theme.GapH16
+import com.viettel.tvbox.theme.Grey400
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.PromotionViewModel
 import com.viettel.tvbox.widgets.PromotionCard
+import com.viettel.tvbox.widgets.PromotionFontSize
 import kotlinx.coroutines.launch
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -91,8 +96,7 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 16.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
@@ -167,11 +171,11 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
 
                 viewModel.promotion != null -> {
                     Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+                        GapH16()
                         Text(
                             text = viewModel.promotion?.promotionDetailUser?.title.takeUnless { it.isNullOrBlank() }
                                 ?: "No Title",
-                            textAlign = TextAlign.Center,
-                            style = Typography.titleMedium,
+                            style = Typography.headlineLarge,
                             color = WhiteColor,
                             modifier = Modifier
                                 .padding(bottom = 8.dp)
@@ -189,13 +193,13 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                     contentDescription = null,
                                     modifier = Modifier
                                         .padding(start = 8.dp, top = 4.dp, end = 4.dp)
-                                        .size(10.dp),
-                                    tint = WhiteColor,
+                                        .size(8.dp),
+                                    tint = Grey400,
                                 )
                                 Text(
                                     text = formattedDate,
-                                    color = WhiteColor,
-                                    style = Typography.titleSmall,
+                                    color = Grey400,
+                                    style = Typography.labelSmall,
                                     modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
                                 )
                             }
@@ -236,7 +240,7 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 8.dp)
+                                    .padding(top = 12.dp)
                                     .align(Alignment.CenterHorizontally)
                             )
                         }
@@ -248,11 +252,12 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                         Text(
                             text = "Tin tức liên quan",
                             color = WhiteColor,
-                            style = Typography.titleSmall,
+                            style = Typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 16.dp, bottom = 8.dp, start = 10.dp)
+                                .padding(top = 24.dp, bottom = 12.dp, start = 10.dp)
                         )
                         Box(
                             modifier = Modifier
@@ -282,6 +287,10 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                         title = promotion.title,
                                         description = promotion.description,
                                         imageUrl = promotion.image,
+                                        fontSize = PromotionFontSize(
+                                            titleFontSize = 8.sp,
+                                            descriptionFontSize = 7.sp
+                                        ),
                                         navController = navController
                                     )
                                 }

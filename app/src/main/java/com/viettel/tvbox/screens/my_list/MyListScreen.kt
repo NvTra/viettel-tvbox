@@ -19,11 +19,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +42,7 @@ import com.viettel.tvbox.R
 import com.viettel.tvbox.theme.BG_DB27777
 import com.viettel.tvbox.theme.GapW4
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import com.viettel.tvbox.widgets.CustomScaffold
@@ -57,7 +63,7 @@ fun MyListScreen(label: String, navController: NavController) {
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 16.dp)
             ) {
                 GameButton(
                     iconResId = R.drawable.ic_clock, title = "Chơi gần đây", onClick = {
@@ -90,28 +96,45 @@ fun MyListScreen(label: String, navController: NavController) {
 fun GameButton(
     iconResId: Int, title: String, onClick: () -> Unit, selected: Boolean? = false
 ) {
+    var isFocus by remember { mutableStateOf(false) }
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = if (selected == true) BG_DB27777 else Color.Transparent),
         shape = RoundedCornerShape(size = 30.dp),
-        modifier = Modifier.height(30.dp),
-        border = BorderStroke(
-            width = if (selected == true) 0.dp else 1.dp,
-            color = if (selected == true) Color.Transparent else BG_DB27777
-        )
+        modifier = Modifier
+            .height(25.dp)
+            .graphicsLayer(
+                scaleX = if (isFocus) 1.15f else 1f,
+                scaleY = if (isFocus) 1.15f else 1f
+            )
+            .onFocusChanged { focusState -> isFocus = focusState.isFocused },
+        contentPadding = PaddingValues(horizontal = 12.dp),
+        border = when {
+            selected == true && isFocus -> BorderStroke(0.5.dp, WhiteColor)
+            isFocus -> BorderStroke(0.5.dp, WhiteColor)
+            else -> BorderStroke(0.5.dp, VietelPrimaryColor)
+        },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 painter = painterResource(id = iconResId),
                 contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = if (selected == true) WhiteColor else BG_DB27777
+                modifier = Modifier.size(8.dp),
+                tint = when {
+                    selected == true -> WhiteColor
+                    isFocus -> WhiteColor
+                    else -> BG_DB27777
+                }
             )
             GapW4()
             Text(
-                text = title, style = Typography.displaySmall.copy(
+                text = title, style = Typography.labelMedium.copy(
                     fontWeight = FontWeight.Bold,
-                ), color = if (selected == true) WhiteColor else BG_DB27777
+                ), color = when {
+                    selected == true -> WhiteColor
+                    isFocus -> WhiteColor
+                    else -> BG_DB27777
+                }
             )
         }
     }
@@ -141,7 +164,7 @@ fun GamePlayHistory(navController: NavController) {
 
     Box(
         modifier = Modifier
-            .height(155.dp)
+            .height(140.dp)
             .background(Color.Transparent)
     ) {
         when {
@@ -167,7 +190,6 @@ fun GamePlayHistory(navController: NavController) {
                 if (gamePlayHistory.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier
-                            .padding(12.dp)
                             .background(Color.Transparent),
                         contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -200,7 +222,6 @@ fun GamePlayHistory(navController: NavController) {
 @Composable
 fun FavoriteGame(navController: NavController) {
     val context = LocalContext.current
-    val userPres = remember { UserPreferences.getInstance(context) }
     val viewModel: UserViewModel = viewModel()
     val favoriteGame = viewModel.favoriteGame
     val isLoading = viewModel.isLoading
@@ -212,7 +233,7 @@ fun FavoriteGame(navController: NavController) {
 
     Box(
         modifier = Modifier
-            .height(155.dp)
+            .height(140.dp)
             .background(Color.Transparent)
     ) {
         when {
@@ -238,7 +259,6 @@ fun FavoriteGame(navController: NavController) {
                 if (favoriteGame.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier
-                            .padding(12.dp)
                             .background(Color.Transparent),
                         contentPadding = PaddingValues(horizontal = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),

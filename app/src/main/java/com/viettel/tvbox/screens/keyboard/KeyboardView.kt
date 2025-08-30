@@ -2,6 +2,7 @@ package com.viettel.tvbox.screens.keyboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,11 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -28,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
 import com.viettel.tvbox.theme.BG_DB27777
 import com.viettel.tvbox.theme.Grey600
+import com.viettel.tvbox.theme.Typography
 import kotlin.math.min
 
 @Composable
@@ -40,6 +46,7 @@ fun KeyboardView(
 ) {
     val keys = getKeyboardLayout(viewModel.keyboardType)
     val focusRequester = remember { FocusRequester() }
+    var isKeyboardFocused by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -47,6 +54,9 @@ fun KeyboardView(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .focusRequester(focusRequester)
+            .onFocusChanged { focusState ->
+                isKeyboardFocused = focusState.hasFocus
+            }
             .focusable()
             .onKeyEvent { event ->
                 if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
@@ -115,14 +125,17 @@ fun KeyboardView(
                 horizontalArrangement = Arrangement.Center
             ) {
                 row.forEachIndexed { colIdx, key ->
-                    val isFocused = viewModel.focusedRow == rowIdx && viewModel.focusedCol == colIdx
+                    val isFocused =
+                        isKeyboardFocused && viewModel.focusedRow == rowIdx && viewModel.focusedCol == colIdx
                     val keyWidth = when (key.type) {
-                        KeyType.SPACE -> 60.dp
+                        KeyType.DELETE -> 28.dp
+                        KeyType.SPACE -> 68.dp
+                        KeyType.CLEAR -> 45.dp
                         else -> 20.dp
                     }
                     Box(
                         modifier = Modifier
-                            .padding(2.dp)
+                            .padding(3.dp)
                             .size(width = keyWidth, height = 20.dp)
                             .background(
                                 if (isFocused) BG_DB27777 else Color.Transparent,
@@ -132,16 +145,39 @@ fun KeyboardView(
                                 0.5.dp,
                                 if (isFocused) BG_DB27777 else Grey600,
                                 RoundedCornerShape(6.dp)
-                            ),
+                            )
+                            .clickable {
+                                viewModel.focusedRow = rowIdx
+                                viewModel.focusedCol = colIdx
+                                isKeyboardFocused = true
+                                focusRequester.requestFocus()
+                                if (key.type == KeyType.ENTER) {
+                                    onEnter(inputText)
+                                } else {
+                                    viewModel.onKeyPress(key, inputText, onInputChanged)
+                                }
+                            },
                         contentAlignment = Alignment.Center
                     ) {
                         when (key.type) {
                             KeyType.DELETE -> {
-                                Text(text = "⌫", color = Color.White, fontSize = 9.sp)
+                                Text(text = "⌫", color = Color.White, fontSize = 7.sp)
+                            }
+
+                            KeyType.SPACE -> {
+                                Text(text = "Dấu cách", color = Color.White, fontSize = 7.sp)
+                            }
+
+                            KeyType.CLEAR -> {
+                                Text(text = "Xóa", color = Color.White, fontSize = 7.sp)
                             }
 
                             else -> {
-                                Text(text = key.label, color = Color.White, fontSize = 9.sp)
+                                Text(
+                                    text = key.label,
+                                    color = Color.White,
+                                    style = Typography.labelLarge
+                                )
                             }
                         }
                     }
@@ -162,6 +198,9 @@ fun getKeyboardLayout(type: KeyboardType): List<List<KeyboardKey>> {
                 KeyboardKey("E"),
                 KeyboardKey("F"),
                 KeyboardKey("G"),
+                KeyboardKey("1"),
+                KeyboardKey("2"),
+                KeyboardKey("3"),
             ),
             listOf(
                 KeyboardKey("H"),
@@ -171,6 +210,9 @@ fun getKeyboardLayout(type: KeyboardType): List<List<KeyboardKey>> {
                 KeyboardKey("L"),
                 KeyboardKey("M"),
                 KeyboardKey("N"),
+                KeyboardKey("4"),
+                KeyboardKey("5"),
+                KeyboardKey("6"),
             ),
             listOf(
                 KeyboardKey("O"),
@@ -180,8 +222,10 @@ fun getKeyboardLayout(type: KeyboardType): List<List<KeyboardKey>> {
                 KeyboardKey("S"),
                 KeyboardKey("T"),
                 KeyboardKey("U"),
-
-                ),
+                KeyboardKey("7"),
+                KeyboardKey("8"),
+                KeyboardKey("9"),
+            ),
             listOf(
                 KeyboardKey("V"),
                 KeyboardKey("W"),
@@ -190,12 +234,14 @@ fun getKeyboardLayout(type: KeyboardType): List<List<KeyboardKey>> {
                 KeyboardKey("Z"),
                 KeyboardKey("-"),
                 KeyboardKey("'"),
+                KeyboardKey("&"),
+                KeyboardKey("0"),
+                KeyboardKey("@"),
             ),
             listOf(
-                KeyboardKey("←", KeyType.DELETE),
-                KeyboardKey("123", KeyType.SWITCH),
                 KeyboardKey("Xóa", KeyType.CLEAR),
-                KeyboardKey("Dấu cách", KeyType.SPACE), KeyboardKey("OK", KeyType.ENTER)
+                KeyboardKey("Dấu cách", KeyType.SPACE),
+                KeyboardKey("←", KeyType.DELETE),
             )
         )
 
@@ -209,38 +255,6 @@ fun getKeyboardLayout(type: KeyboardType): List<List<KeyboardKey>> {
                 KeyboardKey("(", KeyType.CHAR, "("),
                 KeyboardKey(")", KeyType.CHAR, ")"),
             ),
-            listOf(
-                KeyboardKey("4"),
-                KeyboardKey("5"),
-                KeyboardKey("6"),
-                KeyboardKey("@"),
-                KeyboardKey("!"),
-                KeyboardKey("?"),
-                KeyboardKey(":", KeyType.CHAR, ":"),
-            ),
-            listOf(
-                KeyboardKey("7"),
-                KeyboardKey("8"),
-                KeyboardKey("9"),
-                KeyboardKey("."),
-                KeyboardKey("-"),
-                KeyboardKey("_"),
-                KeyboardKey("\""),
-            ),
-            listOf(
-                KeyboardKey("0"),
-                KeyboardKey("/"),
-                KeyboardKey("$"),
-                KeyboardKey("%"),
-                KeyboardKey("+"),
-                KeyboardKey("["),
-                KeyboardKey("]"),
-            ),
-            listOf(
-                KeyboardKey("ABC", KeyType.SWITCH), KeyboardKey("←", KeyType.DELETE),
-                KeyboardKey("C", KeyType.CLEAR),
-                KeyboardKey(" ", KeyType.SPACE), KeyboardKey("OK", KeyType.ENTER)
-            )
         )
 
         KeyboardType.SYMBOL -> listOf(
@@ -255,20 +269,6 @@ fun getKeyboardLayout(type: KeyboardType): List<List<KeyboardKey>> {
                 KeyboardKey("*"),
                 KeyboardKey("=", KeyType.CHAR, "=")
             ),
-            listOf(
-                KeyboardKey("<"),
-                KeyboardKey(">"),
-                KeyboardKey("["),
-                KeyboardKey("]"),
-                KeyboardKey("{", KeyType.CHAR, "{"),
-                KeyboardKey("}", KeyType.CHAR, "}")
-            ),
-            listOf(
-                KeyboardKey("123", KeyType.SWITCH), KeyboardKey("←", KeyType.DELETE)
-            ),
-            listOf(
-                KeyboardKey(" ", KeyType.SPACE), KeyboardKey("OK", KeyType.ENTER)
-            )
         )
     }
 }

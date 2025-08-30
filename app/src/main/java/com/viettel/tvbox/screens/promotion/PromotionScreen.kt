@@ -53,9 +53,8 @@ fun PromotionScreen(
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(4),
                         modifier = Modifier
-                            .padding(innerPadding)
-                            .padding(24.dp),
-                        contentPadding = PaddingValues(8.dp),
+                            .padding(innerPadding),
+                        contentPadding = PaddingValues(12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {

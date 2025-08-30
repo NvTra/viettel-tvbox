@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +20,6 @@ import com.viettel.tvbox.theme.Typography
 fun MyAccountLayout(
     title: String,
     subTitle: String,
-    isBodyScrollable: Boolean = true,
     body: @Composable () -> Unit
 ) {
     Column(modifier = Modifier.padding(start = 6.dp, top = 6.dp, end = 6.dp, bottom = 0.dp)) {
@@ -34,18 +32,18 @@ fun MyAccountLayout(
                     BG_2E2E2E,
                     shape = RoundedCornerShape(4.dp)
                 )
-                .padding(24.dp)
+                .padding(12.dp)
         ) {
             Column {
                 Text(
                     text = title,
-                    style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                    style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     color = BG_E0E0E0E
                 )
                 GapH4()
                 Text(
                     text = subTitle,
-                    style = Typography.labelSmall,
+                    style = Typography.bodyMedium,
                     color = BG_E0E0E0E.copy(alpha = 0.5f)
                 )
             }
@@ -60,17 +58,9 @@ fun MyAccountLayout(
                     BG_2E2E2E,
                     shape = RoundedCornerShape(4.dp)
                 )
-                .padding(16.dp)
+                .padding(12.dp)
         ) {
-            if (isBodyScrollable) {
-                Column(
-                    modifier = Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())
-                ) {
-                    body()
-                }
-            } else {
-                body()
-            }
+            body()
         }
     }
 }

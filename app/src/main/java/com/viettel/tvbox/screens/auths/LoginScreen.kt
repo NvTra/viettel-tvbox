@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,12 +42,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.viettel.tvbox.R.drawable
 import com.viettel.tvbox.models.LoginRequest
 import com.viettel.tvbox.services.RetrofitInstance
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH24
+import com.viettel.tvbox.theme.GapH8
 import com.viettel.tvbox.theme.Grey50
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelSecondary
@@ -72,8 +73,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             contentScale = ContentScale.Crop
         )
         Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center
         ) {
 
             Box(
@@ -82,7 +82,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     .padding(bottom = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "CloudGameTV", style = Typography.titleLarge, color = WhiteColor)
+                Text(text = "CloudGameTV", style = Typography.displayLarge, color = WhiteColor)
             }
 
             Row(
@@ -112,8 +112,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             ) {
                 Text(
                     text = "Copyright © Cloud Game | All Rights Reserved",
-                    fontSize = 8.sp,
-                    color = WhiteColor
+                    style = Typography.labelLarge,
+                    color = WhiteColor.copy(alpha = 0.6f)
                 )
             }
         }
@@ -185,12 +185,11 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
         modifier = modifier
             .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
             .border(
-                width = 2.dp, color = Grey50, shape = RoundedCornerShape(12.dp)
+                width = 0.5.dp, color = Grey50, shape = RoundedCornerShape(12.dp)
             )
             .width(272.dp)
             .fillMaxHeight()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+            .padding(16.dp), verticalArrangement = Arrangement.Center
     ) {
         Box(
             modifier = Modifier
@@ -200,12 +199,13 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
         ) {
             Text(
                 "Đăng nhập với mật khẩu",
-                style = Typography.labelMedium,
+                style = Typography.titleLarge,
+                fontWeight = FontWeight.Bold,
                 color = WhiteColor,
             )
         }
         // Username Input
-        Text("Số điện thoại", style = Typography.labelSmall, color = WhiteColor)
+        Text("Số điện thoại", style = Typography.titleSmall, color = WhiteColor)
         CustomTextField(
             value = username,
             onValueChange = { username = it },
@@ -213,11 +213,11 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
             placeholder = "Nhập số điện thoại của bạn",
             keyboardType = KeyboardType.Phone,
             leadingIcon = painterResource(drawable.ic_phone),
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = 6.dp)
         )
         GapH12()
         // Password Input
-        Text("Nhập mật khẩu", style = Typography.labelSmall, color = WhiteColor)
+        Text("Nhập mật khẩu", style = Typography.titleSmall, color = WhiteColor)
         CustomTextField(
             value = password,
             onValueChange = { password = it },
@@ -247,13 +247,14 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
                 containerColor = if (buttonFocus) VietelSecondary else Color.Black.copy(alpha = 0.7f),
                 contentColor = WhiteColor
             ),
+            contentPadding = PaddingValues(0.dp),
             border = BorderStroke(
-                width = 1.dp, color = if (buttonFocus) Color.Transparent else VietelSecondary
+                width = 0.5.dp, color = if (buttonFocus) Color.Transparent else VietelSecondary
             ),
         ) {
             Text(
                 text = "Đăng nhập",
-                style = Typography.bodySmall,
+                style = Typography.titleSmall,
                 color = WhiteColor,
 
                 )
@@ -269,7 +270,7 @@ fun QRLoginBox(modifier: Modifier = Modifier) {
         modifier = modifier
             .background(Color.Black.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
             .border(
-                width = 2.dp, color = Grey50, shape = RoundedCornerShape(12.dp)
+                width = 0.5.dp, color = Grey50, shape = RoundedCornerShape(12.dp)
             )
             .width(272.dp)
             .fillMaxHeight() // Ensure the column fills the parent height
@@ -277,29 +278,42 @@ fun QRLoginBox(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center // Optional: center content vertically
     ) {
-        Text("Quét mã QR để đăng nhập", color = Color.White, style = Typography.labelMedium)
+        Text(
+            "Quét mã QR để đăng nhập",
+            color = Color.White,
+            style = Typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(modifier = Modifier.height(9.dp))
-
         Box(
             modifier = Modifier
-                .size(128.dp)
-                .background(Color.Black.copy(alpha = 0.7f), RoundedCornerShape(8.dp)),
+                .size(126.dp)
+                .background(Color.Black.copy(alpha = 0.7f), RoundedCornerShape(12.dp))
+                .border(
+                    width = 0.5.dp, color = Grey50, shape = RoundedCornerShape(12.dp)
+                ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = painterResource(drawable.ic_qr_code),
-                contentDescription = null,
-                modifier = Modifier.size(64.dp),
-                tint = Color.White
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(
+                    painter = painterResource(drawable.ic_qr_code),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
+                    tint = Color.White
+                )
+                GapH8()
+                Text(
+                    "Mã QR sẽ xuất hiện ở đây",
+                    style = Typography.labelSmall,
+                    color = WhiteColor.copy(alpha = 0.5f)
+                )
+            }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+        GapH12()
         Text(
             "Sử dụng ứng dụng di động để quét mã QR",
             color = Color.White.copy(alpha = 0.6f),
-            fontSize = 9.sp
+            style = Typography.labelLarge
         )
     }
 }

@@ -1,6 +1,9 @@
 package com.viettel.tvbox.screens.my_account.widget
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,7 +20,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -27,21 +32,28 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.viettel.tvbox.screens.my_account.MyAccountLayout
 import com.viettel.tvbox.theme.BG_2E2E2E
 import com.viettel.tvbox.theme.BG_E0E0E0E
+import com.viettel.tvbox.theme.ColorTransparent
+import com.viettel.tvbox.theme.GapH12
+import com.viettel.tvbox.theme.GapH16
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import com.viettel.tvbox.widgets.CustomTextField
 
 @Composable
-fun ChangePassword() {
+fun ChangePassword(navController: NavController) {
     val viewModel: UserViewModel = viewModel()
     var currentPwd by remember { mutableStateOf("") }
     var newPwd by remember { mutableStateOf("") }
     var confirmNewPwd by remember { mutableStateOf("") }
     var errors by remember { mutableStateOf(emptyMap<String, String>()) }
+    var cancelFocus by remember { mutableStateOf(false) }
+    var submitFocus by remember { mutableStateOf(false) }
 
     fun onSubmit() {
         val validationErrors = mutableMapOf<String, String>()
@@ -93,7 +105,7 @@ fun ChangePassword() {
                             append(" *")
                         }
                     },
-                    style = Typography.titleSmall,
+                    style = Typography.titleMedium,
                     color = BG_E0E0E0E
                 )
                 CustomTextField(
@@ -116,7 +128,7 @@ fun ChangePassword() {
                             append(" *")
                         }
                     },
-                    style = Typography.titleSmall,
+                    style = Typography.titleMedium,
                     color = BG_E0E0E0E
                 )
                 CustomTextField(
@@ -139,7 +151,7 @@ fun ChangePassword() {
                             append(" *")
                         }
                     },
-                    style = Typography.titleSmall,
+                    style = Typography.titleMedium,
                     color = BG_E0E0E0E
                 )
                 CustomTextField(
@@ -154,14 +166,31 @@ fun ChangePassword() {
                 if (errors.containsKey("confirm")) {
                     ErrorText(errors["confirm"]!!)
                 }
-
+                GapH12()
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(0.5.dp)
+                        .background(Color(0xFF3A3A3A))
+                )
+                GapH16()
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Button(
                         onClick = { onClearText() },
                         colors = ButtonDefaults.buttonColors(containerColor = BG_2E2E2E),
                         shape = RoundedCornerShape(4.dp),
                         contentPadding = PaddingValues(0.dp),
-                        modifier = Modifier.height(25.dp)
+                        border = when {
+                            cancelFocus -> BorderStroke(0.5.dp, WhiteColor)
+                            else -> BorderStroke(0.dp, ColorTransparent)
+                        },
+                        modifier = Modifier
+                            .height(25.dp)
+                            .graphicsLayer(
+                                scaleX = if (cancelFocus) 1.15f else 1f,
+                                scaleY = if (cancelFocus) 1.15f else 1f
+                            )
+                            .onFocusChanged { focusState -> cancelFocus = focusState.isFocused },
                     ) {
                         Text(
                             "Hủy",
@@ -175,7 +204,17 @@ fun ChangePassword() {
                         colors = ButtonDefaults.buttonColors(containerColor = VietelPrimaryColor),
                         shape = RoundedCornerShape(4.dp),
                         contentPadding = PaddingValues(vertical = 0.dp, horizontal = 24.dp),
-                        modifier = Modifier.height(25.dp)
+                        border = when {
+                            submitFocus -> BorderStroke(0.5.dp, WhiteColor)
+                            else -> BorderStroke(0.dp, ColorTransparent)
+                        },
+                        modifier = Modifier
+                            .height(25.dp)
+                            .graphicsLayer(
+                                scaleX = if (submitFocus) 1.15f else 1f,
+                                scaleY = if (submitFocus) 1.15f else 1f
+                            )
+                            .onFocusChanged { focusState -> submitFocus = focusState.isFocused },
                     ) {
                         Text(
                             "Đổi mật khẩu",

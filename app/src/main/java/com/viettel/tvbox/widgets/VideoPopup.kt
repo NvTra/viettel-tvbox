@@ -180,7 +180,7 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
                                 showCloseButtonWithTimer()
                             }
                         }
-                        .border(1.dp, WhiteColor.copy(alpha = 0.3f), CircleShape)
+                        .border(0.5.dp, WhiteColor.copy(alpha = 0.3f), CircleShape)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_close),

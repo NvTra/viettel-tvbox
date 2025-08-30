@@ -41,7 +41,7 @@ fun CustomScaffold(
                                 text = title,
                                 textAlign = TextAlign.Center,
                                 color = WhiteColor,
-                                style = Typography.titleMedium,
+                                style = Typography.displaySmall,
                             )
                         }
                     },
@@ -49,12 +49,12 @@ fun CustomScaffold(
                         containerColor = BlackColor,
                         titleContentColor = BlackColor
                     ),
-                    modifier = Modifier.requiredHeight(42.dp)
+                    modifier = Modifier.requiredHeight(42.5.dp)
                 )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(1.dp)
+                        .height(0.5.dp)
                         .align(Alignment.BottomCenter)
                         .background(Grey800)
                 )

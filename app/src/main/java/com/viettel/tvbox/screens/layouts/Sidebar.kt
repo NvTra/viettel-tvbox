@@ -143,9 +143,11 @@ fun Sidebar(
                 selected = selectedIndex == index,
                 onClick = {
                     navController.navigate(destination.route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
                         launchSingleTop = true
-                        restoreState = true
+                        restoreState = false
                     }
                 },
                 icon = {

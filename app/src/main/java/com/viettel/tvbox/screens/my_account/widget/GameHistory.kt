@@ -4,6 +4,7 @@ import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,17 +17,22 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.viettel.tvbox.screens.my_account.MyAccountLayout
@@ -35,6 +41,7 @@ import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH2
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 import com.viettel.tvbox.view_model.UserViewModel
@@ -43,11 +50,10 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun GameHistory() {
+fun GameHistory(navController: NavController) {
     MyAccountLayout(
         title = "Lịch sử chơi game",
         subTitle = "Xem lại các game bạn đã chơi",
-        isBodyScrollable = false,
         body = {
             val context = LocalContext.current
             val userPres = remember { UserPreferences.getInstance(context) }
@@ -93,9 +99,11 @@ fun GameHistory() {
                             gamePlayHistory
                         ) { index, game ->
                             GamePlayHistory(
+                                id = game.gid ?: "",
                                 title = game.name ?: "",
                                 image = game.imageHTML ?: "",
-                                time = game.time ?: ""
+                                time = game.time ?: "",
+                                navController
                             )
                         }
                         item {
@@ -121,9 +129,11 @@ fun GameHistory() {
 
 @Composable
 fun GamePlayHistory(
+    id: String,
     title: String,
     image: String,
     time: String,
+    navController: NavController
 ) {
     fun convertTime(input: String): String {
         return try {
@@ -135,7 +145,11 @@ fun GamePlayHistory(
             input
         }
     }
-    Row(
+
+    var isFocused by remember { mutableStateOf(false) }
+
+
+    Box(
         modifier = Modifier
             .drawBehind {
                 val strokeWidth = 0.5.dp.toPx()
@@ -147,29 +161,45 @@ fun GamePlayHistory(
                     strokeWidth = strokeWidth
                 )
             }
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)) {
-        AsyncImage(
-            model = getImageUrl(image),
-            contentDescription = "game",
+            .padding(vertical = 4.dp)
+            .background(Color.Transparent)
+            .onFocusChanged { isFocused = it.isFocused }
+            .clickable {
+                navController.navigate("game_detail/$id")
+            }
+    ) {
+        Row(
             modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .border(0.dp, ColorTransparent, RoundedCornerShape(4.dp)),
-        )
-        GapW8()
-        Column {
-            Text(
-                text = title,
-                style = Typography.labelSmall.copy(lineHeight = 14.sp),
-                color = WhiteColor
+                .border(
+                    if (isFocused) 0.5.dp else 0.dp,
+                    if (isFocused) VietelPrimaryColor else Color.Transparent,
+                    RoundedCornerShape(4.dp)
+                )
+                .fillMaxWidth()
+                .padding(vertical = 4.dp, horizontal = 4.dp)
+        ) {
+            AsyncImage(
+                model = getImageUrl(image),
+                contentDescription = "game",
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .border(0.dp, ColorTransparent, RoundedCornerShape(4.dp)),
             )
-            GapH2()
-            Text(
-                text = "Chơi lần cuối ${convertTime(time)}",
-                style = Typography.bodySmall,
-                color = BG_E0E0E0E
-            )
+            GapW8()
+            Column {
+                Text(
+                    text = title,
+                    style = Typography.labelSmall.copy(lineHeight = 14.sp),
+                    color = WhiteColor
+                )
+                GapH2()
+                Text(
+                    text = "Chơi lần cuối ${convertTime(time)}",
+                    style = Typography.bodySmall,
+                    color = BG_E0E0E0E
+                )
+            }
         }
     }
 }

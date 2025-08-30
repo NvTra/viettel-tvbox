@@ -3,6 +3,8 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.viettel.tvbox.models.UserInformation
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -12,6 +14,9 @@ class UserPreferences private constructor(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     private val gson = Gson()
+
+    private val _logoutEvent = MutableStateFlow(false)
+    val logoutEvent = _logoutEvent.asStateFlow()
 
     companion object {
         @Volatile
@@ -43,19 +48,16 @@ class UserPreferences private constructor(context: Context) {
     // Token expiration methods
     fun saveTokenExpiration(expiresIn: String) {
         try {
-            // Giả sử expiresIn có format "DD/MM/YYYY HH:mm:ss" như trong Angular
             val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
             val expirationDate = dateFormat.parse(expiresIn)
             val expirationTime = expirationDate?.time ?: 0L
             prefs.edit { putLong("token_expiration", expirationTime) }
         } catch (e: Exception) {
-            // Nếu parse lỗi, có thể expiresIn là timestamp
             try {
                 val expirationTime = expiresIn.toLong()
                 prefs.edit { putLong("token_expiration", expirationTime) }
             } catch (e2: Exception) {
-                // Nếu vẫn lỗi, set thời gian mặc định (1 giờ từ hiện tại)
-                val defaultExpiration = System.currentTimeMillis() + (60 * 60 * 1000) // 1 hour
+                val defaultExpiration = System.currentTimeMillis() + (60 * 60 * 1000)
                 prefs.edit { putLong("token_expiration", defaultExpiration) }
             }
         }
@@ -109,6 +111,11 @@ class UserPreferences private constructor(context: Context) {
             remove("token_expiration")
             remove("user_information")
         }
+        _logoutEvent.value = true
+    }
+
+    fun resetLogoutEvent() {
+        _logoutEvent.value = false
     }
 
     fun clearAll() {

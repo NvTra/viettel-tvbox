@@ -35,7 +35,7 @@ import com.viettel.tvbox.utils.getImageUrl
 @Composable
 fun GameCard(
     id: String,
-    title: String,
+    title: String? = null,
     imageUrl: String,
     navController: NavController,
     onClick: (() -> Unit)? = null,
@@ -85,18 +85,20 @@ fun GameCard(
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.3f))
             )
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(8.dp)
-            ) {
-                androidx.compose.material3.Text(
-                    text = title,
-                    style = Typography.titleSmall,
-                    color = Color.White,
-                    maxLines = 2
-                )
+            if (title != null) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(8.dp)
+                ) {
+                    androidx.compose.material3.Text(
+                        text = title,
+                        style = Typography.titleSmall,
+                        color = Color.White,
+                        maxLines = 2
+                    )
 
+                }
             }
         }
     }

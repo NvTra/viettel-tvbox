@@ -25,19 +25,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.R
 import com.viettel.tvbox.screens.my_account.MyAccountLayout
 import com.viettel.tvbox.theme.BG_2E2E2E
 import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.ColorTransparent
+import com.viettel.tvbox.theme.GapH6
 import com.viettel.tvbox.theme.GapH8
 import com.viettel.tvbox.theme.SidebarSelect
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.utils.getImageUrl
 
 @Composable
-fun AccountDetail() {
+fun AccountDetail(navController: NavController) {
     val context = LocalContext.current
     val userPres = remember { UserPreferences.getInstance(context) }
     val userInfo = userPres.getUserInformation()
@@ -135,7 +137,7 @@ fun AccountDetail() {
 fun TextView(title: String, value: String) {
     Column {
         Text(text = title, style = Typography.titleSmall, color = BG_E0E0E0E)
-        GapH8()
+        GapH6()
         Box(
             modifier = Modifier
                 .fillMaxWidth()

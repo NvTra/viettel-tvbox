@@ -21,6 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -29,6 +32,10 @@ import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.VietelSecondary
 import com.viettel.tvbox.utils.getImageUrl
 
+data class PromotionFontSize(
+    val titleFontSize: TextUnit, val descriptionFontSize: TextUnit
+)
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PromotionCard(
@@ -36,18 +43,17 @@ fun PromotionCard(
     title: String,
     description: String,
     imageUrl: String,
+    fontSize: PromotionFontSize? = null,
     navController: NavController
 ) {
     var isFocus by remember { mutableStateOf(false) }
     Card(
         onClick = {
             navController.navigate("promotion_detail/$id")
-        },
-        modifier = Modifier
+        }, modifier = Modifier
             .aspectRatio(1f)
             .graphicsLayer(
-                scaleX = if (isFocus) 1.06f else 1f,
-                scaleY = if (isFocus) 1.06f else 1f
+                scaleX = if (isFocus) 1.08f else 1f, scaleY = if (isFocus) 1.08f else 1f
             )
             .background(Color.Black.copy(alpha = 0.5f))
             .onFocusChanged { focusState -> isFocus = focusState.isFocused }
@@ -55,8 +61,7 @@ fun PromotionCard(
                 width = if (isFocus) 2.dp else 0.dp,
                 color = if (isFocus) VietelSecondary else Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
-            )
-    ) {
+            )) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -65,8 +70,7 @@ fun PromotionCard(
             AsyncImage(
                 model = getImageUrl(imageUrl),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop
             )
             Box(
@@ -81,16 +85,22 @@ fun PromotionCard(
             ) {
                 androidx.compose.material3.Text(
                     text = title,
-                    style = Typography.titleSmall,
+                    style = if (fontSize?.titleFontSize != null)
+                        Typography.titleSmall.copy(fontSize = fontSize.titleFontSize) else Typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
                     color = Color.White,
-                    maxLines = 2
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 GapH8()
                 androidx.compose.material3.Text(
                     text = description,
-                    style = Typography.bodySmall,
+                    style = if (fontSize?.descriptionFontSize != null) Typography.labelSmall.copy(
+                        fontSize = fontSize.descriptionFontSize
+                    ) else Typography.labelSmall,
                     color = Color.White,
-                    maxLines = 2
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

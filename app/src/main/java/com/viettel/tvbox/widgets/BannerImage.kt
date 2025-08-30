@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.GapH8
+import com.viettel.tvbox.theme.Grey200
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
@@ -114,13 +115,13 @@ fun BannerImage(
                     Text(
                         text = title,
                         color = WhiteColor,
-                        style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                        style = Typography.headlineLarge.copy(fontWeight = FontWeight.Bold)
                     )
                     GapH8()
                     Text(
                         text = subTitle,
-                        style = Typography.titleSmall,
-                        color = WhiteColor,
+                        style = Typography.bodyMedium,
+                        color = Grey200,
                     )
                 }
             }

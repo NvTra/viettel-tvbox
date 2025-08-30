@@ -19,10 +19,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -33,6 +39,102 @@ import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.theme.VietelSecondary
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
+
+class ParallelogramShape(
+    private val offsetFraction: Float = 0.1f,
+    private val topLeftRadiusDp: Float = 1f,
+    private val topRightRadiusDp: Float = 2f,
+    private val bottomRightRadiusDp: Float = 1f,
+    private val bottomLeftRadiusDp: Float = 2f
+) : Shape {
+    override fun createOutline(
+        size: androidx.compose.ui.geometry.Size,
+        layoutDirection: LayoutDirection,
+        density: androidx.compose.ui.unit.Density
+    ): Outline {
+        val offset = size.width * offsetFraction
+        val topLeft = androidx.compose.ui.geometry.Offset(offset / 2, 0f)
+        val topRight = androidx.compose.ui.geometry.Offset(size.width, 0f)
+        val bottomRight = androidx.compose.ui.geometry.Offset(size.width - offset / 2, size.height)
+        val bottomLeft = androidx.compose.ui.geometry.Offset(0f, size.height)
+
+        // Edge vectors
+        val vTop = (topRight - topLeft)
+        val vRight = (bottomRight - topRight)
+        val vBottom = (bottomLeft - bottomRight)
+        val vLeft = (topLeft - bottomLeft)
+
+        // Edge lengths
+        val topEdge = vTop.getDistance()
+        val rightEdge = vRight.getDistance()
+        val bottomEdge = vBottom.getDistance()
+        val leftEdge = vLeft.getDistance()
+
+        // Clamp radii
+        val topLeftRadius =
+            minOf(with(density) { topLeftRadiusDp.dp.toPx() }, topEdge / 2, leftEdge / 2)
+        val topRightRadius =
+            minOf(with(density) { topRightRadiusDp.dp.toPx() }, topEdge / 2, rightEdge / 2)
+        val bottomRightRadius =
+            minOf(with(density) { bottomRightRadiusDp.dp.toPx() }, bottomEdge / 2, rightEdge / 2)
+        val bottomLeftRadius =
+            minOf(with(density) { bottomLeftRadiusDp.dp.toPx() }, bottomEdge / 2, leftEdge / 2)
+
+        val path = Path().apply {
+            moveTo(topLeft.x + topLeftRadius, topLeft.y)
+            lineTo(topRight.x - topRightRadius, topRight.y)
+            arcTo(
+                Rect(
+                    topRight.x - 2 * topRightRadius,
+                    topRight.y,
+                    topRight.x,
+                    topRight.y + 2 * topRightRadius
+                ),
+                270f,
+                90f,
+                false
+            )
+            lineTo(bottomRight.x, bottomRight.y - bottomRightRadius)
+            arcTo(
+                Rect(
+                    bottomRight.x - 2 * bottomRightRadius,
+                    bottomRight.y - 2 * bottomRightRadius,
+                    bottomRight.x,
+                    bottomRight.y
+                ),
+                0f,
+                90f,
+                false
+            )
+            lineTo(bottomLeft.x + bottomLeftRadius, bottomLeft.y)
+            arcTo(
+                Rect(
+                    bottomLeft.x,
+                    bottomLeft.y - 2 * bottomLeftRadius,
+                    bottomLeft.x + 2 * bottomLeftRadius,
+                    bottomLeft.y
+                ),
+                90f,
+                90f,
+                false
+            )
+            lineTo(topLeft.x, topLeft.y + topLeftRadius)
+            arcTo(
+                Rect(
+                    topLeft.x,
+                    topLeft.y,
+                    topLeft.x + 2 * topLeftRadius,
+                    topLeft.y + 2 * topLeftRadius
+                ),
+                180f,
+                90f,
+                false
+            )
+            close()
+        }
+        return Outline.Generic(path)
+    }
+}
 
 @Composable
 fun CategoryCard(
@@ -75,7 +177,6 @@ fun CategoryCard(
                 text = title,
                 style = Typography.bodyMedium.copy(
                     fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp
                 ),
                 color = WhiteColor
             )
@@ -88,6 +189,7 @@ fun FeaturedCategoryCard(
     id: String,
     icon: String,
     title: String,
+    backGround: Color = VietelPrimaryColor,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -101,8 +203,10 @@ fun FeaturedCategoryCard(
                 scaleX = if (isFocus) 1.05f else 1f,
                 scaleY = if (isFocus) 1.05f else 1f
             )
+            .clip(ParallelogramShape(0.4f))
+            .background(backGround)
             .onFocusChanged { focusState -> isFocus = focusState.isFocused },
-        colors = CardDefaults.cardColors(VietelPrimaryColor),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
     ) {
         Box(
             contentAlignment = Alignment.Center,

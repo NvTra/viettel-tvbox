@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Grey50
 import com.viettel.tvbox.theme.Typography
@@ -53,7 +53,7 @@ fun CustomTextField(
             .height(25.dp)
             .fillMaxWidth()
             .border(
-                width = 1.dp,
+                width = 0.5.dp,
                 color = if (isFocus) VietelSecondary else Grey50,
                 shape = RoundedCornerShape(50.dp)
             )
@@ -69,7 +69,7 @@ fun CustomTextField(
                     painter = leadingIcon,
                     contentDescription = null,
                     tint = WhiteColor,
-                    modifier = Modifier.size(8.dp)
+                    modifier = Modifier.size(12.dp)
                 )
             }
             GapW8()
@@ -78,14 +78,14 @@ fun CustomTextField(
                 onValueChange = onValueChange,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                textStyle = Typography.bodySmall.copy(color = WhiteColor, fontSize = 8.sp),
+                textStyle = Typography.bodySmall.copy(color = WhiteColor),
                 visualTransformation = visualTransformation,
                 decorationBox = { innerTextField ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (value.isEmpty()) {
                             Text(
                                 placeholder, style = Typography.bodySmall.copy(
-                                    color = WhiteColor, fontSize = 8.sp
+                                    color = BG_E0E0E0E
                                 )
                             )
                         }
@@ -101,7 +101,7 @@ fun CustomTextField(
                     painter = trailingIcon,
                     contentDescription = null,
                     tint = WhiteColor,
-                    modifier = Modifier.size(8.dp).let {
+                    modifier = Modifier.size(12.dp).let {
                         if (onTrailingIconClick != null) {
                             it.clickable { onTrailingIconClick() }
                         } else it

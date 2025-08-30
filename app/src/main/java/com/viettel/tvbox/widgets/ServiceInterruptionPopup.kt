@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -19,11 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.tv.material3.Button
-import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.viettel.tvbox.theme.BG_1A1A1A
 import com.viettel.tvbox.theme.BlackColor
@@ -58,9 +57,8 @@ fun ServiceInterruptionPopup(onDismiss: () -> Unit) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        "  Dịch vụ bị gián đoạn do tài khoản của Quý khách không đủ để trừ cước gia hạn.\n" +
-                                " Vui lòng nạp thêm tiền và soạn HD CG gửi 9748 để nhận hướng dẫn khôi phục dịch vụ",
-                        style = Typography.labelMedium.copy(fontSize = 10.sp, lineHeight = 14.sp),
+                        "  Dịch vụ bị gián đoạn do tài khoản của Quý khách không đủ để trừ cước gia hạn.\n" + " Vui lòng nạp thêm tiền và soạn HD CG gửi 9748 để nhận hướng dẫn khôi phục dịch vụ",
+                        style = Typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = WhiteColor,
                         textAlign = TextAlign.Center,
@@ -69,19 +67,15 @@ fun ServiceInterruptionPopup(onDismiss: () -> Unit) {
                     GapH12()
                     Button(
                         onClick = { onDismiss() },
-                        shape = ButtonDefaults.shape(RoundedCornerShape(4.dp)),
-                        colors = ButtonDefaults.colors(
-                            containerColor = BG_1A1A1A,
-                            focusedContainerColor = BG_1A1A1A,
-                        ),
-                        scale = ButtonDefaults.scale(focusedScale = 1f),
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = BG_1A1A1A),
                         modifier = Modifier
                             .height(30.dp)
                             .fillMaxWidth()
                     ) {
                         Text(
                             "Bỏ qua",
-                            style = Typography.displaySmall,
+                            style = Typography.bodySmall,
                             color = WhiteColor,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,

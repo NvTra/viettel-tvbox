@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -61,6 +62,7 @@ import com.viettel.tvbox.theme.Grey400
 import com.viettel.tvbox.theme.Grey600
 import com.viettel.tvbox.theme.Grey700
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.theme.VietelSecondary
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.GameViewModel
@@ -230,7 +232,7 @@ fun GameDetail(id: String, navController: NavController) {
                             shape = CircleShape,
                             contentPadding = PaddingValues(0.dp),
                             border = BorderStroke(
-                                if (backFocus) 1.dp else 0.dp,
+                                if (backFocus) 0.5.dp else 0.dp,
                                 if (backFocus) VietelSecondary else Color.Transparent
                             ),
                             modifier = Modifier
@@ -279,7 +281,7 @@ fun GameDetail(id: String, navController: NavController) {
                     ) {
                         Text(
                             text = gameDetail.title ?: "",
-                            style = Typography.titleLarge,
+                            style = Typography.displayMedium,
                             color = WhiteColor
                         )
                         GapH12()
@@ -301,7 +303,7 @@ fun GameDetail(id: String, navController: NavController) {
                         GapH16()
                         Text(
                             text = gameDetail.description ?: "",
-                            style = Typography.titleSmall,
+                            style = Typography.bodyMedium,
                             color = WhiteColor,
                             textAlign = TextAlign.Justify,
                             modifier = Modifier.fillMaxWidth(0.5f)
@@ -309,13 +311,13 @@ fun GameDetail(id: String, navController: NavController) {
                         GapH8()
                         Text(
                             text = "${gameDetail.development ?: ""} | ${gameDetail.partner ?: ""}",
-                            style = Typography.labelSmall.copy(fontSize = 8.sp), color = Grey400
+                            style = Typography.bodySmall, color = Grey400
                         )
                         GapH16()
                         Row {
                             Text(
                                 text = "Thiết bị chơi: ",
-                                style = Typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                                style = Typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                                 color = WhiteColor
                             )
                             DeviceIcon(gameDetail.controller ?: emptyList())
@@ -324,54 +326,53 @@ fun GameDetail(id: String, navController: NavController) {
                         Row {
                             Text(
                                 text = "Thể loại: ",
-                                style = Typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                                style = Typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                                 color = WhiteColor
                             )
                             Text(text = gameDetail.types?.joinToString(", ") { e -> e } ?: "",
-                                style = Typography.displaySmall,
+                                style = Typography.bodySmall,
                                 color = Grey300)
                         }
                         GapH4()
                         Row {
                             Text(
                                 text = "Thời lượng: ",
-                                style = Typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                                style = Typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                                 color = WhiteColor
                             )
                             Text(
                                 text = gameDetail.duration ?: "",
-                                style = Typography.displaySmall,
+                                style = Typography.bodySmall,
                                 color = Grey300
                             )
                         }
                         GapH16()
                         Text(
                             text = "Các game liên quan",
-                            style = Typography.titleMedium,
+                            style = Typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
                             color = WhiteColor
                         )
                     }
-                    GapH4()
+                    GapH12()
                     Box(
                         modifier = Modifier
-                            .height(132.dp)
+                            .height(68.dp)
                             .background(Color.Transparent)
                     ) {
                         LazyRow(
                             modifier = Modifier
-                                .padding(8.dp)
                                 .background(Color.Transparent),
-                            contentPadding = PaddingValues(horizontal = 8.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             itemsIndexed(
                                 (gameDetail.relationGame ?: emptyList()).take(6)
                             ) { index, game ->
                                 GameCard(
-                                    game.id ?: "",
-                                    game.title ?: "",
-                                    game.imageScreen ?: "",
-                                    navController
+                                    id = game.id ?: "",
+                                    imageUrl = game.imageScreen ?: "",
+                                    navController = navController
                                 )
                             }
                         }
@@ -402,42 +403,48 @@ fun ItemButton(
     var isFocus by remember { mutableStateOf(false) }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(
-            onClick = onClick,
-            enabled = enabled,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Grey700,
-                disabledContainerColor = Grey700
-            ),
-            shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
-            border = BorderStroke(
-                if (isFocus) 1.dp else 0.dp,
-                if (isFocus) VietelSecondary else Color.Transparent
-            ),
+        Box(
             modifier = Modifier
-                .size(24.dp)
-                .then(if (!enabled) Modifier.focusable(false) else Modifier)
                 .graphicsLayer(
                     scaleX = if (isFocus) 1.06f else 1f,
                     scaleY = if (isFocus) 1.06f else 1f
                 )
-                .onFocusChanged { focusState -> isFocus = focusState.isFocused },
+                .clip(CircleShape)
+                .background(Color.Transparent)
         ) {
-            if (iconResId != null && iconResId != 0) {
-                Icon(
-                    painter = painterResource(id = iconResId),
-                    contentDescription = null,
-                    modifier = Modifier.size(8.dp),
-                    tint = VietelSecondary
-                )
-            } else if (text.isNotEmpty()) {
-                Text(
-                    text = text,
-                    fontSize = 7.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = VietelSecondary
-                )
+            Button(
+                onClick = onClick,
+                enabled = enabled,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Grey700,
+                    disabledContainerColor = Grey700
+                ),
+                shape = CircleShape,
+                contentPadding = PaddingValues(0.dp),
+                border = BorderStroke(
+                    if (isFocus) 0.5.dp else 0.dp,
+                    if (isFocus) VietelSecondary else Color.Transparent
+                ),
+                modifier = Modifier
+                    .size(24.dp)
+                    .then(if (!enabled) Modifier.focusable(false) else Modifier)
+                    .onFocusChanged { focusState -> isFocus = focusState.isFocused },
+            ) {
+                if (iconResId != null && iconResId != 0) {
+                    Icon(
+                        painter = painterResource(id = iconResId),
+                        contentDescription = null,
+                        modifier = Modifier.size(8.dp),
+                        tint = VietelSecondary
+                    )
+                } else if (text.isNotEmpty()) {
+                    Text(
+                        text = text,
+                        fontSize = 7.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = VietelSecondary
+                    )
+                }
             }
         }
         GapH2()
@@ -455,27 +462,47 @@ fun GameButton(
     onClick: () -> Unit,
     disabled: Boolean? = false
 ) {
+    var isFocus by remember { mutableStateOf(false) }
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = if (disabled == true) Grey600 else BG_DB27777),
         shape = RoundedCornerShape(size = 30.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 3.dp),
-        modifier = Modifier.height(24.dp)
+        border = when {
+            disabled == true && isFocus -> BorderStroke(0.5.dp, VietelPrimaryColor)
+            isFocus -> BorderStroke(0.5.dp, WhiteColor)
+            else -> BorderStroke(0.dp, Color.Transparent)
+        },
+        modifier = Modifier
+            .height(24.dp)
+            .graphicsLayer(
+                scaleX = if (isFocus) 1.15f else 1f,
+                scaleY = if (isFocus) 1.15f else 1f
+            )
+            .onFocusChanged { focusState -> isFocus = focusState.isFocused },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 painter = painterResource(id = iconResId),
                 contentDescription = null,
                 modifier = Modifier.size(10.dp),
-                tint = WhiteColor
+                tint = when {
+                    disabled == true && isFocus -> VietelPrimaryColor
+                    isFocus -> WhiteColor
+                    else -> WhiteColor
+                }
             )
             GapW4()
             Text(
                 text = title,
-                style = Typography.displaySmall.copy(
+                style = Typography.bodySmall.copy(
                     fontWeight = FontWeight.Bold,
                 ),
-                color = WhiteColor
+                color = when {
+                    disabled == true && isFocus -> VietelPrimaryColor
+                    isFocus -> WhiteColor
+                    else -> WhiteColor
+                }
             )
         }
     }
