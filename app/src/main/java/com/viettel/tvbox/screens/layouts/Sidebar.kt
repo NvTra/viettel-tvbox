@@ -40,15 +40,15 @@ import com.viettel.tvbox.theme.VietelPrimaryColor
 import com.viettel.tvbox.utils.getImageUrl
 
 enum class SidebarDestination(
-    val icon: Int,
+    val icon: Int?,
     val route: String,
+    val isAccount: Boolean = false
 ) {
-    HOME(R.drawable.ic_home, "home_screen"), SEARCH(
-        R.drawable.ic_search, "search_screen"
-    ),
-    CATEGORY(R.drawable.ic_category, "category_screen"), MY_LIST(
-        R.drawable.ic_heart, "favorites_screen"
-    ),
+    MY_ACCOUNT(R.drawable.ic_user2, "my_account", true),
+    HOME(R.drawable.ic_home, "home_screen"),
+    SEARCH(R.drawable.ic_search, "search_screen"),
+    CATEGORY(R.drawable.ic_category, "category_screen"),
+    MY_LIST(R.drawable.ic_heart, "favorites_screen"),
     PROMOTION(R.drawable.ic_new, "new_screen"),
 }
 
@@ -71,109 +71,110 @@ fun Sidebar(
         containerColor = Grey
     ) {
         GapH12()
-        var isBnItemFocused by rememberSaveable { mutableStateOf(false) }
-
-        NavigationRailItem(
-            colors = NavigationRailItemDefaults.colors(
-                indicatorColor = Color.Transparent
-            ),
-            selected = false,
-            onClick = {
-                navController.navigate("my_account")
-            },
-            icon = {
-                if (userInformation != null && userInformation.avatar?.isNotEmpty() == true) {
-                    Box(
-                        modifier = Modifier
-                            .size(25.dp)
-                            .clip(CircleShape)
-                            .background(SidebarSelect),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AsyncImage(
-                            model = getImageUrl(userInformation.avatar),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop,
-                            error = painterResource(R.drawable.ic_user2)
-                        )
-                    }
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .size(25.dp)
-                            .clip(CircleShape)
-                            .background(SidebarSelect),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.ic_user2),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(12.dp)
-                        )
-                    }
-                }
-            },
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .size(26.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(
-                    if (isBnItemFocused) SidebarSelect else Color.Transparent
-                )
-                .onFocusChanged { focusState ->
-                    isBnItemFocused = focusState.isFocused
-                },
-            alwaysShowLabel = false
-        )
-        GapH12()
         SidebarDestination.entries.forEachIndexed { index, destination ->
             var isItemFocused by rememberSaveable { mutableStateOf(false) }
-            NavigationRailItem(
-                colors = NavigationRailItemDefaults.colors(
-                    selectedIconColor = VietelPrimaryColor,
-                    unselectedIconColor = Color.White,
-                    selectedTextColor = VietelPrimaryColor,
-                    unselectedTextColor = Color.White,
-                    indicatorColor = Color.Transparent
-                ),
-                selected = selectedIndex == index,
-                onClick = {
-                    navController.navigate(destination.route) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                        restoreState = false
-                    }
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(id = destination.icon),
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
-                        tint = if (selectedIndex == index) VietelPrimaryColor else Color.White
-                    )
-                },
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .size(26.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(
-                        when {
-                            selectedIndex == index -> SidebarSelect
-                            isItemFocused -> SidebarSelect.copy(alpha = 0.5f)
-                            else -> Color.Transparent
-                        }
-                    )
-                    .onFocusChanged { focusState ->
-                        isItemFocused = focusState.isFocused
+            if (destination.isAccount) {
+                NavigationRailItem(
+                    colors = NavigationRailItemDefaults.colors(
+                        indicatorColor = Color.Transparent
+                    ),
+                    selected = selectedIndex == index,
+                    onClick = {
+                        navController.navigate(destination.route)
                     },
-                alwaysShowLabel = false
-            )
+                    icon = {
+                        if (userInformation != null && userInformation.avatar?.isNotEmpty() == true) {
+                            Box(
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .clip(CircleShape)
+                                    .background(SidebarSelect),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                AsyncImage(
+                                    model = getImageUrl(userInformation.avatar),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop,
+                                    error = painterResource(R.drawable.ic_user2)
+                                )
+                            }
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .clip(CircleShape)
+                                    .background(SidebarSelect),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painterResource(R.drawable.ic_user2),
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .size(26.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(
+                            if (isItemFocused || selectedIndex == index) SidebarSelect else Color.Transparent
+                        )
+                        .onFocusChanged { focusState ->
+                            isItemFocused = focusState.isFocused
+                        },
+                    alwaysShowLabel = false
+                )
+                GapH12()
+            } else {
+                NavigationRailItem(
+                    colors = NavigationRailItemDefaults.colors(
+                        selectedIconColor = VietelPrimaryColor,
+                        unselectedIconColor = Color.White,
+                        selectedTextColor = VietelPrimaryColor,
+                        unselectedTextColor = Color.White,
+                        indicatorColor = Color.Transparent
+                    ),
+                    selected = selectedIndex == index,
+                    onClick = {
+                        navController.navigate(destination.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                            restoreState = false
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = destination.icon!!),
+                            contentDescription = null,
+                            modifier = Modifier.size(12.dp),
+                            tint = if (selectedIndex == index) VietelPrimaryColor else Color.White
+                        )
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .size(26.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(
+                            when {
+                                selectedIndex == index -> SidebarSelect
+                                isItemFocused -> SidebarSelect.copy(alpha = 0.5f)
+                                else -> Color.Transparent
+                            }
+                        )
+                        .onFocusChanged { focusState ->
+                            isItemFocused = focusState.isFocused
+                        },
+                    alwaysShowLabel = false
+                )
+            }
         }
     }
 }

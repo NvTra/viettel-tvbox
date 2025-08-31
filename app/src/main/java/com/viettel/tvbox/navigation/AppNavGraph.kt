@@ -64,6 +64,11 @@ fun AppNavGraph(
                                 "Tin tức",
                                 navController
                             )
+
+                            SidebarDestination.MY_ACCOUNT -> com.viettel.tvbox.screens.my_account.MyAccountScreen(
+                                navController,
+                                onLogout
+                            )
                         }
                     }
                 }
@@ -82,16 +87,6 @@ fun AppNavGraph(
                         launchSingleTop = true
                     }
                 })
-            }
-        }
-
-        composable("my_account") {
-            Row(modifier = Modifier.fillMaxHeight()) {
-                com.viettel.tvbox.screens.layouts.Sidebar(
-                    navController = navController,
-                    modifier = Modifier.width(40.dp)
-                )
-                com.viettel.tvbox.screens.my_account.MyAccountScreen(navController, onLogout)
             }
         }
 

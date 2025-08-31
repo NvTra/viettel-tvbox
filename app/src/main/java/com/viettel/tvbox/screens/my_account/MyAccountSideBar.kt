@@ -162,7 +162,7 @@ fun SideBarAccountIcon(
         contentPadding = PaddingValues(0.dp),
         shape = RoundedCornerShape(4.dp),
         border = BorderStroke(
-            if (isFocus || selected) 0.8.dp else 0.3.dp,
+            if (isFocus || selected) 0.5.dp else 0.3.dp,
             color = when {
                 isFocus -> VietelPrimaryColor
                 selected -> VietelPrimaryColor
