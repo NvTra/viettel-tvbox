@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.SidebarSelect
@@ -194,32 +195,47 @@ fun FeaturedCategoryCard(
     modifier: Modifier = Modifier
 ) {
     var isFocus by remember { mutableStateOf(false) }
-    Card(
-        onClick = {
-            navController.navigate("category_detail/${id}")
-        },
+    val shape = ParallelogramShape(0.4f)
+    Box(
         modifier = modifier
+            .zIndex(if (isFocus) 1f else 0f)
             .graphicsLayer(
-                scaleX = if (isFocus) 1.05f else 1f,
-                scaleY = if (isFocus) 1.05f else 1f
+                scaleX = if (isFocus) 1.15f else 1f,
+                scaleY = if (isFocus) 1.15f else 1f
             )
-            .clip(ParallelogramShape(0.4f))
-            .background(backGround)
-            .onFocusChanged { focusState -> isFocus = focusState.isFocused },
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+            .then(
+                if (isFocus) Modifier
+                    .clip(shape)
+                    .background(Color.Transparent)
+                    .border(2.dp, VietelSecondary, shape)
+                else Modifier
+                    .clip(shape)
+            )
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
+        Card(
+            onClick = {
+                navController.navigate("category_detail/${id}")
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(shape)
+                .background(backGround)
+                .onFocusChanged { focusState -> isFocus = focusState.isFocused },
+            colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         ) {
-            Text(
-                text = title,
-                style = Typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp
-                ),
-                color = WhiteColor
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = title,
+                    style = Typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.sp
+                    ),
+                    color = WhiteColor
+                )
+            }
         }
     }
 }
@@ -243,6 +259,11 @@ fun CategoryImageCard(
             .graphicsLayer(
                 scaleX = if (isFocus) 1.05f else 1f,
                 scaleY = if (isFocus) 1.05f else 1f
+            )
+            .border(
+                width = if (isFocus) 2.dp else 0.dp,
+                color = if (isFocus) VietelSecondary else Color.Transparent,
+                shape = RoundedCornerShape(8.dp)
             )
             .onFocusChanged { focusState -> isFocus = focusState.isFocused },
         colors = CardDefaults.cardColors(VietelPrimaryColor),
