@@ -29,7 +29,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.GapH8
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.utils.getImageUrl
 
 data class PromotionFontSize(
@@ -59,7 +59,7 @@ fun PromotionCard(
             .onFocusChanged { focusState -> isFocus = focusState.isFocused }
             .border(
                 width = if (isFocus) 2.dp else 0.dp,
-                color = if (isFocus) VietelSecondary else Color.Transparent,
+                color = if (isFocus) ViettelPrimaryColor else Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
             )) {
         Box(

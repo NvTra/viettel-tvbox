@@ -41,7 +41,7 @@ import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH2
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 import com.viettel.tvbox.view_model.UserViewModel
@@ -172,7 +172,7 @@ fun GamePlayHistory(
             modifier = Modifier
                 .border(
                     if (isFocused) 0.5.dp else 0.dp,
-                    if (isFocused) VietelPrimaryColor else Color.Transparent,
+                    if (isFocused) ViettelPrimaryColor else Color.Transparent,
                     RoundedCornerShape(4.dp)
                 )
                 .fillMaxWidth()

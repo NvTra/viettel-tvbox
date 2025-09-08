@@ -31,9 +31,9 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
-import com.viettel.tvbox.theme.BG_DB27777
 import com.viettel.tvbox.theme.Grey600
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import kotlin.math.min
 
 @Composable
@@ -138,12 +138,12 @@ fun KeyboardView(
                             .padding(3.dp)
                             .size(width = keyWidth, height = 20.dp)
                             .background(
-                                if (isFocused) BG_DB27777 else Color.Transparent,
+                                if (isFocused) ViettelPrimaryColor else Color.Transparent,
                                 RoundedCornerShape(6.dp)
                             )
                             .border(
                                 0.5.dp,
-                                if (isFocused) BG_DB27777 else Grey600,
+                                if (isFocused) ViettelPrimaryColor else Grey600,
                                 RoundedCornerShape(6.dp)
                             )
                             .clickable {

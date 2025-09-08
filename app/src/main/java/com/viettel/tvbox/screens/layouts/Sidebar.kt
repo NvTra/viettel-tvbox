@@ -33,10 +33,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.viettel.tvbox.R
-import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.Grey
 import com.viettel.tvbox.theme.SidebarSelect
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.utils.getImageUrl
 
 enum class SidebarDestination(
@@ -70,7 +69,7 @@ fun Sidebar(
             .background(Color.Black),
         containerColor = Grey
     ) {
-        GapH12()
+//        GapH12()
         SidebarDestination.entries.forEachIndexed { index, destination ->
             var isItemFocused by rememberSaveable { mutableStateOf(false) }
             if (destination.isAccount) {
@@ -130,13 +129,13 @@ fun Sidebar(
                         },
                     alwaysShowLabel = false
                 )
-                GapH12()
+//                GapH12()
             } else {
                 NavigationRailItem(
                     colors = NavigationRailItemDefaults.colors(
-                        selectedIconColor = VietelPrimaryColor,
+                        selectedIconColor = ViettelPrimaryColor,
                         unselectedIconColor = Color.White,
-                        selectedTextColor = VietelPrimaryColor,
+                        selectedTextColor = ViettelPrimaryColor,
                         unselectedTextColor = Color.White,
                         indicatorColor = Color.Transparent
                     ),
@@ -155,7 +154,7 @@ fun Sidebar(
                             painter = painterResource(id = destination.icon!!),
                             contentDescription = null,
                             modifier = Modifier.size(12.dp),
-                            tint = if (selectedIndex == index) VietelPrimaryColor else Color.White
+                            tint = if (selectedIndex == index) ViettelPrimaryColor else Color.White
                         )
                     },
                     modifier = Modifier

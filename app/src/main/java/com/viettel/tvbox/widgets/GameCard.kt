@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -29,7 +30,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.viettel.tvbox.R
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.utils.getImageUrl
 
 @Composable
@@ -55,7 +56,7 @@ fun GameCard(
             .onFocusChanged { focusState -> isFocus = focusState.isFocused }
             .border(
                 width = if (isFocus) 2.dp else 0.dp,
-                color = if (isFocus) VietelSecondary else Color.Transparent,
+                color = if (isFocus) ViettelPrimaryColor else Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
             )
     ) {
@@ -93,8 +94,8 @@ fun GameCard(
                 ) {
                     androidx.compose.material3.Text(
                         text = title,
-                        style = Typography.titleSmall,
-                        color = Color.White,
+                        style = Typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                        color = if (isFocus) ViettelPrimaryColor else Color.White,
                         maxLines = 2
                     )
 

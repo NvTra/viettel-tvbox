@@ -46,7 +46,7 @@ import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH6
 import com.viettel.tvbox.theme.GapW4
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.AuthViewModel
 
@@ -164,8 +164,8 @@ fun SideBarAccountIcon(
         border = BorderStroke(
             if (isFocus || selected) 0.5.dp else 0.3.dp,
             color = when {
-                isFocus -> VietelPrimaryColor
-                selected -> VietelPrimaryColor
+                isFocus -> ViettelPrimaryColor
+                selected -> ViettelPrimaryColor
                 else -> ColorTransparent
             },
         ),
@@ -187,8 +187,8 @@ fun SideBarAccountIcon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
                 tint = when {
-                    isFocus -> VietelPrimaryColor
-                    selected -> VietelPrimaryColor
+                    isFocus -> ViettelPrimaryColor
+                    selected -> ViettelPrimaryColor
                     else -> BG_E0E0E0E
                 },
                 modifier = Modifier
@@ -199,8 +199,8 @@ fun SideBarAccountIcon(
             Text(
                 text = title,
                 color = when {
-                    isFocus -> VietelPrimaryColor
-                    selected -> VietelPrimaryColor
+                    isFocus -> ViettelPrimaryColor
+                    selected -> ViettelPrimaryColor
                     else -> BG_E0E0E0E
                 },
                 style = Typography.labelSmall.copy(fontWeight = FontWeight.Bold),
@@ -210,8 +210,8 @@ fun SideBarAccountIcon(
                 painterResource(id = R.drawable.ic_chevron_right),
                 contentDescription = null,
                 tint = when {
-                    isFocus -> VietelPrimaryColor
-                    selected -> VietelPrimaryColor
+                    isFocus -> ViettelPrimaryColor
+                    selected -> ViettelPrimaryColor
                     else -> Color.Gray
                 },
                 modifier = Modifier
@@ -238,11 +238,11 @@ fun LogoutButton(onLogout: () -> Unit) {
         border =
             BorderStroke(
                 width = if (isFocus) 0.5.dp else 0.3.dp,
-                color = if (isFocus) VietelPrimaryColor else VietelPrimaryColor,
+                color = if (isFocus) ViettelPrimaryColor else ViettelPrimaryColor,
             ),
         shape = RoundedCornerShape(4.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isFocus) BG_1A1A1A else VietelPrimaryColor.copy(
+            containerColor = if (isFocus) BG_1A1A1A else ViettelPrimaryColor.copy(
                 alpha = 0.1f
             ),
         ),
@@ -264,7 +264,7 @@ fun LogoutButton(onLogout: () -> Unit) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_logout),
                 contentDescription = null,
-                tint = if (isFocus) WhiteColor else VietelPrimaryColor,
+                tint = if (isFocus) WhiteColor else ViettelPrimaryColor,
                 modifier = Modifier
                     .size(9.dp)
                     .align(Alignment.CenterVertically)
@@ -272,7 +272,7 @@ fun LogoutButton(onLogout: () -> Unit) {
             GapW4()
             Text(
                 text = "Đăng xuất",
-                color = if (isFocus) WhiteColor else VietelPrimaryColor,
+                color = if (isFocus) WhiteColor else ViettelPrimaryColor,
                 style = Typography.labelSmall,
                 modifier = Modifier.weight(1f)
             )

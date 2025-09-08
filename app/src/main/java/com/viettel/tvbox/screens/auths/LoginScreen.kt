@@ -41,7 +41,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.viettel.tvbox.R.drawable
 import com.viettel.tvbox.models.LoginRequest
 import com.viettel.tvbox.services.RetrofitInstance
@@ -50,7 +52,7 @@ import com.viettel.tvbox.theme.GapH24
 import com.viettel.tvbox.theme.GapH8
 import com.viettel.tvbox.theme.Grey50
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.widgets.CustomTextField
 import kotlinx.coroutines.Dispatchers
@@ -244,12 +246,12 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
                 .height(25.dp)
                 .onFocusChanged { buttonFocus = it.isFocused },
             colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = if (buttonFocus) VietelSecondary else Color.Black.copy(alpha = 0.7f),
+                containerColor = if (buttonFocus) ViettelPrimaryColor else Color.Black.copy(alpha = 0.7f),
                 contentColor = WhiteColor
             ),
             contentPadding = PaddingValues(0.dp),
             border = BorderStroke(
-                width = 0.5.dp, color = if (buttonFocus) Color.Transparent else VietelSecondary
+                width = 0.5.dp, color = if (buttonFocus) Color.Transparent else ViettelPrimaryColor
             ),
         ) {
             Text(
@@ -302,18 +304,24 @@ fun QRLoginBox(modifier: Modifier = Modifier) {
                     tint = Color.White
                 )
                 GapH8()
-                Text(
-                    "Mã QR sẽ xuất hiện ở đây",
-                    style = Typography.labelSmall,
-                    color = WhiteColor.copy(alpha = 0.5f)
-                )
+//                Text(
+//                    "Hoặc sử dụng mã OTP: 123456",
+//                    style = Typography.titleLarge,
+//                    color = WhiteColor.copy(alpha = 0.5f)
+//                )
             }
         }
         GapH12()
         Text(
-            "Sử dụng ứng dụng di động để quét mã QR",
+            "Quét mã QR bằng App CloudGame\ntrên điện thoại để đăng nhập",
             color = Color.White.copy(alpha = 0.6f),
-            style = Typography.labelLarge
+            style = Typography.labelLarge.copy(letterSpacing = 0.1.sp),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            "Hoặc sử dụng mã OTP: 123456",
+            style = Typography.titleLarge,
+            color = WhiteColor.copy(alpha = 0.5f)
         )
     }
 }

@@ -42,8 +42,7 @@ import com.viettel.tvbox.theme.GapH2
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Green400
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
-import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.view_model.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -165,7 +164,7 @@ fun PayHistory(
             modifier = Modifier
                 .border(
                     if (isFocused) 0.5.dp else 0.dp,
-                    if (isFocused) VietelPrimaryColor else Color.Transparent,
+                    if (isFocused) ViettelPrimaryColor else Color.Transparent,
                     RoundedCornerShape(4.dp)
                 )
                 .fillMaxWidth()
@@ -182,7 +181,7 @@ fun PayHistory(
                 Icon(
                     painterResource(id = R.drawable.ic_credit_card),
                     contentDescription = null,
-                    tint = VietelPrimaryColor,
+                    tint = ViettelPrimaryColor,
                     modifier = Modifier.size(12.dp)
                 )
             }
@@ -276,18 +275,20 @@ fun PayHistory(
                 else Box(
                     modifier = Modifier
                         .background(
-                            VietelSecondary.copy(alpha = 0.2f), RoundedCornerShape(30.dp)
+                            ViettelPrimaryColor.copy(alpha = 0.2f), RoundedCornerShape(30.dp)
                         )
                         .border(
                             width = 0.2.dp,
-                            color = VietelSecondary,
+                            color = ViettelPrimaryColor,
                             shape = RoundedCornerShape(30.dp)
                         )
                         .padding(vertical = 3.dp, horizontal = 6.dp),
 
                     ) {
                     Text(
-                        text = "Thất bại", style = Typography.labelSmall, color = VietelSecondary
+                        text = "Thất bại",
+                        style = Typography.labelSmall,
+                        color = ViettelPrimaryColor
                     )
                 }
             }

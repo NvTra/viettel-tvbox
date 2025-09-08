@@ -40,7 +40,7 @@ import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH16
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import com.viettel.tvbox.widgets.CustomTextField
@@ -201,7 +201,7 @@ fun ChangePassword(navController: NavController) {
 
                     Button(
                         onClick = { onSubmit() },
-                        colors = ButtonDefaults.buttonColors(containerColor = VietelPrimaryColor),
+                        colors = ButtonDefaults.buttonColors(containerColor = ViettelPrimaryColor),
                         shape = RoundedCornerShape(4.dp),
                         contentPadding = PaddingValues(vertical = 0.dp, horizontal = 24.dp),
                         border = when {

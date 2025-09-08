@@ -41,7 +41,7 @@ import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.GapH2
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.view_model.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -165,7 +165,7 @@ fun AccessHistoryItem(
             modifier = Modifier
                 .border(
                     if (isFocused) 0.5.dp else 0.dp,
-                    if (isFocused) VietelPrimaryColor else Color.Transparent,
+                    if (isFocused) ViettelPrimaryColor else Color.Transparent,
                     RoundedCornerShape(4.dp)
                 )
                 .fillMaxWidth()
@@ -185,7 +185,7 @@ fun AccessHistoryItem(
                         getIcon(item.os),
                     ),
                     contentDescription = null,
-                    tint = VietelPrimaryColor,
+                    tint = ViettelPrimaryColor,
                     modifier = Modifier.size(12.dp)
                 )
             }

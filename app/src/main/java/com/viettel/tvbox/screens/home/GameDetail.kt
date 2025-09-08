@@ -49,7 +49,6 @@ import androidx.tv.material3.Text
 import com.viettel.tvbox.R
 import com.viettel.tvbox.models.LikeGame
 import com.viettel.tvbox.models.LogUserHistory
-import com.viettel.tvbox.theme.BG_DB27777
 import com.viettel.tvbox.theme.Black50
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH16
@@ -62,8 +61,7 @@ import com.viettel.tvbox.theme.Grey400
 import com.viettel.tvbox.theme.Grey600
 import com.viettel.tvbox.theme.Grey700
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
-import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.GameViewModel
 import com.viettel.tvbox.view_model.GameViewModelFactory
@@ -233,7 +231,7 @@ fun GameDetail(id: String, navController: NavController) {
                             contentPadding = PaddingValues(0.dp),
                             border = BorderStroke(
                                 if (backFocus) 0.5.dp else 0.dp,
-                                if (backFocus) VietelSecondary else Color.Transparent
+                                if (backFocus) ViettelPrimaryColor else Color.Transparent
                             ),
                             modifier = Modifier
                                 .size(30.dp)
@@ -423,7 +421,7 @@ fun ItemButton(
                 contentPadding = PaddingValues(0.dp),
                 border = BorderStroke(
                     if (isFocus) 0.5.dp else 0.dp,
-                    if (isFocus) VietelSecondary else Color.Transparent
+                    if (isFocus) ViettelPrimaryColor else Color.Transparent
                 ),
                 modifier = Modifier
                     .size(24.dp)
@@ -435,14 +433,14 @@ fun ItemButton(
                         painter = painterResource(id = iconResId),
                         contentDescription = null,
                         modifier = Modifier.size(8.dp),
-                        tint = VietelSecondary
+                        tint = ViettelPrimaryColor
                     )
                 } else if (text.isNotEmpty()) {
                     Text(
                         text = text,
                         fontSize = 7.sp,
                         fontWeight = FontWeight.Bold,
-                        color = VietelSecondary
+                        color = ViettelPrimaryColor
                     )
                 }
             }
@@ -465,11 +463,11 @@ fun GameButton(
     var isFocus by remember { mutableStateOf(false) }
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = if (disabled == true) Grey600 else BG_DB27777),
+        colors = ButtonDefaults.buttonColors(containerColor = if (disabled == true) Grey600 else ViettelPrimaryColor),
         shape = RoundedCornerShape(size = 30.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 3.dp),
         border = when {
-            disabled == true && isFocus -> BorderStroke(0.5.dp, VietelPrimaryColor)
+            disabled == true && isFocus -> BorderStroke(0.5.dp, ViettelPrimaryColor)
             isFocus -> BorderStroke(0.5.dp, WhiteColor)
             else -> BorderStroke(0.dp, Color.Transparent)
         },
@@ -487,7 +485,7 @@ fun GameButton(
                 contentDescription = null,
                 modifier = Modifier.size(10.dp),
                 tint = when {
-                    disabled == true && isFocus -> VietelPrimaryColor
+                    disabled == true && isFocus -> ViettelPrimaryColor
                     isFocus -> WhiteColor
                     else -> WhiteColor
                 }
@@ -499,7 +497,7 @@ fun GameButton(
                     fontWeight = FontWeight.Bold,
                 ),
                 color = when {
-                    disabled == true && isFocus -> VietelPrimaryColor
+                    disabled == true && isFocus -> ViettelPrimaryColor
                     isFocus -> WhiteColor
                     else -> WhiteColor
                 }

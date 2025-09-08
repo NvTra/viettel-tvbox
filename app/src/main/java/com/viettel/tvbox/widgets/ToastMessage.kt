@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.viettel.tvbox.theme.Green400
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -70,7 +70,7 @@ object ToastMessage {
                             .widthIn(max = 300.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = if (_isError)
-                                VietelPrimaryColor
+                                ViettelPrimaryColor
                             else Green400
                         ),
                         shape = RoundedCornerShape(8.dp),

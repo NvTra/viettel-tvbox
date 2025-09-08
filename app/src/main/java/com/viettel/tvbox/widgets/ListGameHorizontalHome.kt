@@ -32,7 +32,7 @@ import com.viettel.tvbox.models.ManagerHomeConfig
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 
@@ -87,12 +87,12 @@ fun GameButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isFocus) VietelPrimaryColor else Color.Transparent,
+            containerColor = if (isFocus) ViettelPrimaryColor else Color.Transparent,
         ),
         shape = RoundedCornerShape(4.dp),
         border = if (isFocus) BorderStroke(width = 0.5.dp, WhiteColor) else BorderStroke(
             width = 0.5.dp,
-            VietelPrimaryColor
+            ViettelPrimaryColor
         ),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
         modifier = Modifier
@@ -108,7 +108,7 @@ fun GameButton(
             style = Typography.labelSmall.copy(
                 fontWeight = FontWeight.Bold,
             ),
-            color = if (isFocus) WhiteColor else VietelPrimaryColor
+            color = if (isFocus) WhiteColor else ViettelPrimaryColor
         )
 
     }

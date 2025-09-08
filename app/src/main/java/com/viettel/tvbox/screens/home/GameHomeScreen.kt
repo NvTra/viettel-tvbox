@@ -64,9 +64,9 @@ fun GameHomeScreen(label: String, navController: NavController) {
                         ListGameHorizontal(gamePlayed, navController)
                     }
                     GapH24()
-                    ListGameHorizontal(allGame, navController)
-                    GapH24()
                     ListGameHorizontal(gameHot, navController)
+                    GapH24()
+                    ListGameHorizontal(allGame, navController)
                     GapH24()
                 }
             }

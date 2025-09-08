@@ -39,10 +39,9 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 import com.viettel.tvbox.R
-import com.viettel.tvbox.theme.BG_DB27777
 import com.viettel.tvbox.theme.GapW4
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import com.viettel.tvbox.widgets.CustomScaffold
@@ -99,7 +98,7 @@ fun GameButton(
     var isFocus by remember { mutableStateOf(false) }
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = if (selected == true) BG_DB27777 else Color.Transparent),
+        colors = ButtonDefaults.buttonColors(containerColor = if (selected == true) ViettelPrimaryColor else Color.Transparent),
         shape = RoundedCornerShape(size = 30.dp),
         modifier = Modifier
             .height(25.dp)
@@ -112,7 +111,7 @@ fun GameButton(
         border = when {
             selected == true && isFocus -> BorderStroke(0.5.dp, WhiteColor)
             isFocus -> BorderStroke(0.5.dp, WhiteColor)
-            else -> BorderStroke(0.5.dp, VietelPrimaryColor)
+            else -> BorderStroke(0.5.dp, ViettelPrimaryColor)
         },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -123,7 +122,7 @@ fun GameButton(
                 tint = when {
                     selected == true -> WhiteColor
                     isFocus -> WhiteColor
-                    else -> BG_DB27777
+                    else -> ViettelPrimaryColor
                 }
             )
             GapW4()
@@ -133,7 +132,7 @@ fun GameButton(
                 ), color = when {
                     selected == true -> WhiteColor
                     isFocus -> WhiteColor
-                    else -> BG_DB27777
+                    else -> ViettelPrimaryColor
                 }
             )
         }

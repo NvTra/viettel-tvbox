@@ -48,6 +48,8 @@ import com.viettel.tvbox.R
 import com.viettel.tvbox.models.LogUserHistory
 import com.viettel.tvbox.screens.keyboard.KeyboardView
 import com.viettel.tvbox.screens.keyboard.KeyboardViewModel
+import com.viettel.tvbox.services.SearchPreferences
+import com.viettel.tvbox.services.SearchUtils
 import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.ColorTransparent
 import com.viettel.tvbox.theme.GapH12
@@ -58,7 +60,7 @@ import com.viettel.tvbox.theme.GapH8
 import com.viettel.tvbox.theme.Grey400
 import com.viettel.tvbox.theme.Grey800
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 import com.viettel.tvbox.view_model.GameViewModel
@@ -72,6 +74,7 @@ import com.viettel.tvbox.widgets.GameCard
 fun SearchScreen(label: String, navController: NavController) {
     val context = LocalContext.current
     val userPres = remember { UserPreferences.getInstance(context) }
+    val searchPref = remember { SearchPreferences(context) }
     val keyboardViewModel: KeyboardViewModel = viewModel()
     var inputText by remember { mutableStateOf("") }
     val historyViewModel: HistoryViewModel = viewModel()
@@ -146,9 +149,22 @@ fun SearchScreen(label: String, navController: NavController) {
                             )
                         }
                         GapH6()
-                        HistoryPushList(gameSearchHistory, onClearHistory = {
-                            viewModel.clearGameSearchHistory()
-                        })
+                        SearchHistoryList(
+                            onKeywordClick = { keyword ->
+                                inputText = keyword
+                                viewModel.getGameSmartSearchResults(
+                                    textSearch = keyword,
+                                    type = userPres.getUserInformation()?.forAge ?: "ALL"
+                                )
+                            },
+                            onClearHistory = {
+                                SearchUtils.clearHistory(context)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+//                        HistoryPushList(gameSearchHistory, onClearHistory = {
+//                            viewModel.clearGameSearchHistory()
+//                        })
                     }
                 }
                 Column(
@@ -276,28 +292,34 @@ fun SearchScreen(label: String, navController: NavController) {
 }
 
 @Composable
-fun HistoryPushList(
-    gameSearchHistory: List<com.viettel.tvbox.models.GameRelation>,
+fun SearchHistoryList(
+    onKeywordClick: (String) -> Unit,
     onClearHistory: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    var history by remember { mutableStateOf(SearchUtils.getHistoryList(context)) }
 
+    // Update history when clear is called
+    LaunchedEffect(Unit) {
+        history = SearchUtils.getHistoryList(context)
+    }
 
-    BoxWithConstraints(
-        modifier = modifier.fillMaxWidth()
-    ) {
+    if (history.isEmpty()) return
+
+    BoxWithConstraints(modifier = modifier) {
         val maxWidthPx = constraints.maxWidth.toFloat()
         val textMeasurer = rememberTextMeasurer()
         val density = LocalDensity.current
         val buttonHorizontalPadding = with(density) { 16.dp.toPx() }
         val buttonSpacing = with(density) { 4.dp.toPx() }
-        val allItems = gameSearchHistory.map { it to false } + (null to true)
-        val rowList = mutableListOf<List<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>>()
-        var currentRow = mutableListOf<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>()
+        val allItems = history.map { it to false } + (null to true)
+        val rowList = mutableListOf<List<Pair<String?, Boolean>>>()
+        var currentRow = mutableListOf<Pair<String?, Boolean>>()
         var currentRowWidth = 0f
         var rowCount = 0
-        for ((game, isClear) in allItems) {
-            val text = if (isClear) "Xóa tìm kiếm" else game?.title ?: ""
+        for ((keyword, isClear) in allItems) {
+            val text = if (isClear) "Xóa tìm kiếm" else keyword ?: ""
             val textLayoutResult = textMeasurer.measure(
                 AnnotatedString(text), style = Typography.bodySmall
             )
@@ -311,9 +333,9 @@ fun HistoryPushList(
                 if (rowCount == 3) break
                 currentRow = mutableListOf()
                 currentRowWidth = buttonWidth
-                currentRow.add(game to isClear)
+                currentRow.add(keyword to isClear)
             } else {
-                currentRow.add(game to isClear)
+                currentRow.add(keyword to isClear)
                 currentRowWidth = nextWidth
             }
         }
@@ -322,8 +344,8 @@ fun HistoryPushList(
         }
         val limitedRowList = rowList.flatten().take(10)
         val displayRows =
-            mutableListOf<List<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>>()
-        var tempRow = mutableListOf<Pair<com.viettel.tvbox.models.GameRelation?, Boolean>>()
+            mutableListOf<List<Pair<String?, Boolean>>>()
+        var tempRow = mutableListOf<Pair<String?, Boolean>>()
         for ((index, item) in limitedRowList.withIndex()) {
             tempRow.add(item)
             if (displayRows.size < rowList.size && (rowList[displayRows.size].size == tempRow.size || index == limitedRowList.lastIndex)) {
@@ -333,20 +355,22 @@ fun HistoryPushList(
         }
         Column(modifier = Modifier.fillMaxWidth()) {
             displayRows.forEach { row ->
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    row.forEach { (game, isClear) ->
+                    row.forEach { (keyword, isClear) ->
                         var isFocus by remember { mutableStateOf(false) }
                         if (isClear) {
                             Button(
-                                onClick = onClearHistory,
+                                onClick = {
+                                    onClearHistory()
+                                    history = emptyList()
+                                },
                                 colors = ButtonDefaults.buttonColors(containerColor = Grey800),
                                 border = BorderStroke(
                                     width = if (isFocus) 0.5.dp else 0.dp,
-                                    color = if (isFocus) VietelPrimaryColor else ColorTransparent
+                                    color = if (isFocus) ViettelPrimaryColor else ColorTransparent
                                 ),
                                 modifier = Modifier
                                     .height(25.dp)
@@ -362,11 +386,13 @@ fun HistoryPushList(
                             }
                         } else {
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    keyword?.let { onKeywordClick(it) }
+                                },
                                 colors = ButtonDefaults.buttonColors(containerColor = Grey800),
                                 border = BorderStroke(
                                     width = if (isFocus) 0.5.dp else 0.dp,
-                                    color = if (isFocus) VietelPrimaryColor else ColorTransparent
+                                    color = if (isFocus) ViettelPrimaryColor else ColorTransparent
                                 ),
                                 modifier = Modifier
                                     .height(25.dp)
@@ -376,9 +402,9 @@ fun HistoryPushList(
                                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                             ) {
                                 Text(
-                                    game?.title ?: "",
+                                    keyword ?: "",
                                     style = Typography.bodySmall,
-                                    color = if (isFocus) VietelPrimaryColor else WhiteColor
+                                    color = if (isFocus) ViettelPrimaryColor else WhiteColor
                                 )
                             }
                         }

@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.viettel.tvbox.theme.VietelPrimaryColor
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import kotlin.math.abs
 
 @Composable
@@ -94,7 +94,7 @@ fun LoadingIndicator(
             val offset = currentRotation.value
 
             drawArc(
-                color = VietelPrimaryColor,
+                color = ViettelPrimaryColor,
                 startAngle = startAngle.value + offset,
                 sweepAngle = sweep,
                 useCenter = false,

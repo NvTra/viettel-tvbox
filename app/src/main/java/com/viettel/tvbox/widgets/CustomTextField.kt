@@ -31,7 +31,7 @@ import com.viettel.tvbox.theme.BG_E0E0E0E
 import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Grey50
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 
 @Composable
@@ -54,7 +54,7 @@ fun CustomTextField(
             .fillMaxWidth()
             .border(
                 width = 0.5.dp,
-                color = if (isFocus) VietelSecondary else Grey50,
+                color = if (isFocus) ViettelPrimaryColor else Grey50,
                 shape = RoundedCornerShape(50.dp)
             )
             .background(backgroundColor, RoundedCornerShape(50.dp)),

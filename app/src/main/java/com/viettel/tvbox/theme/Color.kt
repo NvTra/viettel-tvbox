@@ -2,12 +2,7 @@ package com.viettel.tvbox.theme
 
 import androidx.compose.ui.graphics.Color
 
-val BG_DB27777 = Color(0xFFee0033)
-
-val VietelPrimaryColor = Color(0xFFf1062a)
-
-val VietelSecondary = Color(0xFFee0033)
-
+val ViettelPrimaryColor = Color(0xFFf1062a)
 
 val BG_1A1A1A = Color(0xFF1a1a1a)
 

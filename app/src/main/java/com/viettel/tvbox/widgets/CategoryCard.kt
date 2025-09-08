@@ -36,8 +36,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.SidebarSelect
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.VietelPrimaryColor
-import com.viettel.tvbox.theme.VietelSecondary
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 
@@ -157,7 +156,7 @@ fun CategoryCard(
             )
             .border(
                 width = if (isFocus) 2.dp else 0.dp,
-                color = if (isFocus) VietelSecondary else Color.Transparent,
+                color = if (isFocus) ViettelPrimaryColor else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .onFocusChanged { focusState -> isFocus = focusState.isFocused },
@@ -190,7 +189,7 @@ fun FeaturedCategoryCard(
     id: String,
     icon: String,
     title: String,
-    backGround: Color = VietelPrimaryColor,
+    backGround: Color = ViettelPrimaryColor,
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
@@ -207,7 +206,7 @@ fun FeaturedCategoryCard(
                 if (isFocus) Modifier
                     .clip(shape)
                     .background(Color.Transparent)
-                    .border(2.dp, VietelSecondary, shape)
+                    .border(2.dp, ViettelPrimaryColor, shape)
                 else Modifier
                     .clip(shape)
             )
@@ -262,11 +261,11 @@ fun CategoryImageCard(
             )
             .border(
                 width = if (isFocus) 2.dp else 0.dp,
-                color = if (isFocus) VietelSecondary else Color.Transparent,
+                color = if (isFocus) ViettelPrimaryColor else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .onFocusChanged { focusState -> isFocus = focusState.isFocused },
-        colors = CardDefaults.cardColors(VietelPrimaryColor),
+        colors = CardDefaults.cardColors(ViettelPrimaryColor),
     ) {
         Box(
             contentAlignment = Alignment.Center,
