@@ -18,7 +18,7 @@ data class KeyboardKey(
 )
 
 enum class KeyType {
-    CHAR, DELETE, SPACE, ENTER, SWITCH, CLEAR
+    CHAR, DELETE, SPACE, ENTER, SWITCH, CLEAR, SEARCH
 }
 
 class KeyboardViewModel : ViewModel() {
@@ -27,7 +27,12 @@ class KeyboardViewModel : ViewModel() {
     var focusedRow by mutableStateOf(0)
     var focusedCol by mutableStateOf(0)
 
-    fun onKeyPress(key: KeyboardKey, inputText: String, onInputChanged: (String) -> Unit) {
+    fun onKeyPress(
+        key: KeyboardKey,
+        inputText: String,
+        onInputChanged: (String) -> Unit,
+        onSearch: (() -> Unit)? = null
+    ) {
         when (key.type) {
             KeyType.CHAR -> onInputChanged(inputText + key.value)
             KeyType.DELETE -> if (inputText.isNotEmpty()) onInputChanged(inputText.dropLast(1))
@@ -37,6 +42,7 @@ class KeyboardViewModel : ViewModel() {
 
             KeyType.SWITCH -> switchKeyboardType()
             KeyType.CLEAR -> onInputChanged("")
+            KeyType.SEARCH -> onSearch?.invoke()
         }
     }
 

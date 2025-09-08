@@ -28,9 +28,11 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
+import com.viettel.tvbox.services.SearchUtils
 import com.viettel.tvbox.theme.Grey600
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.ViettelPrimaryColor
@@ -42,11 +44,13 @@ fun KeyboardView(
     inputText: String,
     onInputChanged: (String) -> Unit,
     viewModel: KeyboardViewModel,
-    onEnter: (String) -> Unit = {}
+    onEnter: (String) -> Unit = {},
+    onSearch: () -> Unit = {}
 ) {
     val keys = getKeyboardLayout(viewModel.keyboardType)
     val focusRequester = remember { FocusRequester() }
     var isKeyboardFocused by remember { mutableStateOf(true) }
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -109,6 +113,11 @@ fun KeyboardView(
                         val key = keys[viewModel.focusedRow][viewModel.focusedCol]
                         if (key.type == KeyType.ENTER) {
                             onEnter(inputText)
+                        } else if (key.type == KeyType.SEARCH) {
+                            if (inputText.isNotBlank()) {
+                                SearchUtils.addHistory(context, inputText)
+                                onSearch()
+                            }
                         } else {
                             viewModel.onKeyPress(key, inputText, onInputChanged)
                         }
@@ -128,9 +137,10 @@ fun KeyboardView(
                     val isFocused =
                         isKeyboardFocused && viewModel.focusedRow == rowIdx && viewModel.focusedCol == colIdx
                     val keyWidth = when (key.type) {
-                        KeyType.DELETE -> 28.dp
-                        KeyType.SPACE -> 68.dp
-                        KeyType.CLEAR -> 45.dp
+                        KeyType.DELETE -> 38.dp
+                        KeyType.SPACE -> 110.dp
+                        KeyType.CLEAR -> 38.dp
+                        KeyType.SEARCH -> 50.dp
                         else -> 20.dp
                     }
                     Box(
@@ -153,6 +163,11 @@ fun KeyboardView(
                                 focusRequester.requestFocus()
                                 if (key.type == KeyType.ENTER) {
                                     onEnter(inputText)
+                                } else if (key.type == KeyType.SEARCH) {
+                                    if (inputText.isNotBlank()) {
+                                        SearchUtils.addHistory(context, inputText)
+                                        onSearch()
+                                    }
                                 } else {
                                     viewModel.onKeyPress(key, inputText, onInputChanged)
                                 }
@@ -170,6 +185,13 @@ fun KeyboardView(
 
                             KeyType.CLEAR -> {
                                 Text(text = "Xóa", color = Color.White, fontSize = 7.sp)
+                            }
+
+                            KeyType.SEARCH -> {
+                                Text(
+                                    text = "Tìm kiếm",
+                                    color = Color.White, fontSize = 7.sp
+                                )
                             }
 
                             else -> {
@@ -239,9 +261,10 @@ fun getKeyboardLayout(type: KeyboardType): List<List<KeyboardKey>> {
                 KeyboardKey("@"),
             ),
             listOf(
-                KeyboardKey("Xóa", KeyType.CLEAR),
-                KeyboardKey("Dấu cách", KeyType.SPACE),
                 KeyboardKey("←", KeyType.DELETE),
+                KeyboardKey("Dấu cách", KeyType.SPACE),
+                KeyboardKey("Xóa", KeyType.CLEAR),
+                KeyboardKey("Tìm kiếm", KeyType.SEARCH),
             )
         )
 

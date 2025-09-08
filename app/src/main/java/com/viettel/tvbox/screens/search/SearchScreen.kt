@@ -2,7 +2,6 @@ package com.viettel.tvbox.screens.search
 
 import LoadingIndicator
 import UserPreferences
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -49,9 +48,8 @@ import com.viettel.tvbox.models.LogUserHistory
 import com.viettel.tvbox.screens.keyboard.KeyboardView
 import com.viettel.tvbox.screens.keyboard.KeyboardViewModel
 import com.viettel.tvbox.services.SearchPreferences
-import com.viettel.tvbox.services.SearchUtils
 import com.viettel.tvbox.theme.BG_E0E0E0E
-import com.viettel.tvbox.theme.ColorTransparent
+import com.viettel.tvbox.theme.BlackColor
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.GapH16
 import com.viettel.tvbox.theme.GapH4
@@ -60,7 +58,6 @@ import com.viettel.tvbox.theme.GapH8
 import com.viettel.tvbox.theme.Grey400
 import com.viettel.tvbox.theme.Grey800
 import com.viettel.tvbox.theme.Typography
-import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.utils.getImageUrl
 import com.viettel.tvbox.view_model.GameViewModel
@@ -77,6 +74,7 @@ fun SearchScreen(label: String, navController: NavController) {
     val searchPref = remember { SearchPreferences(context) }
     val keyboardViewModel: KeyboardViewModel = viewModel()
     var inputText by remember { mutableStateOf("") }
+    var searchHistory by remember { mutableStateOf(searchPref.getSearchHistory()) }
     val historyViewModel: HistoryViewModel = viewModel()
     val viewModel: GameViewModel = viewModel(factory = GameViewModelFactory(userPres))
     val gameSearchHistory = viewModel.gameSearchHistory
@@ -129,43 +127,42 @@ fun SearchScreen(label: String, navController: NavController) {
                                 .padding(end = 8.dp)
                         )
                     }
-                    if (gameSearchHistory.isNotEmpty()) {
-                        GapH12()
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                painterResource(id = R.drawable.ic_clock),
-                                contentDescription = null,
-                                tint = WhiteColor,
-                                modifier = Modifier.size(10.dp)
-                            )
-                            Text(
-                                text = "  Lịch sử tìm kiếm",
-                                style = Typography.titleSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = WhiteColor
-                            )
-                        }
-                        GapH6()
-                        SearchHistoryList(
-                            onKeywordClick = { keyword ->
-                                inputText = keyword
-                                viewModel.getGameSmartSearchResults(
-                                    textSearch = keyword,
-                                    type = userPres.getUserInformation()?.forAge ?: "ALL"
-                                )
-                            },
-                            onClearHistory = {
-                                SearchUtils.clearHistory(context)
-                            },
-                            modifier = Modifier.fillMaxWidth()
+
+                    GapH12()
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_clock),
+                            contentDescription = null,
+                            tint = WhiteColor,
+                            modifier = Modifier.size(10.dp)
                         )
-//                        HistoryPushList(gameSearchHistory, onClearHistory = {
-//                            viewModel.clearGameSearchHistory()
-//                        })
+                        Text(
+                            text = "  Lịch sử tìm kiếm",
+                            style = Typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = WhiteColor
+                        )
                     }
+                    GapH6()
+                    SearchHistoryList(
+                        history = searchHistory,
+                        onKeywordClick = { keyword ->
+                            inputText = keyword
+                            viewModel.getGameSmartSearchResults(
+                                textSearch = keyword,
+                                type = userPres.getUserInformation()?.forAge ?: "ALL"
+                            )
+                        },
+                        onClearHistory = {
+                            searchPref.clearSearchHistory()
+                            searchHistory = emptyList()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
                 }
                 Column(
                     modifier = Modifier
@@ -173,18 +170,28 @@ fun SearchScreen(label: String, navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     KeyboardView(
-                        inputText = inputText, onInputChanged = {
+                        inputText = inputText,
+                        onInputChanged = {
                             inputText = it
                             viewModel.getGameSmartSearchResults(
                                 textSearch = it,
                                 type = userPres.getUserInformation()?.forAge ?: "ALL"
                             )
-                        }, viewModel = keyboardViewModel, onEnter = { query ->
+                        },
+                        viewModel = keyboardViewModel,
+                        onEnter = { query ->
                             viewModel.getGameSmartSearchResults(
                                 textSearch = query,
                                 type = userPres.getUserInformation()?.forAge ?: "ALL"
                             )
-                        }, modifier = Modifier.fillMaxWidth()
+                        },
+                        onSearch = {
+                            if (inputText.isNotBlank()) {
+                                searchPref.addSearchHistory(inputText)
+                                searchHistory = searchPref.getSearchHistory()
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }
@@ -284,6 +291,39 @@ fun SearchScreen(label: String, navController: NavController) {
                                 )
                             }
                         }
+                    } else {
+                        Column {
+                            Row(modifier = Modifier.padding(horizontal = 12.dp)) {
+                                Text(
+                                    text = "Gợi ý tìm kiểm",
+                                    style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                    color = WhiteColor
+                                )
+                            }
+                            GapH12()
+                            if (gameSearchHistory.isNotEmpty()) Box(
+                                modifier = Modifier
+                                    .height(140.dp)
+                                    .background(Color.Transparent)
+                            ) {
+                                LazyRow(
+                                    modifier = Modifier.background(Color.Transparent),
+                                    contentPadding = PaddingValues(horizontal = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                ) {
+                                    itemsIndexed(
+                                        gameSearchHistory,
+                                        key = { _, game -> game.id ?: "" }) { index, game ->
+                                        GameCard(
+                                            game.id ?: "",
+                                            game.title ?: "",
+                                            getImageUrl(game.imageScreen ?: ""),
+                                            navController,
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -293,18 +333,11 @@ fun SearchScreen(label: String, navController: NavController) {
 
 @Composable
 fun SearchHistoryList(
+    history: List<String>,
     onKeywordClick: (String) -> Unit,
     onClearHistory: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    var history by remember { mutableStateOf(SearchUtils.getHistoryList(context)) }
-
-    // Update history when clear is called
-    LaunchedEffect(Unit) {
-        history = SearchUtils.getHistoryList(context)
-    }
-
     if (history.isEmpty()) return
 
     BoxWithConstraints(modifier = modifier) {
@@ -365,13 +398,8 @@ fun SearchHistoryList(
                             Button(
                                 onClick = {
                                     onClearHistory()
-                                    history = emptyList()
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = Grey800),
-                                border = BorderStroke(
-                                    width = if (isFocus) 0.5.dp else 0.dp,
-                                    color = if (isFocus) ViettelPrimaryColor else ColorTransparent
-                                ),
+                                colors = ButtonDefaults.buttonColors(containerColor = if (isFocus) WhiteColor else Grey800),
                                 modifier = Modifier
                                     .height(25.dp)
                                     .onFocusChanged { focusState ->
@@ -381,7 +409,7 @@ fun SearchHistoryList(
                             ) {
                                 Text(
                                     "Xóa tìm kiếm",
-                                    style = Typography.bodySmall.copy(color = Color.White)
+                                    style = Typography.bodySmall.copy(color = if (isFocus) BlackColor else WhiteColor)
                                 )
                             }
                         } else {
@@ -389,11 +417,7 @@ fun SearchHistoryList(
                                 onClick = {
                                     keyword?.let { onKeywordClick(it) }
                                 },
-                                colors = ButtonDefaults.buttonColors(containerColor = Grey800),
-                                border = BorderStroke(
-                                    width = if (isFocus) 0.5.dp else 0.dp,
-                                    color = if (isFocus) ViettelPrimaryColor else ColorTransparent
-                                ),
+                                colors = ButtonDefaults.buttonColors(containerColor = if (isFocus) WhiteColor else Grey800),
                                 modifier = Modifier
                                     .height(25.dp)
                                     .onFocusChanged { focusState ->
@@ -404,7 +428,7 @@ fun SearchHistoryList(
                                 Text(
                                     keyword ?: "",
                                     style = Typography.bodySmall,
-                                    color = if (isFocus) ViettelPrimaryColor else WhiteColor
+                                    color = if (isFocus) BlackColor else WhiteColor
                                 )
                             }
                         }
