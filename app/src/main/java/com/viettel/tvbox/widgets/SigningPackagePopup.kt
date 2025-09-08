@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,6 +30,7 @@ import com.viettel.tvbox.theme.BG_1A1A1A
 import com.viettel.tvbox.theme.BlackColor
 import com.viettel.tvbox.theme.GapH12
 import com.viettel.tvbox.theme.Typography
+import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.theme.WhiteColor
 
 @OptIn(ExperimentalTvMaterial3Api::class)
@@ -36,8 +38,7 @@ import com.viettel.tvbox.theme.WhiteColor
 fun SigningPackagePopup(onDismiss: () -> Unit) {
     Dialog(
         onDismissRequest = onDismiss, properties = DialogProperties(
-            dismissOnBackPress = true,
-            usePlatformDefaultWidth = false
+            dismissOnBackPress = true, usePlatformDefaultWidth = false
         )
     ) {
         Box(
@@ -49,38 +50,62 @@ fun SigningPackagePopup(onDismiss: () -> Unit) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = BlackColor),
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.width(250.dp)
+                modifier = Modifier.width(220.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        "Vui lòng đăng ký để sử dụng tính năng",
-                        style = Typography.titleMedium,
+                        "Vui lòng đăng ký để chơi game",
+                        style = Typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = WhiteColor
                     )
                     GapH12()
-                    Button(
-                        onClick = { onDismiss() },
-                        shape = RoundedCornerShape(4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = BG_1A1A1A,
-                        ),
-                        modifier = Modifier
-                            .height(30.dp)
-                            .fillMaxWidth()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            "Bỏ qua",
-                            style = Typography.bodySmall,
-                            color = WhiteColor,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        Button(
+                            onClick = { onDismiss() },
+                            shape = RoundedCornerShape(4.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = BG_1A1A1A,
+                            ),
+                            modifier = Modifier
+                                .height(30.dp)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                "Bỏ qua",
+                                style = Typography.bodySmall,
+                                color = WhiteColor,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                        Button(
+                            onClick = { onDismiss() },
+                            shape = RoundedCornerShape(4.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = ViettelPrimaryColor,
+                            ),
+                            modifier = Modifier
+                                .height(30.dp)
+                                .weight(1f)
+                        ) {
+                            Text(
+                                "Đăng ký",
+                                style = Typography.bodySmall,
+                                color = WhiteColor,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
             }

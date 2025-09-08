@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -105,8 +104,8 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth(0.95f)
                 .fillMaxHeight(0.95f)
-                .clip(RoundedCornerShape(16.dp))
-                .border(0.5.dp, Grey700, shape = RoundedCornerShape(16.dp))
+//                .clip(RoundedCornerShape(16.dp))
+//                .border(0.5.dp, Grey700, shape = RoundedCornerShape(16.dp))
                 .pointerInput(Unit) {
                     detectTapGestures {
                         showCloseButtonWithTimer()
@@ -127,25 +126,25 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
             AndroidView(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(16.dp))
-                    .border(0.5.dp, Grey700, shape = RoundedCornerShape(16.dp)),
+//                    .clip(RoundedCornerShape(16.dp))
+                    .border(0.5.dp, Grey700),
                 factory = {
                     PlayerView(it).apply {
                         player = exoPlayer
                         useController = false
                         // Bo góc cho PlayerView
                         clipToOutline = true
-                        outlineProvider = object : android.view.ViewOutlineProvider() {
-                            override fun getOutline(
-                                view: android.view.View,
-                                outline: android.graphics.Outline
-                            ) {
-                                outline.setRoundRect(
-                                    0, 0, view.width, view.height,
-                                    48f
-                                )
-                            }
-                        }
+//                        outlineProvider = object : android.view.ViewOutlineProvider() {
+//                            override fun getOutline(
+//                                view: android.view.View,
+//                                outline: android.graphics.Outline
+//                            ) {
+//                                outline.setRoundRect(
+//                                    0, 0, view.width, view.height,
+//                                    48f
+//                                )
+//                            }
+//                        }
                         layoutParams = android.view.ViewGroup.LayoutParams(
                             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                             android.view.ViewGroup.LayoutParams.MATCH_PARENT
