@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.category
 
-import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,18 +17,18 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.tv.material3.Text
+import com.viettel.tvbox.R
 import com.viettel.tvbox.view_model.CategoryViewModel
 import com.viettel.tvbox.widgets.CategoryImageCard
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.FeaturedCategoryCard
+import com.viettel.tvbox.widgets.LoadingIndicator
 
 @Composable
 fun CategoryScreen(label: String, navController: NavController) {
@@ -69,38 +68,32 @@ fun CategoryScreen(label: String, navController: NavController) {
                             val cardCount = featuredCategories.size
                             val horizontalPadding = 8.dp * 2
                             val availableWidth = maxWidth - horizontalPadding
-                            val spacing = 0.dp * (cardCount - 1)
+                            val spacing = 12.dp * (cardCount - 1)
                             val cardWidth =
                                 if (cardCount > 0) ((availableWidth - spacing) / cardCount).coerceAtLeast(
-                                    0.5.dp
+                                    1.dp
                                 ) else maxWidth
 
-                            val offsetFraction = 0.18f
-                            val offsetPx = cardWidth.value * offsetFraction
-                            val offsetDp = offsetPx.dp
-
-                            val colorList = listOf(
-                                Color(0xFFE57373), // Red
-                                Color(0xFF64B5F6), // Blue
-                                Color(0xFF81C784)  // Green
+                            val imageList = listOf(
+                                R.drawable.giadinh,
+                                R.drawable.treem,
+                                R.drawable.gamehot,
                             )
 
                             LazyRow(
                                 modifier = Modifier.fillMaxWidth(),
                                 contentPadding = PaddingValues(8.dp),
                                 horizontalArrangement = Arrangement.spacedBy(
-                                    -offsetDp,
-                                    Alignment.CenterHorizontally
+                                    12.dp,
                                 ),
                                 userScrollEnabled = false
                             ) {
                                 itemsIndexed(featuredCategories) { index, category ->
-                                    val color = colorList[index % colorList.size]
                                     FeaturedCategoryCard(
                                         id = category.id ?: "",
                                         icon = category.icon ?: "",
                                         title = category.type ?: "",
-                                        backGround = color,
+                                        image = imageList[index % imageList.size],
                                         navController = navController,
                                         modifier = Modifier
                                             .width(cardWidth)

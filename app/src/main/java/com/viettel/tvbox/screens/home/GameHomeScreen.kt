@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.home
 
-import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +20,7 @@ import com.viettel.tvbox.view_model.HomeViewModel
 import com.viettel.tvbox.view_model.HomeViewModelFactory
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.ListGameHorizontal
+import com.viettel.tvbox.widgets.LoadingIndicator
 import com.viettel.tvbox.widgets.VideoBanner
 
 @OptIn(ExperimentalMaterial3Api::class)

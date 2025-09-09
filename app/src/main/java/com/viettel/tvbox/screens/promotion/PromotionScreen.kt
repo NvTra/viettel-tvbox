@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.promotion
 
-import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.viettel.tvbox.view_model.PromotionViewModel
 import com.viettel.tvbox.widgets.CustomScaffold
+import com.viettel.tvbox.widgets.LoadingIndicator
 import com.viettel.tvbox.widgets.PromotionCard
 
 

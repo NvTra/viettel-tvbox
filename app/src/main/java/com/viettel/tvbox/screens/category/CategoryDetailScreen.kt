@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.category
 
-import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +18,7 @@ import androidx.tv.material3.Text
 import com.viettel.tvbox.view_model.CategoryViewModel
 import com.viettel.tvbox.widgets.BannerImage
 import com.viettel.tvbox.widgets.GameCard
+import com.viettel.tvbox.widgets.LoadingIndicator
 
 
 @Composable

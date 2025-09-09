@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.my_list
 
-import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -46,6 +45,7 @@ import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.UserViewModel
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.GameCard
+import com.viettel.tvbox.widgets.LoadingIndicator
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -186,32 +186,40 @@ fun GamePlayHistory(navController: NavController) {
             }
 
             true -> {
-                if (gamePlayHistory.isNotEmpty()) {
-                    LazyRow(
-                        modifier = Modifier
-                            .background(Color.Transparent),
-                        contentPadding = PaddingValues(horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        itemsIndexed(
-                            gamePlayHistory
-                        ) { index, game ->
-                            GameCard(
-                                game.gid ?: "",
-                                game.name ?: "",
-                                game.imageHTML ?: "",
-                                navController
-                            )
-                        }
-                    }
-                } else {
+                Column {
                     Text(
-                        text = "Chưa có game đã chơi",
-                        style = Typography.headlineMedium,
+                        "Chơi gần đây",
+                        style = Typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = Color.White,
-                        modifier = Modifier
-                            .padding(12.dp)
+                        modifier = Modifier.padding(start = 12.dp, bottom = 12.dp)
                     )
+                    if (gamePlayHistory.isNotEmpty()) {
+                        LazyRow(
+                            modifier = Modifier
+                                .background(Color.Transparent),
+                            contentPadding = PaddingValues(horizontal = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            itemsIndexed(
+                                gamePlayHistory
+                            ) { index, game ->
+                                GameCard(
+                                    game.gid ?: "",
+                                    game.name ?: "",
+                                    game.imageHTML ?: "",
+                                    navController
+                                )
+                            }
+                        }
+                    } else {
+                        Text(
+                            text = "Chưa có game đã chơi",
+                            style = Typography.headlineMedium,
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(12.dp)
+                        )
+                    }
                 }
             }
         }
@@ -255,30 +263,38 @@ fun FavoriteGame(navController: NavController) {
             }
 
             true -> {
-                if (favoriteGame.isNotEmpty()) {
-                    LazyRow(
-                        modifier = Modifier
-                            .background(Color.Transparent),
-                        contentPadding = PaddingValues(horizontal = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        itemsIndexed(favoriteGame) { index, game ->
-                            GameCard(
-                                game.id ?: "",
-                                game.title ?: "",
-                                game.imageScreen ?: "",
-                                navController
-                            )
-                        }
-                    }
-                } else {
+                Column {
                     Text(
-                        text = "Chưa có game yêu thích",
-                        style = Typography.headlineMedium,
+                        "Yêu thích",
+                        style = Typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = Color.White,
-                        modifier = Modifier
-                            .padding(12.dp)
+                        modifier = Modifier.padding(start = 12.dp, bottom = 12.dp)
                     )
+                    if (favoriteGame.isNotEmpty()) {
+                        LazyRow(
+                            modifier = Modifier
+                                .background(Color.Transparent),
+                            contentPadding = PaddingValues(horizontal = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            itemsIndexed(favoriteGame) { index, game ->
+                                GameCard(
+                                    game.id ?: "",
+                                    game.title ?: "",
+                                    game.imageScreen ?: "",
+                                    navController
+                                )
+                            }
+                        }
+                    } else {
+                        Text(
+                            text = "Chưa có game yêu thích",
+                            style = Typography.headlineMedium,
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(12.dp)
+                        )
+                    }
                 }
             }
         }

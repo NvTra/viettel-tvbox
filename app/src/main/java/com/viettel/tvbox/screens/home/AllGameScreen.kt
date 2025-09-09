@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.home
 
-import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +21,7 @@ import com.viettel.tvbox.view_model.HomeViewModel
 import com.viettel.tvbox.view_model.HomeViewModelFactory
 import com.viettel.tvbox.widgets.BannerImage
 import com.viettel.tvbox.widgets.GameCard
+import com.viettel.tvbox.widgets.LoadingIndicator
 
 @Composable
 fun AllGameScreen(id: String, title: String, navController: NavController) {

@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.promotion
 
-import LoadingIndicator
 import android.annotation.SuppressLint
 import android.webkit.WebView
 import androidx.compose.foundation.focusable
@@ -56,6 +55,7 @@ import com.viettel.tvbox.theme.Grey400
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.PromotionViewModel
+import com.viettel.tvbox.widgets.LoadingIndicator
 import com.viettel.tvbox.widgets.PromotionCard
 import com.viettel.tvbox.widgets.PromotionFontSize
 import kotlinx.coroutines.launch

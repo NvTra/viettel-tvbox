@@ -10,7 +10,7 @@ class SearchPreferences(context: Context) {
     companion object {
         private const val PREFS_NAME = "search_prefs"
         private const val KEY_HISTORY = "search_history"
-        private const val MAX_HISTORY = 10
+        private const val MAX_HISTORY = 9
     }
 
     private val prefs: SharedPreferences =

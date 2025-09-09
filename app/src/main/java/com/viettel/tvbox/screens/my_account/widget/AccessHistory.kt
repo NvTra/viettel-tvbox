@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.my_account.widget
 
-import LoadingIndicator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
@@ -43,6 +42,7 @@ import com.viettel.tvbox.theme.GapW8
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.view_model.UserViewModel
+import com.viettel.tvbox.widgets.LoadingIndicator
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

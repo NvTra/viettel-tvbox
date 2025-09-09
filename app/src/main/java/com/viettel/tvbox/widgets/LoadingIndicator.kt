@@ -1,3 +1,5 @@
+package com.viettel.tvbox.widgets
+
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat

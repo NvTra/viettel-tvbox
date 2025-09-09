@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -19,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
@@ -31,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.SidebarSelect
@@ -191,24 +190,20 @@ fun FeaturedCategoryCard(
     title: String,
     backGround: Color = ViettelPrimaryColor,
     navController: NavController,
+    image: Int,
     modifier: Modifier = Modifier
 ) {
     var isFocus by remember { mutableStateOf(false) }
-    val shape = ParallelogramShape(0.4f)
     Box(
         modifier = modifier
-            .zIndex(if (isFocus) 1f else 0f)
             .graphicsLayer(
-                scaleX = if (isFocus) 1.15f else 1f,
-                scaleY = if (isFocus) 1.15f else 1f
+                scaleX = if (isFocus) 1.05f else 1f,
+                scaleY = if (isFocus) 1.05f else 1f
             )
-            .then(
-                if (isFocus) Modifier
-                    .clip(shape)
-                    .background(Color.Transparent)
-                    .border(2.dp, ViettelPrimaryColor, shape)
-                else Modifier
-                    .clip(shape)
+            .border(
+                width = if (isFocus) 2.dp else 0.dp,
+                color = if (isFocus) ViettelPrimaryColor else Color.Transparent,
+                shape = RoundedCornerShape(8.dp)
             )
     ) {
         Card(
@@ -217,22 +212,34 @@ fun FeaturedCategoryCard(
             },
             modifier = Modifier
                 .fillMaxSize()
-                .clip(shape)
-                .background(backGround)
                 .onFocusChanged { focusState -> isFocus = focusState.isFocused },
             colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .aspectRatio(1f)
             ) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = androidx.compose.ui.layout.ContentScale.FillWidth,
+                    alignment = Alignment.Center
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                )
                 Text(
                     text = title,
                     style = Typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Bold,
                         fontSize = 12.sp
                     ),
-                    color = WhiteColor
+                    color = if (isFocus) ViettelPrimaryColor else WhiteColor
                 )
             }
         }
@@ -277,7 +284,8 @@ fun CategoryImageCard(
                 model = getImageUrl(image),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                alignment = Alignment.Center
             )
             Box(
                 modifier = Modifier
@@ -290,7 +298,7 @@ fun CategoryImageCard(
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp
                 ),
-                color = WhiteColor
+                color = if (isFocus) ViettelPrimaryColor else WhiteColor
             )
         }
     }

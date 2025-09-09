@@ -1,6 +1,5 @@
 package com.viettel.tvbox.screens.search
 
-import LoadingIndicator
 import UserPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -65,6 +64,7 @@ import com.viettel.tvbox.view_model.GameViewModelFactory
 import com.viettel.tvbox.view_model.HistoryViewModel
 import com.viettel.tvbox.widgets.CustomScaffold
 import com.viettel.tvbox.widgets.GameCard
+import com.viettel.tvbox.widgets.LoadingIndicator
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
