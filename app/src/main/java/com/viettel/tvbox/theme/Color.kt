@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val ViettelPrimaryColor = Color(0xFFf1062a)
 
+val ViettelRed50 = Color(0x80F1062A)
 val BG_1A1A1A = Color(0xFF1a1a1a)
 
 val BG_E0E0E0E = Color(0xFFE0E0E0)

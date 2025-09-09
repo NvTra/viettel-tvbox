@@ -124,9 +124,11 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
 @Composable
 fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
-    var username by remember { mutableStateOf("0978399634") }
-    var password by remember { mutableStateOf("pw123aA@") }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
+    var usernameError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
     var loginError by remember { mutableStateOf<String?>(null) }
 
     var buttonFocus by remember { mutableStateOf(false) }
@@ -136,6 +138,20 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
     val userPrefs = remember { UserPreferences.getInstance(context) }
 
     fun onSubmit() {
+        usernameError = null
+        passwordError = null
+        loginError = null
+        var hasError = false
+        if (username.isBlank()) {
+            usernameError = "Vui lòng nhập số điện thoại"
+            hasError = true
+        }
+        if (password.isBlank()) {
+            passwordError = "Vui lòng nhập mật khẩu"
+            hasError = true
+        }
+        if (hasError) return
+
         coroutineScope.launch(Dispatchers.IO) {
             try {
                 val request = LoginRequest(username = username, password = password)
@@ -210,19 +226,32 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
         Text("Số điện thoại", style = Typography.titleSmall, color = WhiteColor)
         CustomTextField(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = {
+                username = it
+                if (usernameError != null) usernameError = null
+            },
             backgroundColor = Color.Black.copy(alpha = 0.7f),
             placeholder = "Nhập số điện thoại của bạn",
             keyboardType = KeyboardType.Phone,
             leadingIcon = painterResource(drawable.ic_phone),
             modifier = Modifier.padding(vertical = 6.dp)
         )
+        if (usernameError != null) {
+            Text(
+                text = usernameError ?: "",
+                color = Color.Red,
+                style = Typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+            )
+        }
         GapH12()
         // Password Input
         Text("Nhập mật khẩu", style = Typography.titleSmall, color = WhiteColor)
         CustomTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                if (passwordError != null) passwordError = null
+            },
             backgroundColor = Color.Black.copy(alpha = 0.7f),
             placeholder = "Nhập mật khẩu của bạn",
             keyboardType = KeyboardType.Password,
@@ -230,9 +259,16 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
             trailingIcon = painterResource(drawable.ic_eye),
             modifier = Modifier.padding(vertical = 8.dp)
         )
-        loginError?.let {
+        if (passwordError != null) {
             Text(
-                text = it,
+                text = passwordError ?: "",
+                color = Color.Red,
+                style = Typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+            )
+        }
+        if (loginError != null) {
+            Text(
+                text = loginError ?: "",
                 color = Color.Red,
                 style = Typography.bodySmall.copy(fontWeight = FontWeight.Medium),
             )

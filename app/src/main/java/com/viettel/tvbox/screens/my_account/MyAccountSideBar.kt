@@ -47,6 +47,7 @@ import com.viettel.tvbox.theme.GapH6
 import com.viettel.tvbox.theme.GapW4
 import com.viettel.tvbox.theme.Typography
 import com.viettel.tvbox.theme.ViettelPrimaryColor
+import com.viettel.tvbox.theme.ViettelRed50
 import com.viettel.tvbox.theme.WhiteColor
 import com.viettel.tvbox.view_model.AuthViewModel
 
@@ -242,9 +243,7 @@ fun LogoutButton(onLogout: () -> Unit) {
             ),
         shape = RoundedCornerShape(4.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isFocus) BG_1A1A1A else ViettelPrimaryColor.copy(
-                alpha = 0.1f
-            ),
+            containerColor = if (isFocus) BG_1A1A1A else ViettelRed50
         ),
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier

@@ -301,7 +301,7 @@ fun GameDetail(id: String, navController: NavController) {
                         GapH16()
                         Text(
                             text = gameDetail.description ?: "",
-                            style = Typography.bodyMedium,
+                            style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                             color = WhiteColor,
                             textAlign = TextAlign.Justify,
                             modifier = Modifier.fillMaxWidth(0.5f)
@@ -309,7 +309,9 @@ fun GameDetail(id: String, navController: NavController) {
                         GapH8()
                         Text(
                             text = "${gameDetail.development ?: ""} | ${gameDetail.partner ?: ""}",
-                            style = Typography.bodySmall, color = Grey400
+                            style = Typography.bodySmall,
+                            color = Grey400,
+                            fontWeight = FontWeight.W300
                         )
                         GapH16()
                         Row {
@@ -329,7 +331,9 @@ fun GameDetail(id: String, navController: NavController) {
                             )
                             Text(text = gameDetail.types?.joinToString(", ") { e -> e } ?: "",
                                 style = Typography.bodySmall,
-                                color = Grey300)
+                                color = Grey300,
+                                fontWeight = FontWeight.W300
+                            )
                         }
                         GapH4()
                         Row {
@@ -341,7 +345,8 @@ fun GameDetail(id: String, navController: NavController) {
                             Text(
                                 text = gameDetail.duration ?: "",
                                 style = Typography.bodySmall,
-                                color = Grey300
+                                color = Grey300,
+                                fontWeight = FontWeight.W300
                             )
                         }
                         GapH16()

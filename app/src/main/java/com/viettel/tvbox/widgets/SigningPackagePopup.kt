@@ -59,7 +59,7 @@ fun SigningPackagePopup(onDismiss: () -> Unit) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.7f)),
+                    .background(Color.Black.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
                 Card(
@@ -149,7 +149,7 @@ fun RegistrationInfoPopup(onDismiss: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.7f)),
+                .background(Color.Black.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
             Card(

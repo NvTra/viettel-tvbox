@@ -214,11 +214,6 @@ fun SearchScreen(label: String, navController: NavController) {
                 else -> {
                     if (inputText.isNotEmpty()) Column {
                         Row(modifier = Modifier.padding(horizontal = 12.dp)) {
-//                            Text(
-//                                text = "Gợi ý tìm kiểm",
-//                                style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-//                                color = WhiteColor
-//                            )
                             Text(
                                 text = "Kết quả tìm kiếm cho \"$inputText\" (${gameSmartSearch.size} game)",
                                 style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),

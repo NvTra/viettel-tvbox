@@ -190,13 +190,13 @@ fun GamePlayHistory(
             Column {
                 Text(
                     text = title,
-                    style = Typography.labelSmall.copy(lineHeight = 14.sp),
+                    style = Typography.labelLarge.copy(lineHeight = 14.sp),
                     color = WhiteColor
                 )
                 GapH2()
                 Text(
                     text = "Chơi lần cuối ${convertTime(time)}",
-                    style = Typography.bodySmall,
+                    style = Typography.labelSmall,
                     color = BG_E0E0E0E
                 )
             }
