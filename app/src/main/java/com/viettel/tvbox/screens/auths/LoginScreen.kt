@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -130,6 +131,9 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
     var usernameError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var loginError by remember { mutableStateOf<String?>(null) }
+
+    // Thêm trạng thái hiển thị/ẩn mật khẩu
+    var passwordVisible by remember { mutableStateOf(false) }
 
     var buttonFocus by remember { mutableStateOf(false) }
 
@@ -255,8 +259,8 @@ fun LoginForm(modifier: Modifier = Modifier, onLoginSuccess: () -> Unit) {
             backgroundColor = Color.Black.copy(alpha = 0.7f),
             placeholder = "Nhập mật khẩu của bạn",
             keyboardType = KeyboardType.Password,
-            leadingIcon = painterResource(drawable.ic_lock),
-            trailingIcon = painterResource(drawable.ic_eye),
+            // Thêm visualTransformation để ẩn/hiện mật khẩu
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.padding(vertical = 8.dp)
         )
         if (passwordError != null) {
