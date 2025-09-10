@@ -40,7 +40,6 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,27 +63,25 @@ import kotlinx.coroutines.launch
 @Composable
 fun PromotionDetailScreen(id: String, navController: NavController) {
     val viewModel: PromotionViewModel = viewModel()
-    viewModel.promotions
-    viewModel.isLoading
-    viewModel.error
-
     val scrollState = rememberScrollState()
     val focusRequester = remember { FocusRequester() }
     val coroutineScope = rememberCoroutineScope()
-
-    LocalFocusManager.current
     val lazyRowFocusRequester = remember { FocusRequester() }
     val density = LocalDensity.current
     var lazyRowY by remember { mutableStateOf(0f) }
     var lazyRowFocused by remember { mutableStateOf(false) }
-    with(density) { 130.dp.toPx() }
+    var contentFocused by remember { mutableStateOf(true) }
+    var lastScrollPosition by remember { mutableStateOf(0) }
+    var allowAutoFocus by remember { mutableStateOf(false) }
 
     LaunchedEffect(scrollState.maxValue) {
         snapshotFlow { scrollState.value }
             .collect { scrollY ->
-                if (!lazyRowFocused && lazyRowY > 0f && scrollY + scrollState.maxValue * 0.5 > lazyRowY) {
+                val screenHeight = with(density) { 500.dp.toPx() }
+                if (allowAutoFocus && !lazyRowFocused && lazyRowY > 0f) {
                     lazyRowFocusRequester.requestFocus()
                     lazyRowFocused = true
+                    allowAutoFocus = false
                 }
             }
     }
@@ -95,26 +92,43 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .align(Alignment.CenterHorizontally)
-//                .padding(16.dp)
                 .verticalScroll(scrollState)
                 .focusRequester(focusRequester)
                 .focusable()
+                .onFocusChanged { state ->
+                    contentFocused = state.isFocused
+                    if (state.isFocused) {
+                        lazyRowFocused = false
+                    }
+                }
                 .onKeyEvent { event ->
                     if (event.type == KeyEventType.KeyDown) {
                         when (event.key) {
                             Key.DirectionDown -> {
-                                coroutineScope.launch {
-                                    scrollState.animateScrollTo(scrollState.value + 80)
+                                val isAtBottom = scrollState.value >= scrollState.maxValue - 50
+                                val hasRelatedPromotions =
+                                    viewModel.promotion?.promotionRelationUsers?.isNotEmpty() == true
+
+                                if (isAtBottom && hasRelatedPromotions && lazyRowY > 0f && !lazyRowFocused) {
+                                    lastScrollPosition = scrollState.value
+                                    allowAutoFocus = true
+                                    lazyRowFocusRequester.requestFocus()
+                                    true
+                                } else {
+                                    coroutineScope.launch {
+                                        scrollState.animateScrollTo(
+                                            (scrollState.value + 80).coerceAtMost(scrollState.maxValue)
+                                        )
+                                    }
+                                    true
                                 }
-                                true
                             }
 
                             Key.DirectionUp -> {
@@ -150,6 +164,19 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                 true
                             }
 
+                            Key.Tab -> {
+                                val hasRelatedPromotions =
+                                    viewModel.promotion?.promotionRelationUsers?.isNotEmpty() == true
+
+                                if (contentFocused && hasRelatedPromotions && lazyRowY > 0f) {
+                                    lastScrollPosition = scrollState.value
+                                    lazyRowFocusRequester.requestFocus()
+                                    true
+                                } else {
+                                    false
+                                }
+                            }
+
                             else -> false
                         }
                     } else false
@@ -181,7 +208,6 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                 .padding(bottom = 8.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
-                        // Date row
                         val announceDate =
                             viewModel.promotion?.promotionDetailUser?.announceDate ?: ""
                         if (announceDate.isNotBlank()) {
@@ -204,7 +230,6 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                 )
                             }
                         }
-                        // HTML content
                         val rawHtmlContent = viewModel.promotion?.promotionDetailUser?.content ?: ""
                         val darkCss = """
                         <style>
@@ -245,7 +270,6 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                             )
                         }
                     }
-                    // list promotion relation
                     val relatedPromotions =
                         viewModel.promotion?.promotionRelationUsers?.take(3) ?: emptyList()
                     if (relatedPromotions.isNotEmpty()) {
@@ -272,9 +296,39 @@ fun PromotionDetailScreen(id: String, navController: NavController) {
                                     .focusRequester(lazyRowFocusRequester)
                                     .onFocusChanged { state ->
                                         lazyRowFocused = state.isFocused
+                                        if (state.isFocused) {
+                                            contentFocused = false
+                                        }
                                     }
                                     .onGloballyPositioned { coordinates ->
                                         lazyRowY = coordinates.positionInWindow().y
+                                    }
+                                    .onKeyEvent { event ->
+                                        if (event.type == KeyEventType.KeyDown) {
+                                            when (event.key) {
+                                                Key.DirectionUp -> {
+                                                    focusRequester.requestFocus()
+                                                    coroutineScope.launch {
+                                                        scrollState.animateScrollTo(
+                                                            lastScrollPosition
+                                                        )
+                                                    }
+                                                    true
+                                                }
+
+                                                Key.Tab -> {
+                                                    focusRequester.requestFocus()
+                                                    coroutineScope.launch {
+                                                        scrollState.animateScrollTo(
+                                                            lastScrollPosition
+                                                        )
+                                                    }
+                                                    true
+                                                }
+
+                                                else -> false
+                                            }
+                                        } else false
                                     },
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                                 contentPadding = PaddingValues(
