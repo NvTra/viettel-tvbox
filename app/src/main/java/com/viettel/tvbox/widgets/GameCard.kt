@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
@@ -40,8 +41,10 @@ fun GameCard(
     imageUrl: String,
     navController: NavController,
     onClick: (() -> Unit)? = null,
+    onFocus: ((Boolean) -> Unit)? = null,
 ) {
     var isFocus by remember { mutableStateOf(false) }
+
     Card(
         onClick = {
             onClick?.invoke()
@@ -50,10 +53,15 @@ fun GameCard(
         modifier = Modifier
             .aspectRatio(1f)
             .graphicsLayer(
-                scaleX = if (isFocus) 1.15f else 1f,
-                scaleY = if (isFocus) 1.15f else 1f
+                scaleX = if (isFocus) 1.10f else 1f,
+                scaleY = if (isFocus) 1.10f else 1f,
+                shadowElevation = if (isFocus) 4f else 0f
             )
-            .onFocusChanged { focusState -> isFocus = focusState.isFocused }
+            .zIndex(if (isFocus) 1f else 0f)
+            .onFocusChanged { focusState ->
+                isFocus = focusState.isFocused
+                onFocus?.invoke(focusState.isFocused)
+            }
             .border(
                 width = if (isFocus) 2.dp else 0.dp,
                 color = if (isFocus) ViettelPrimaryColor else Color.Transparent,
@@ -81,11 +89,13 @@ fun GameCard(
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                 error = painterResource(R.drawable.ic_close)
             )
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f))
+                    .background(Color.Black.copy(alpha = if (isFocus) 0.2f else 0.3f))
             )
+
             if (title != null) {
                 Column(
                     modifier = Modifier
@@ -98,10 +108,8 @@ fun GameCard(
                         color = if (isFocus) ViettelPrimaryColor else Color.White,
                         maxLines = 2
                     )
-
                 }
             }
         }
     }
-
 }

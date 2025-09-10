@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.viettel.tvbox.theme.GapH8
@@ -47,21 +48,27 @@ fun PromotionCard(
     navController: NavController
 ) {
     var isFocus by remember { mutableStateOf(false) }
+
     Card(
         onClick = {
             navController.navigate("promotion_detail/$id")
-        }, modifier = Modifier
+        },
+        modifier = Modifier
             .aspectRatio(1f)
             .graphicsLayer(
-                scaleX = if (isFocus) 1.08f else 1f, scaleY = if (isFocus) 1.08f else 1f
+                scaleX = if (isFocus) 1.03f else 1f,
+                scaleY = if (isFocus) 1.03f else 1f,
+                shadowElevation = if (isFocus) 4f else 0f
             )
+            .zIndex(if (isFocus) 1f else 0f)
             .background(Color.Black.copy(alpha = 0.5f))
             .onFocusChanged { focusState -> isFocus = focusState.isFocused }
             .border(
                 width = if (isFocus) 2.dp else 0.dp,
                 color = if (isFocus) ViettelPrimaryColor else Color.Transparent,
                 shape = RoundedCornerShape(12.dp)
-            )) {
+            )
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -73,11 +80,13 @@ fun PromotionCard(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop
             )
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(Color.Black.copy(alpha = if (isFocus) 0.4f else 0.5f))
             )
+
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -88,17 +97,19 @@ fun PromotionCard(
                     style = if (fontSize?.titleFontSize != null)
                         Typography.titleSmall.copy(fontSize = fontSize.titleFontSize) else Typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = if (isFocus) ViettelPrimaryColor else Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+
                 GapH8()
+
                 androidx.compose.material3.Text(
                     text = description,
                     style = if (fontSize?.descriptionFontSize != null) Typography.labelSmall.copy(
                         fontSize = fontSize.descriptionFontSize
                     ) else Typography.labelSmall,
-                    color = Color.White,
+                    color = Color.White.copy(alpha = if (isFocus) 0.9f else 0.8f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
