@@ -46,8 +46,8 @@ fun FeaturedCategoryCard(
     Box(
         modifier = modifier
             .graphicsLayer(
-                scaleX = if (isFocus) 1.10f else 1f,
-                scaleY = if (isFocus) 1.10f else 1f
+                scaleX = if (isFocus) 1.05f else 1f,
+                scaleY = if (isFocus) 1.05f else 1f
             )
             .zIndex(if (isFocus) 1f else 0f)
             .border(
