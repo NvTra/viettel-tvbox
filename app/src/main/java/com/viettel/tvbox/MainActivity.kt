@@ -3,6 +3,7 @@ package com.viettel.tvbox
 import UserPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -23,13 +24,23 @@ import com.viettel.tvbox.screens.auths.LoginScreen
 import com.viettel.tvbox.screens.splash.SplashScreen
 import com.viettel.tvbox.theme.VietteltvTheme
 import com.viettel.tvbox.widgets.ToastMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
 
+    private var doubleBackToExit = false
+    private var backPressJob: Job? = null
+
     @OptIn(ExperimentalTvMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setupBackPressHandler()
         setContent {
             VietteltvTheme {
                 Surface(
@@ -49,6 +60,34 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+    }
+
+    private fun setupBackPressHandler() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleDoubleBackPress()
+            }
+        })
+    }
+
+    private fun handleDoubleBackPress() {
+        if (doubleBackToExit) {
+            finish()
+        } else {
+            doubleBackToExit = true
+            ToastMessage.success("Ấn BACK lần nữa để thoát")
+
+            backPressJob?.cancel()
+            backPressJob = CoroutineScope(Dispatchers.Main).launch {
+                delay(2000)
+                doubleBackToExit = false
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        backPressJob?.cancel()
     }
 
     @Composable
