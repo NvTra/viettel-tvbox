@@ -12,13 +12,18 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
 @Composable
-fun VideoBackground(modifier: Modifier? = Modifier, videoUri: Uri, mute: Float) {
+fun VideoBackground(
+    modifier: Modifier? = Modifier,
+    videoUri: Uri,
+    mute: Float,
+    isPaused: Boolean = false
+) {
     val context = LocalContext.current
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(videoUri))
             repeatMode = ExoPlayer.REPEAT_MODE_ALL
-            playWhenReady = true
+            playWhenReady = !isPaused
             volume = mute
             prepare()
         }
@@ -26,6 +31,11 @@ fun VideoBackground(modifier: Modifier? = Modifier, videoUri: Uri, mute: Float) 
 
     DisposableEffect(mute) {
         exoPlayer.volume = mute
+        onDispose { }
+    }
+
+    DisposableEffect(isPaused) {
+        exoPlayer.playWhenReady = !isPaused
         onDispose { }
     }
 

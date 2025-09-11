@@ -1,6 +1,7 @@
 package com.viettel.tvbox.widgets
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -58,6 +59,7 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
     var showCloseButton by remember { mutableStateOf(true) }
     var hideJob by remember { mutableStateOf<Job?>(null) }
     val closeButtonFocusRequester = remember { FocusRequester() }
+    val mainBoxFocusRequester = remember { FocusRequester() }
 
     val context = LocalContext.current
     val exoPlayer = remember {
@@ -89,7 +91,22 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
 
     LaunchedEffect(Unit) {
         showCloseButtonWithTimer()
-        closeButtonFocusRequester.requestFocus()
+        delay(100)
+        try {
+            mainBoxFocusRequester.requestFocus()
+        } catch (e: Exception) {
+        }
+    }
+
+    // LaunchedEffect để handle focus khi button show/hide
+    LaunchedEffect(showCloseButton) {
+        if (showCloseButton) {
+            delay(200)
+            try {
+                closeButtonFocusRequester.requestFocus()
+            } catch (e: Exception) {
+            }
+        }
     }
 
     Dialog(
@@ -104,20 +121,33 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth(0.95f)
                 .fillMaxHeight(0.95f)
-//                .clip(RoundedCornerShape(16.dp))
-//                .border(0.5.dp, Grey700, shape = RoundedCornerShape(16.dp))
+                .focusRequester(mainBoxFocusRequester)
+                .focusable()
                 .pointerInput(Unit) {
                     detectTapGestures {
                         showCloseButtonWithTimer()
                     }
                 }
                 .onKeyEvent { keyEvent ->
-                    if (keyEvent.key == Key.DirectionDown && keyEvent.type == KeyEventType.KeyDown) {
-                        if (!showCloseButton) {
-                            showCloseButtonWithTimer()
-                            closeButtonFocusRequester.requestFocus()
+                    if (keyEvent.type == KeyEventType.KeyDown) {
+                        when (keyEvent.key) {
+                            Key.DirectionUp, Key.DirectionDown,
+                            Key.DirectionLeft, Key.DirectionRight,
+                            Key.DirectionCenter, Key.Enter -> {
+                                showCloseButtonWithTimer()
+                                true
+                            }
+
+                            Key.Back -> {
+                                // Back button tắt popup trực tiếp
+                                onDismiss()
+                                true
+                            }
+
+                            else -> {
+                                false
+                            }
                         }
-                        true
                     } else {
                         false
                     }
@@ -126,25 +156,15 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
             AndroidView(
                 modifier = Modifier
                     .fillMaxSize()
-//                    .clip(RoundedCornerShape(16.dp))
                     .border(0.5.dp, Grey700),
                 factory = {
                     PlayerView(it).apply {
                         player = exoPlayer
                         useController = false
-                        // Bo góc cho PlayerView
                         clipToOutline = true
-//                        outlineProvider = object : android.view.ViewOutlineProvider() {
-//                            override fun getOutline(
-//                                view: android.view.View,
-//                                outline: android.graphics.Outline
-//                            ) {
-//                                outline.setRoundRect(
-//                                    0, 0, view.width, view.height,
-//                                    48f
-//                                )
-//                            }
-//                        }
+                        isFocusable = false
+                        isFocusableInTouchMode = false
+
                         layoutParams = android.view.ViewGroup.LayoutParams(
                             android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                             android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -171,7 +191,7 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
                     contentPadding = PaddingValues(12.dp),
                     shape = CircleShape,
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(32.dp)
                         .clip(CircleShape)
                         .focusRequester(closeButtonFocusRequester)
                         .onFocusChanged { state ->
@@ -185,7 +205,7 @@ fun VideoPopup(videoUrl: String, onDismiss: () -> Unit) {
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = "Đóng",
                         tint = WhiteColor,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(12.dp)
                     )
                 }
             }

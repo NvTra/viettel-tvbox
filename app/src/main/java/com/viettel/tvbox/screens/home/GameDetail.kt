@@ -93,6 +93,9 @@ fun GameDetail(id: String, navController: NavController) {
     var showLoginDialog by remember { mutableStateOf(false) }
     var serviceInterrupDialog by remember { mutableStateOf(false) }
 
+    // Video pause state - tạm dừng video background khi mở popup
+    var isVideoBackgroundPaused by remember { mutableStateOf(false) }
+
 
     var backFocus by remember { mutableStateOf(false) }
 
@@ -201,7 +204,8 @@ fun GameDetail(id: String, navController: NavController) {
                         .fillMaxWidth()
                         .fillMaxHeight(),
                     (gameDetail.videoTrailer ?: "").toUri(),
-                    mute = if (isMuted.value) 1f else 0f
+                    mute = if (isMuted.value) 1f else 0f,
+                    isPaused = isVideoBackgroundPaused
                 )
                 Box(
                     modifier = Modifier
@@ -211,7 +215,11 @@ fun GameDetail(id: String, navController: NavController) {
                 if (showVideoPopup.value) {
                     VideoPopup(
                         videoUrl = gameDetail.videoTrailer ?: "",
-                        onDismiss = { showVideoPopup.value = false }
+                        onDismiss = {
+                            showVideoPopup.value = false
+                            isVideoBackgroundPaused =
+                                false // Phát lại video background khi đóng popup
+                        }
                     )
                 }
                 Column(
@@ -253,7 +261,11 @@ fun GameDetail(id: String, navController: NavController) {
                                 title = "Âm thanh",
                             )
                             ItemButton(
-                                onClick = { showVideoPopup.value = true },
+                                onClick = {
+                                    showVideoPopup.value = true
+                                    isVideoBackgroundPaused =
+                                        true // Tạm dừng video background khi mở popup
+                                },
                                 iconResId = R.drawable.ic_maximize,
                                 title = "Chi tiết",
                             )
