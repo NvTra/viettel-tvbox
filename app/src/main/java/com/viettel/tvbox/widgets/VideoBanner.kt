@@ -4,6 +4,7 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -80,29 +81,23 @@ fun VideoBanner() {
                     AndroidView(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
+                            .aspectRatio(16f / 9f)
                             .align(Alignment.TopCenter),
                         factory = { context ->
                             PlayerView(context).apply {
                                 player = exoPlayer
                                 useController = false
-                                
-                                // 🎯 FIX: Proper resize mode for full coverage
                                 resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                                
-                                // 🎯 FIX: Ensure proper layout params
+
                                 layoutParams = android.view.ViewGroup.LayoutParams(
                                     android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                                     android.view.ViewGroup.LayoutParams.MATCH_PARENT
                                 )
-                                
-                                // 🚀 Performance optimization
+
                                 setKeepContentOnPlayerReset(true)
-                                
-                                // 🎯 FIX: Handle video size changes properly
-                                exoPlayer.addListener(object : androidx.media3.common.Player.Listener {
+                                exoPlayer.addListener(object :
+                                    androidx.media3.common.Player.Listener {
                                     override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
-                                        // Force layout update when video dimensions change
                                         post {
                                             requestLayout()
                                         }
