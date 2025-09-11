@@ -15,6 +15,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -37,6 +40,7 @@ import com.viettel.tvbox.theme.Grey
 import com.viettel.tvbox.theme.SidebarSelect
 import com.viettel.tvbox.theme.ViettelPrimaryColor
 import com.viettel.tvbox.utils.getImageUrl
+import kotlinx.coroutines.delay
 
 enum class SidebarDestination(
     val icon: Int?,
@@ -62,6 +66,36 @@ fun Sidebar(
         SidebarDestination.entries.indexOfFirst { currentRoute?.startsWith(it.route) == true }
     val context = LocalContext.current
     val userInformation = remember { UserPreferences.getInstance(context).getUserInformation() }
+
+    val focusRequesters = remember {
+        SidebarDestination.entries.map { FocusRequester() }
+    }
+    var lastClickedIndex by rememberSaveable { mutableStateOf(-1) }
+    var isInitialFocus by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(selectedIndex) {
+        when {
+            isInitialFocus -> {
+                val targetIndex =
+                    if (selectedIndex >= 0) selectedIndex else 1
+                delay(100)
+                try {
+                    focusRequesters[targetIndex].requestFocus()
+                } catch (e: Exception) {
+                }
+                isInitialFocus = false
+            }
+
+            lastClickedIndex >= 0 -> {
+                delay(100)
+                try {
+                    focusRequesters[lastClickedIndex].requestFocus()
+                } catch (e: Exception) {
+                }
+                lastClickedIndex = -1
+            }
+        }
+    }
     NavigationRail(
         modifier = modifier
             .fillMaxHeight()
@@ -69,7 +103,6 @@ fun Sidebar(
             .background(Color.Black),
         containerColor = Grey
     ) {
-//        GapH12()
         SidebarDestination.entries.forEachIndexed { index, destination ->
             var isItemFocused by rememberSaveable { mutableStateOf(false) }
             if (destination.isAccount) {
@@ -79,6 +112,7 @@ fun Sidebar(
                     ),
                     selected = selectedIndex == index,
                     onClick = {
+                        lastClickedIndex = index
                         navController.navigate(destination.route)
                     },
                     icon = {
@@ -124,12 +158,12 @@ fun Sidebar(
                         .background(
                             if (isItemFocused || selectedIndex == index) SidebarSelect else Color.Transparent
                         )
+                        .focusRequester(focusRequesters[index])
                         .onFocusChanged { focusState ->
                             isItemFocused = focusState.isFocused
                         },
                     alwaysShowLabel = false
                 )
-//                GapH12()
             } else {
                 NavigationRailItem(
                     colors = NavigationRailItemDefaults.colors(
@@ -141,6 +175,7 @@ fun Sidebar(
                     ),
                     selected = selectedIndex == index,
                     onClick = {
+                        lastClickedIndex = index
                         navController.navigate(destination.route) {
                             popUpTo(navController.graph.startDestinationId) {
                                 inclusive = true
@@ -168,6 +203,7 @@ fun Sidebar(
                                 else -> Color.Transparent
                             }
                         )
+                        .focusRequester(focusRequesters[index])
                         .onFocusChanged { focusState ->
                             isItemFocused = focusState.isFocused
                         },
