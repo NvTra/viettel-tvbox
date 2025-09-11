@@ -78,17 +78,39 @@ fun VideoBanner() {
                         .clipToBounds()
                 ) {
                     AndroidView(
-                        modifier = Modifier.fillMaxSize(), factory = {
-                            PlayerView(it).apply {
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .align(Alignment.TopCenter),
+                        factory = { context ->
+                            PlayerView(context).apply {
                                 player = exoPlayer
                                 useController = false
+                                
+                                // 🎯 FIX: Proper resize mode for full coverage
+                                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                                
+                                // 🎯 FIX: Ensure proper layout params
                                 layoutParams = android.view.ViewGroup.LayoutParams(
                                     android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                                     android.view.ViewGroup.LayoutParams.MATCH_PARENT
                                 )
-                                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                                
+                                // 🚀 Performance optimization
+                                setKeepContentOnPlayerReset(true)
+                                
+                                // 🎯 FIX: Handle video size changes properly
+                                exoPlayer.addListener(object : androidx.media3.common.Player.Listener {
+                                    override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
+                                        // Force layout update when video dimensions change
+                                        post {
+                                            requestLayout()
+                                        }
+                                    }
+                                })
                             }
-                        })
+                        }
+                    )
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
